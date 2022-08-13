@@ -19,6 +19,36 @@ public class City implements Comparable<City>, Serializable {
 	private StandardOfLiving standardOfLiving; //Поле может быть null
 	private Human governor; //Поле не может быть null
 
+	public City(String name, Coordinates coordinates, float area, int population, float metersAboveSeaLevel, Climate climate, Government government, StandardOfLiving standardOfLiving, Human governor) {
+		this.name = name;
+		this.coordinates = coordinates;
+		this.creationDate = ZonedDateTime.now();
+		this.area = area;
+		this.population = population;
+		this.metersAboveSeaLevel = metersAboveSeaLevel;
+		this.climate = climate;
+		this.government = government;
+		this.standardOfLiving = standardOfLiving;
+		this.governor = governor;
+	}
+
+	@Override
+	public String toString() {
+		return "City{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", coordinates=" + coordinates +
+				", creationDate=" + creationDate +
+				", area=" + area +
+				", population=" + population +
+				", metersAboveSeaLevel=" + metersAboveSeaLevel +
+				", climate=" + climate +
+				", government=" + government +
+				", standardOfLiving=" + standardOfLiving +
+				", governor=" + governor +
+				'}';
+	}
+
 	@Override
 	public int compareTo(City anotherCity) {
 		return this.name.compareTo(anotherCity.getName());

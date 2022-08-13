@@ -13,6 +13,14 @@ public class Coordinates implements Serializable {
 		this.y = y;
 	}
 
+	@Override
+	public String toString() {
+		return "Координаты{" +
+				"x=" + x +
+				", y=" + y +
+				'}';
+	}
+
 	public Double getX() {
 		return x;
 	}

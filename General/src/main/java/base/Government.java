@@ -1,5 +1,8 @@
 package base;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Government {
 
 	ANARCHY("Анархия"),
@@ -11,6 +14,14 @@ public enum Government {
 
 	Government(String title){
 		this.title = title;
+	}
+
+	public static List<String> asLowerCaseStringList(){
+		List<String> governmentValues = new ArrayList<>();
+		for (Government government : values()){
+			governmentValues.add(government.title.toLowerCase());
+		}
+		return governmentValues;
 	}
 
 	@Override

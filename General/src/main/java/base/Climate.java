@@ -1,6 +1,8 @@
 package base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum Climate implements Serializable {
 

@@ -11,6 +11,23 @@ public class Human implements Serializable {
 	private Integer height; //Значение поля должно быть больше 0
 	private ZonedDateTime birthday;
 
+	private Human(String name, Integer height){
+		this.name = name;
+		this.height = height;
+		this.birthday = ZonedDateTime.now();
+	}
+
+	public static Human newRandomHuman(){
+		int nameNum = (int) (Math.random() * 5);
+		int height =(int) (Math.random() * 251);
+		return new Human(Leaders.getFromNum(nameNum), height);
+	}
+
+	public static Human newHumanByLeader(Leaders leaders){
+		int height =(int) (Math.random() * 251);
+		return new Human(leaders.toString(), height);
+	}
+
 	@Override
 	public String toString() {
 		return "Правитель: " + this.name;
