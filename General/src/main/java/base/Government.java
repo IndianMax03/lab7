@@ -27,4 +27,10 @@ public enum Government {
 	@Override
 	public String toString() { return title;}
 
+	public static Government fromString(String governmentStr){
+		for (Government government : Government.values()){
+			if (government.toString().equals(governmentStr)) return government;
+		}
+		return null;
+	}
 }

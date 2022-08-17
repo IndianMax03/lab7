@@ -10,11 +10,11 @@ import java.nio.ByteBuffer;
 public class Client {
 
 	private final byte[] ip = new byte[]{127, 0, 0, 1};
-	private static final int PORT = 9000;
-	private static final int BUF_SIZE = 32768;
-	private static DatagramSocket socket;
-	private static DatagramPacket packet;
-	private static InetAddress host;
+	private final int PORT = 9000;
+	private final int BUF_SIZE = 32768;
+	private DatagramSocket socket;
+	private DatagramPacket packet;
+	private InetAddress host;
 
 	public Client(){
 		try{

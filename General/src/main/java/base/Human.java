@@ -1,6 +1,9 @@
 package base;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class Human implements Serializable {
@@ -17,6 +20,12 @@ public class Human implements Serializable {
 		this.birthday = ZonedDateTime.now();
 	}
 
+	public Human(Leaders leader, Integer height, java.sql.Date birthday){
+		this.name = leader.toString();
+		this.height = height;
+		setBirthday(birthday);
+	}
+
 	public static Human newRandomHuman(){
 		int nameNum = (int) (Math.random() * 5);
 		int height =(int) (Math.random() * 251);
@@ -30,7 +39,7 @@ public class Human implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Правитель: " + this.name;
+		return this.name;
 	}
 
 	public String getName() {
@@ -49,11 +58,11 @@ public class Human implements Serializable {
 		this.height = height;
 	}
 
-	public ZonedDateTime getBirthday() {
-		return birthday;
+	public Timestamp getBirthday() {
+		return Timestamp.valueOf(birthday.toLocalDateTime());
 	}
 
-	public void setBirthday(ZonedDateTime birthday) {
-		this.birthday = birthday;
+	public void setBirthday(java.sql.Date creationDate) {
+		this.birthday = creationDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
 	}
 }

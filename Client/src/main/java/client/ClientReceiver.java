@@ -26,7 +26,7 @@ public class ClientReceiver {
 		return new Request("add", Creator.createCity());
 	}
 
-	public Request update(String arg){
+	public Request update(String arg){ //  todo
 		Long id = Validator.validateId(arg);
 		System.out.println("Создайте город, который заменит город с указанным id (если существует и у вас есть права на изменение.");
 		return new Request("update", arg, Creator.createCity());

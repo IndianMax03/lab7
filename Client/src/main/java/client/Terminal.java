@@ -1,9 +1,10 @@
 package client;
 
+import base.User;
+import input.Validator;
 import listening.Request;
 import listening.Response;
 
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Terminal {
@@ -11,7 +12,8 @@ public class Terminal {
 	Scanner scanner;
 	private final ClientInvoker clientInvoker;
 	private final Client client;
-	private String output;
+	private String login = "";
+	private String password = "";
 
 	public Terminal(ClientInvoker clientInvoker, Client client) {
 		this.clientInvoker = clientInvoker;
@@ -24,13 +26,25 @@ public class Terminal {
 
 		scanner = new Scanner(System.in);
 
+		System.out.println("Для начала работы вам необходимо авторизоваться в системе.");
+		authorization();
+		System.out.println("Вы вошли в систему под именем: " + login);
+
 		while (true) {
+
 			System.out.print("Введите команду:\n>");
 			String line = scanner.nextLine();
 
 			Request request = lineHandler(line);
 			if (request == null)
 				continue;
+			if (request.getCommandName().equals("authorization")) {
+				System.out.println("Пожалуйста, не пытайтесь взломать мою систему.");
+				continue;
+			}
+
+			request.setLogin(login);
+			request.setPassword(password);
 
 			client.send(request);
 			Response response = client.recieve();
@@ -65,5 +79,22 @@ public class Terminal {
 			return clientInvoker.check(command, commandLine[1]);
 		}
 		return request;
+	}
+
+	private void authorization(){
+		System.out.print("Введите логин: ");
+		login = scanner.nextLine();
+		System.out.print("Введите пароль (можно не вводить): ");
+		password = scanner.nextLine();
+		Request authRequest = new Request("authorization");
+		authRequest.setLogin(login);
+		authRequest.setPassword(password);
+		client.send(authRequest);
+		Response response = client.recieve();
+		if (!response.getMessage().isEmpty()){
+			System.out.println(response.getMessage());
+			authorization();
+		}
+		return;
 	}
 }

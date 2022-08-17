@@ -26,4 +26,11 @@ public enum Leaders {
 
 	@Override
 	public String toString() { return title;}
+
+	public static Leaders fromString(String leaderStr){
+		for (Leaders leader : Leaders.values()){
+			if (leader.toString().equals(leaderStr)) return leader;
+		}
+		return null;
+	}
 }

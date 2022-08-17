@@ -19,4 +19,11 @@ public enum StandardOfLiving implements Serializable {
 	@Override
 	public String toString() { return title;}
 
+	public static StandardOfLiving fromString(String standardStr){
+		for (StandardOfLiving standard : StandardOfLiving.values()){
+			if (standard.toString().equals(standardStr)) return standard;
+		}
+		return null;
+	}
+
 }

@@ -1,6 +1,9 @@
 package base;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class City implements Comparable<City>, Serializable {
@@ -18,6 +21,7 @@ public class City implements Comparable<City>, Serializable {
 	private Government government; //Поле не может быть null
 	private StandardOfLiving standardOfLiving; //Поле может быть null
 	private Human governor; //Поле не может быть null
+	private String login;
 
 	public City(String name, Coordinates coordinates, float area, int population, float metersAboveSeaLevel, Climate climate, Government government, StandardOfLiving standardOfLiving, Human governor) {
 		this.name = name;
@@ -30,6 +34,22 @@ public class City implements Comparable<City>, Serializable {
 		this.government = government;
 		this.standardOfLiving = standardOfLiving;
 		this.governor = governor;
+	}
+
+	public City(Integer id, String name, double x, double y, Date crDate, float area, int population, float meters, String climate,
+	            String government, String standard, String governor, int governor_height, Date governor_birthday, String login){
+		this.id = id;
+		this.name= name;
+		this.coordinates = new Coordinates(x, y);
+		setCreationDate(crDate);
+		this.area = area;
+		this.population = population;
+		this.metersAboveSeaLevel = meters;
+		this.climate = Climate.fromString(climate);
+		this.government = Government.fromString(government);
+		this.standardOfLiving = StandardOfLiving.fromString(standard);
+		this.governor = new Human(Leaders.fromString(governor), governor_height, governor_birthday);
+		this.login = login;
 	}
 
 	@Override
@@ -52,6 +72,14 @@ public class City implements Comparable<City>, Serializable {
 	@Override
 	public int compareTo(City anotherCity) {
 		return this.name.compareTo(anotherCity.getName());
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public Integer getId() {
@@ -78,12 +106,12 @@ public class City implements Comparable<City>, Serializable {
 		this.coordinates = coordinates;
 	}
 
-	public ZonedDateTime getCreationDate() {
-		return creationDate;
+	public Timestamp getCreationDate() {
+		return Timestamp.valueOf(creationDate.toLocalDateTime());
 	}
 
-	public void setCreationDate(ZonedDateTime creationDate) {
-		this.creationDate = creationDate;
+	public void setCreationDate(java.sql.Date creationDate) {
+		this.creationDate = creationDate.toLocalDate().atStartOfDay(ZoneId.systemDefault());
 	}
 
 	public float getArea() {
@@ -140,5 +168,9 @@ public class City implements Comparable<City>, Serializable {
 
 	public void setGovernor(Human governor) {
 		this.governor = governor;
+	}
+
+	public String toUser(){
+		return "Город: " + name + ", id: " + id + ", владелец: " + login;
 	}
 }

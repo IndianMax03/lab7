@@ -1,6 +1,7 @@
 package listening;
 
 import base.City;
+import base.User;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
@@ -13,7 +14,8 @@ public class Request implements Serializable {
 	private String argument;
 	private City city;
 	private SocketAddress clientAddres = null;
-	// User user;
+	private String login;
+	private String password;
 
 	public Request(String commandName, String argument, City city){
 		this.commandName = commandName;
@@ -63,5 +65,21 @@ public class Request implements Serializable {
 
 	public void setClientAddres(SocketAddress clientAddres) {
 		this.clientAddres = clientAddres;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
