@@ -47,6 +47,15 @@ public class ServerReceiver {
 		);
 	}
 
+	public Response info(){
+		collection = dbReceiver.getActualCollection();
+		String[] information = new String[3];
+		information[0] = "Тип коллекции: " + collection.getClass();
+		information[1] = "Дата инициализации коллекции: " + creationDate;
+		information[2] = "Количество элементов коллекции: " + collection.size();
+		return new Response(information);
+	}
+
 	public Response show(){
 		collection = dbReceiver.getActualCollection();
 		if (collection == null){

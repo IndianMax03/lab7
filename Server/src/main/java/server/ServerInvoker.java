@@ -23,9 +23,9 @@ public class ServerInvoker {
 		commandMap.put("authorization", new Authorization(serverReceiver));
 		commandMap.put("add_if_min", new AddIfMin(serverReceiver));
 		commandMap.put("filter_starts_with_name", new FilterStartsWithName(serverReceiver));
+		commandMap.put("info", new Info(serverReceiver));
 		/*commandMap.put("save", new Save(serverReceiver));
 		commandMap.put("execute_script", new ExecuteScript(serverReceiver));
-		commandMap.put("info", new Info(serverReceiver));
 		commandMap.put("print_descending", new PrintDescending(serverReceiver));
 		commandMap.put("remove_all_by_government", new RemoveAllByGovernment(serverReceiver));
 		commandMap.put("remove_by_id", new RemoveById(serverReceiver));
