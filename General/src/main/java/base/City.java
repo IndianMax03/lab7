@@ -171,6 +171,6 @@ public class City implements Comparable<City>, Serializable {
 	}
 
 	public String toUser(){
-		return "Город: " + name + ", id: " + id + ", владелец: " + login;
+		return "Город: " + name + ", id: " + id + ", тип правления: " + government + ", владелец: " + login;
 	}
 }

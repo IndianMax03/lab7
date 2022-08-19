@@ -104,6 +104,26 @@ public class DataBaseReceiver {
 		return true;
 	}
 
+	public boolean removeById(int id, String login){
+		try {
+			PreparedStatement statement = connection.prepareStatement("select login from cities where id = ?;");
+			statement.setInt(1, id);
+			ResultSet result = statement.executeQuery();
+			if (result.next() && result.getString("login").equals(login)){
+					statement = connection.prepareStatement("delete from cities where id = ? and login = ?;");
+					statement.setInt(1, id);
+					statement.setString(2, login);
+					statement.executeUpdate();
+					return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			return false;
+		}
+	}
+
 	public Response authorization(String login, String password){
 		if (login.length() > 20 || password.length() > 20) {
 			return new Response("Длины логина и пароля не могут превышать 20 символов.");

@@ -83,6 +83,20 @@ public class ServerReceiver {
 		return new Response("Удаление выполнить не удалось. Ошибка подключения сервера к базе данных.");
 	}
 
+	public Response removeById(String idStr, String login){
+		int id;
+		try{
+			id = Integer.parseInt(idStr);
+		} catch (NumberFormatException ex){
+			return new Response("Клиент передал невалидный id.");
+		}
+		if (dbReceiver.removeById(id, login)){
+			return new Response("Ваш элемент с id = " + id + " успешно удален из коллекции.");
+		} else {
+			return new Response("Ошибка. Элемента с таким id не существует или он вам не принадлежит.");
+		}
+	}
+
 	public Response help(Map<String, ServerCommand> commandMap) {
 		return new Response(
 				commandMap.values()
