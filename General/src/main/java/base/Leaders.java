@@ -29,7 +29,7 @@ public enum Leaders {
 
 	public static Leaders fromString(String leaderStr){
 		for (Leaders leader : Leaders.values()){
-			if (leader.toString().equals(leaderStr)) return leader;
+			if (leader.toString().equalsIgnoreCase(leaderStr)) return leader;
 		}
 		return null;
 	}

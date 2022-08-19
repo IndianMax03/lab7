@@ -26,6 +26,6 @@ public class RemoveAllByGovernment extends ClientCommand {
 			}
 			return null;
 		}
-		return clientReceiver.removeAllByGovernment(arg.toLowerCase());
+		return clientReceiver.removeAllByGovernment(arg);
 	}
 }

@@ -42,8 +42,8 @@ public class ClientReceiver {
 	}
 
 	public Request removeAllByGovernment(String arg){
-		if (Government.asLowerCaseStringList().contains(arg)) {
-			return new Request("remove_all_by_government", arg);
+		if (Government.asLowerCaseStringList().contains(arg.toLowerCase())) {
+			return new Request("remove_all_by_government", Government.fromString(arg).toString());
 		}
 		System.out.println("Передан неверный аргумент government.");
 		return null;

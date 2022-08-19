@@ -29,7 +29,7 @@ public enum Government {
 
 	public static Government fromString(String governmentStr){
 		for (Government government : Government.values()){
-			if (government.toString().equals(governmentStr)) return government;
+			if (government.toString().equalsIgnoreCase(governmentStr)) return government;
 		}
 		return null;
 	}

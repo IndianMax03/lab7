@@ -76,6 +76,13 @@ public class ServerReceiver {
 		);
 	}
 
+	public Response removeAllByGovernment(String government, String login){
+		if (dbReceiver.removeAllByGovernment(government, login)){
+			return new Response("Из коллекции удалены все ваши города с полем government = " + government);
+		}
+		return new Response("Удаление выполнить не удалось. Ошибка подключения сервера к базе данных.");
+	}
+
 	public Response help(Map<String, ServerCommand> commandMap) {
 		return new Response(
 				commandMap.values()

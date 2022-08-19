@@ -12,7 +12,6 @@ public class Info extends ServerCommand{
 		this.serverReceiver = serverReceiver;
 	}
 
-
 	@Override
 	public Response execute(Request arg) {
 		return serverReceiver.info();

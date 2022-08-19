@@ -21,7 +21,7 @@ public enum StandardOfLiving implements Serializable {
 
 	public static StandardOfLiving fromString(String standardStr){
 		for (StandardOfLiving standard : StandardOfLiving.values()){
-			if (standard.toString().equals(standardStr)) return standard;
+			if (standard.toString().equalsIgnoreCase(standardStr)) return standard;
 		}
 		return null;
 	}

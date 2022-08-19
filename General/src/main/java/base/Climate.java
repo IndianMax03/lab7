@@ -21,7 +21,7 @@ public enum Climate implements Serializable {
 
 	public static Climate fromString(String climateStr){
 		for (Climate climate : Climate.values()){
-			if (climate.toString().equals(climateStr)) return climate;
+			if (climate.toString().equalsIgnoreCase(climateStr)) return climate;
 		}
 		return null;
 	}

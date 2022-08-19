@@ -91,6 +91,19 @@ public class DataBaseReceiver {
 		return true;
 	}
 
+	public boolean removeAllByGovernment(String government, String login){
+		try {
+			PreparedStatement statement = connection.prepareStatement("delete from cities where government = ? and login = ?;");
+			statement.setString(1, government);
+			statement.setString(2, login);
+			statement.executeUpdate();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	public Response authorization(String login, String password){
 		if (login.length() > 20 || password.length() > 20) {
 			return new Response("Длины логина и пароля не могут превышать 20 символов.");
