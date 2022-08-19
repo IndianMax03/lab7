@@ -19,7 +19,6 @@ public class ServerReceiver {
 
 	public Response add(City city, String login) {
 		if (dbReceiver.add(city, login)){
-			collection.add(city);
 			return new Response("Город успешно добавлен.");
 		} else {
 			return new Response("Город добавить не удалось коллекция не предполагает хранение городов с одинаковым именем.");
@@ -126,6 +125,16 @@ public class ServerReceiver {
 			return new Response("Из коллекции удалены все, созданные вами города.");
 		}
 		return new Response("Не удалось выполнить удаление.");
+	}
+
+	public Response update(String idStr, City city, String login){
+		int id;
+		try{
+			id = Integer.parseInt(idStr);
+		} catch (NumberFormatException ex){
+			return new Response("Клиент передал невалидный id.");
+		}
+		return dbReceiver.update(id, city, login);
 	}
 
 	public Response authorization(String login, String password){

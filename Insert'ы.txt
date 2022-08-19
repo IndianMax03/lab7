@@ -1,2 +1,3 @@
-insert into cities (name, x, y, creation_date, area, population, meters_above_sea_level, climate, government, standard_of_living, governor, governor_height, governor_birthday, login) values ('max', 1, 1, '2022-11-11', 10, 12, 10, 'Climate', 'gocv', 'standard', 'maximka', 12, '2003-11-11', 'login');
+insert into cities (id, name, x, y, creation_date, area, population, meters_above_sea_level, climate, government, standard_of_living, governor, governor_height, governor_birthday, login) values (10, 'max', 1, 1, '2022-11-11', 10, 12, 10, 'Climate', 'gocv', 'standard', 'maximka', 12, '2003-11-11', 'login');
 insert into users (login, password) values ('login', 'parol');
+update cities set name = 'korney' where id = 10 and login = 'login';

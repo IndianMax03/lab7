@@ -13,7 +13,7 @@ public class RemoveLower extends ServerCommand{
 	}
 	@Override
 	public Response execute(Request arg) {
-		return null;
+		return serverReceiver.removeLower(arg.getCity(), arg.getLogin());
 	}
 	@Override
 	public String getHelp() {

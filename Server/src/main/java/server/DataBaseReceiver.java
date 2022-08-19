@@ -47,12 +47,12 @@ public class DataBaseReceiver {
 		}
 	}
 
-	public boolean add(City city,String login){
+	public boolean add(City city, String login){
 		try {
 			PreparedStatement statement = connection.prepareStatement("insert into cities (name, x, y, creation_date, " +
 					"area, population, meters_above_sea_level, climate, government, standard_of_living, governor, " +
 					"governor_height, governor_birthday, login)" +
-					"values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) returning id;");
+					"values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 			statement.setString(1, city.getName());
 			statement.setDouble(2, city.getCoordinates().getX());
 			statement.setDouble(3, city.getCoordinates().getY());
@@ -67,14 +67,10 @@ public class DataBaseReceiver {
 			statement.setInt(12, city.getGovernor().getHeight());
 			statement.setTimestamp(13, city.getGovernor().getBirthday());
 			statement.setString(14, login);
-			ResultSet result = statement.executeQuery();
-			if (result.next()) {
-				city.setLogin(login);
-				city.setId(result.getInt(1));
-				return true;
-			}
-			return false;
+			statement.executeUpdate();
+			return true;
 		} catch (SQLException ex) {
+			System.out.println(ex);
 			return false;
 		}
 	}
@@ -148,6 +144,45 @@ public class DataBaseReceiver {
 			return false;
 		}
 		return true;
+	}
+
+	public Response update(int id, City city, String login){
+		try {
+			PreparedStatement statement = connection.prepareStatement("select count(*) from cities where id = ? and login = ?;");
+			statement.setInt(1, id);
+			statement.setString(2, login);
+			ResultSet result = statement.executeQuery();
+			result.next();
+			int count = result.getInt(1);
+			if (count == 0){
+				return new Response("Ошибка обновления. Города с данным id не существует или вы не являетесь его владельцем.");
+			}
+
+			statement = connection.prepareStatement("update cities set name = ?, x = ?, y = ?, creation_date = ?, " +
+					"area = ?, population = ?, meters_above_sea_level = ?, climate = ?, government = ?, standard_of_living = ?, " +
+					"governor = ?, governor_height = ?, governor_birthday = ? where id = ? and login = ?;");
+			statement.setString(1, city.getName());
+			statement.setDouble(2, city.getCoordinates().getX());
+			statement.setDouble(3, city.getCoordinates().getY());
+			statement.setTimestamp(4, city.getCreationDate());
+			statement.setFloat(5, city.getArea());
+			statement.setInt(6, city.getPopulation());
+			statement.setFloat(7, city.getMetersAboveSeaLevel());
+			statement.setString(8, city.getClimate().toString());
+			statement.setString(9, city.getGovernment().toString());
+			statement.setString(10, city.getStandardOfLiving().toString());
+			statement.setString(11, city.getGovernor().toString());
+			statement.setInt(12, city.getGovernor().getHeight());
+			statement.setTimestamp(13, city.getGovernor().getBirthday());
+			statement.setInt(14, id);
+			statement.setString(15, login);
+			statement.executeUpdate();
+			return new Response("Поля города с id = " + id + " успешно обновлены.");
+
+		} catch (SQLException throwables) {
+			System.out.println(throwables);
+			return new Response("Ошибка обновления. Нарушена связь с базой данных.");
+		}
 	}
 
 	public Response authorization(String login, String password){
