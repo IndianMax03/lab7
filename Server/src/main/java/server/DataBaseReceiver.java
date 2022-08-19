@@ -160,7 +160,7 @@ public class DataBaseReceiver {
 			}
 		} catch (SQLException ex){
 			System.out.println("При выгрузке коллекции из базы данных произошла ошибка.");
-			return collection;
+			return null;
 		}
 		return collection;
 	}

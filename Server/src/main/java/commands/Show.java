@@ -20,6 +20,6 @@ public class Show extends ServerCommand{
 
 	@Override
 	public String getHelp() {
-		return "Введите clear, чтобы очистить коллекцию";
+		return "Введите show, чтобы вывести в стандартный поток вывода все элементы коллекции в строковом представлении";
 	}
 }

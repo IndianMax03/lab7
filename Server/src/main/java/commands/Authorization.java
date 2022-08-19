@@ -17,4 +17,8 @@ public class Authorization extends ServerCommand{
 	public Response execute(Request arg) {
 		return serverReceiver.authorization(arg.getLogin(), arg.getPassword());
 	}
+	@Override
+	public String getHelp() {
+		return null;
+	}
 }

@@ -21,8 +21,8 @@ public class ServerInvoker {
 		commandMap.put("clear", new Clear(serverReceiver));
 		commandMap.put("show", new Show(serverReceiver));
 		commandMap.put("authorization", new Authorization(serverReceiver));
+		commandMap.put("add_if_min", new AddIfMin(serverReceiver));
 		/*commandMap.put("save", new Save(serverReceiver));
-		commandMap.put("addIfMin", new AddIfMin(serverReceiver));
 		commandMap.put("execute_script", new ExecuteScript(serverReceiver));
 		commandMap.put("filter_starts_with_name", new FilterStartsWithName(serverReceiver));
 		commandMap.put("info", new Info(serverReceiver));

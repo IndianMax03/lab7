@@ -13,7 +13,7 @@ public class ClientInvoker {
 	public ClientInvoker(ClientReceiver clientReceiver){
 
 		commandMap.put("add", new Add(clientReceiver));
-		commandMap.put("addIfMin", new AddIfMin(clientReceiver));
+		commandMap.put("add_if_min", new AddIfMin(clientReceiver));
 		commandMap.put("clear", new Clear());
 		//commandMap.put("execute_script", new ExecuteScript());
 		commandMap.put("exit", new Exit());

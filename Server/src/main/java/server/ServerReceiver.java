@@ -28,12 +28,25 @@ public class ServerReceiver {
 		}
 	}
 
+	public Response addIfMin(City city, String login){
+		collection = dbReceiver.getActualCollection();
+		if (collection.first().compareTo(city) > 0){
+			dbReceiver.add(city, login);
+			return new Response("Ваш элемент добавлен в коллекцию. Условие выполнено.");
+		}
+		return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
+	}
+
 	public Response show(){
 		collection = dbReceiver.getActualCollection();
 		if (collection == null){
 			return new Response("Ошибка при выгрузке коллекции из базы данных.");
 		}
-		return new Response(collection.stream().map(City::toUser).toArray(String[]::new));
+		return new Response(collection
+				.stream()
+				.map(City::toUser)
+				.toArray(String[]::new)
+		);
 	}
 
 	public Response help(Map<String, ServerCommand> commandMap) {
