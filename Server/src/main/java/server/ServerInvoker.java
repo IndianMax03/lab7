@@ -27,10 +27,10 @@ public class ServerInvoker {
 		commandMap.put("print_descending", new PrintDescending(serverReceiver));
 		commandMap.put("remove_all_by_government", new RemoveAllByGovernment(serverReceiver));
 		commandMap.put("remove_by_id", new RemoveById(serverReceiver));
-		/*commandMap.put("save", new Save(serverReceiver));
-		commandMap.put("execute_script", new ExecuteScript(serverReceiver));
 		commandMap.put("remove_greater", new RemoveGreater(serverReceiver));
 		commandMap.put("remove_lower", new RemoveLower(serverReceiver));
+		/*commandMap.put("save", new Save(serverReceiver));
+		commandMap.put("execute_script", new ExecuteScript(serverReceiver));
 		commandMap.put("update", new Update(serverReceiver));
 		commandMap.put("exit", new Exit());*/
 	}

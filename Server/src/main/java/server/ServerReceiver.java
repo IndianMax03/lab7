@@ -97,6 +97,20 @@ public class ServerReceiver {
 		}
 	}
 
+	public Response removeGreater(City city, String login){
+		if (dbReceiver.removeGreater(city, login)){
+			return new Response("Из коллекции удалены ваши элементы, превышающие введённый.");
+		}
+		return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+	}
+
+	public Response removeLower(City city, String login){
+		if (dbReceiver.removeLower(city, login)){
+			return new Response("Из коллекции удалены ваши элементы, меньшие, чем введённый.");
+		}
+		return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+	}
+
 	public Response help(Map<String, ServerCommand> commandMap) {
 		return new Response(
 				commandMap.values()
