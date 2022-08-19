@@ -37,6 +37,16 @@ public class ServerReceiver {
 		return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
 	}
 
+	public Response filterStartsWithName(String name){
+		collection = dbReceiver.getActualCollection();
+		return new Response(collection
+				.stream()
+				.filter(city -> city.getName().startsWith(name))
+				.map(City::toUser)
+				.toArray(String[]::new)
+		);
+	}
+
 	public Response show(){
 		collection = dbReceiver.getActualCollection();
 		if (collection == null){
