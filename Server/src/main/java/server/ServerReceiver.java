@@ -5,9 +5,7 @@ import commands.ServerCommand;
 import listening.Response;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class ServerReceiver {
 
@@ -39,8 +37,8 @@ public class ServerReceiver {
 
 	public Response filterStartsWithName(String name){
 		collection = dbReceiver.getActualCollection();
-		return new Response(collection
-				.stream()
+		return new Response(
+				collection.stream()
 				.filter(city -> city.getName().startsWith(name))
 				.map(City::toUser)
 				.toArray(String[]::new)
@@ -61,8 +59,18 @@ public class ServerReceiver {
 		if (collection == null){
 			return new Response("Ошибка при выгрузке коллекции из базы данных.");
 		}
-		return new Response(collection
-				.stream()
+		return new Response(
+				collection.stream()
+				.map(City::toUser)
+				.toArray(String[]::new)
+		);
+	}
+
+	public Response printDescending(){
+		collection = dbReceiver.getActualCollection();
+		return new Response(
+				collection.stream()
+				.sorted(Collections.reverseOrder())
 				.map(City::toUser)
 				.toArray(String[]::new)
 		);
