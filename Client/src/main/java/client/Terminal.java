@@ -1,10 +1,13 @@
 package client;
 
 import base.User;
+import commands.ExecuteScript;
 import input.Validator;
 import listening.Request;
 import listening.Response;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Terminal {
@@ -20,17 +23,52 @@ public class Terminal {
 		this.client = client;
 	}
 
-	// todo file executing
+	public String startFile(String filename){
+		System.out.println("Выполняется файл: " + filename);
+		String pathToFile = new File(filename).getAbsolutePath();
+		File file = new File(pathToFile);
+		Scanner fileScanner;
+		try {
+			fileScanner = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			return "Файл не найден.";
+		}
+		while (fileScanner.hasNext()) {
+			String line = fileScanner.nextLine();
+			Request request = lineHandler(line);
+			if (request == null) {
+				return "Выполнение execute_script принудительно прекращено на файле " + filename + ", строкой: " + line;
+			} else if (request.getCommandName().equals("execute_script")){
+				System.out.println(startFile(request.getArgument()));
+				continue;
+			}
+			request.setLogin(login);
+			request.setPassword(password);
+			client.send(request);
+			Response response = client.recieve();
+			if (response == null) {
+				return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
+			}
+			if (response.getAnswer() == null){
+				System.out.println(response.getMessage());
+			} else {
+				for (String ans : response.getAnswer()) {
+					System.out.println(ans);
+				}
+			}
+		}
+		return "Команда execute_script с файлом " + filename +  " завершена.";
+	}
 
-	protected void startKeyboard() {
+	public void startKeyboard() {
 
 		scanner = new Scanner(System.in);
-
 		System.out.println("Для начала работы вам необходимо авторизоваться в системе.");
 		authorization();
 		System.out.println("Вы вошли в систему под именем: " + login);
 
 		while (true) {
+
 
 			System.out.print("Введите команду:\n>");
 			String line = scanner.nextLine();
@@ -42,7 +80,11 @@ public class Terminal {
 				System.out.println("Пожалуйста, не пытайтесь взломать мою систему.");
 				continue;
 			}
-
+			if (request.getCommandName().equals("execute_script")){
+				ExecuteScript.clearPaths();
+				System.out.println(startFile(request.getArgument()));
+				continue;
+			}
 			request.setLogin(login);
 			request.setPassword(password);
 

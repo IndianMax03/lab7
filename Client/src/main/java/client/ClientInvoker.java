@@ -15,7 +15,7 @@ public class ClientInvoker {
 		commandMap.put("add", new Add(clientReceiver));
 		commandMap.put("add_if_min", new AddIfMin(clientReceiver));
 		commandMap.put("clear", new Clear());
-		//commandMap.put("execute_script", new ExecuteScript());
+		commandMap.put("execute_script", new ExecuteScript());
 		commandMap.put("exit", new Exit());
 		commandMap.put("filter_starts_with_name", new FilterStartsWithName());
 		commandMap.put("help", new Help());
@@ -32,7 +32,7 @@ public class ClientInvoker {
 	public Request check(String commandName, String argument){
 		if (this.commandMap.containsKey(commandName))
 			return this.commandMap.get(commandName).execute(argument);
-		System.out.println("Введённой команды не существует. Повторите ввод.");
+		System.out.println("Введённой команды не существует.");
 		return null;
 	}
 
