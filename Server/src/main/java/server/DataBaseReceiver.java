@@ -19,7 +19,7 @@ public class DataBaseReceiver {
 			PreparedStatement statement = connection.prepareStatement(
 					"create table if not exists users(" +
 							"login varchar(20) not null primary key," +
-							"password varchar(20)" +
+							"password varchar(150)" +
 							");"+
 							"create table if not exists cities(" +
 							"id serial not null primary key," +
@@ -186,8 +186,8 @@ public class DataBaseReceiver {
 	}
 
 	public Response authorization(String login, String password){
-		if (login.length() > 20 || password.length() > 20) {
-			return new Response("Длины логина и пароля не могут превышать 20 символов.");
+		if (login.length() > 20) {
+			return new Response("Длина логина не может превышать 20 символов.");
 		}
 		try {
 			PreparedStatement statement = connection.prepareStatement("select password from users where login = ?;");

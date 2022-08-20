@@ -31,11 +31,13 @@ public class ServerInvoker {
 		commandMap.put("remove_lower", new RemoveLower(serverReceiver));
 		commandMap.put("update", new Update(serverReceiver));
 		commandMap.put("execute_script", new ExecuteScript());
-		/*commandMap.put("save", new Save(serverReceiver));
-		commandMap.put("exit", new Exit());*/
+		commandMap.put("exit", new Exit());
 	}
 
 	public Response execute(Request request){
+		if (request.getLogin().isEmpty()){
+			return new Response("Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы авторизоваться в системе." );
+		}
 		String commandName = request.getCommandName();
 		return this.commandMap.get(commandName).execute(request);
 	}

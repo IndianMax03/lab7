@@ -63,9 +63,21 @@ public class Terminal {
 	public void startKeyboard() {
 
 		scanner = new Scanner(System.in);
-		System.out.println("Для начала работы вам необходимо авторизоваться в системе.");
-		authorization();
-		System.out.println("Вы вошли в систему под именем: " + login);
+		System.out.println("Для начала работы вам необходимо авторизоваться в системе. В противном случае вы войдёте как гость.");
+		System.out.println("Вы хотите авторизоваться? [Да/Нет]");
+		while (true) {
+			System.out.print(">");
+			String ans = scanner.nextLine().trim();
+			if (ans.equals("Да")){
+				authorization();
+				System.out.println("Вы вошли в систему под именем: " + login);
+				break;
+			} else if (ans.equals("Нет")){
+				System.out.println("Вы вошли в систему как гость.");
+				break;
+			}
+			System.out.println("[Да/Нет]");
+		}
 
 		while (true) {
 
@@ -76,10 +88,6 @@ public class Terminal {
 			Request request = lineHandler(line);
 			if (request == null)
 				continue;
-			if (request.getCommandName().equals("authorization")) {
-				System.out.println("Пожалуйста, не пытайтесь взломать мою систему.");
-				continue;
-			}
 			if (request.getCommandName().equals("execute_script")){
 				ExecuteScript.clearPaths();
 				System.out.println(startFile(request.getArgument()));
@@ -114,6 +122,11 @@ public class Terminal {
 		String[] commandLine = line.split(" ");
 		String command = commandLine[0].trim();
 		Request request = null;
+		if (command.equals("authorization")){
+			authorization();
+			System.out.println("Вы вошли в систему под именем: " + login);
+			return null;
+		}
 		if (commandLine.length == 1) {
 			return clientInvoker.check(command, null);
 		}
@@ -137,6 +150,5 @@ public class Terminal {
 			System.out.println(response.getMessage());
 			authorization();
 		}
-		return;
 	}
 }

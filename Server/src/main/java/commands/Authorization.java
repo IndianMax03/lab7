@@ -19,6 +19,6 @@ public class Authorization extends ServerCommand{
 	}
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите authorization, чтобы авторизоваться в системе.";
 	}
 }

@@ -4,6 +4,9 @@ import base.City;
 import commands.ServerCommand;
 import listening.Response;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -140,6 +143,18 @@ public class ServerReceiver {
 	public Response authorization(String login, String password){
 		if (login.isEmpty()){
 			return new Response("Имя пользователя не может быть пустой строкой.");
+		}
+		try{
+			MessageDigest md = MessageDigest.getInstance("SHA-224");
+			byte[] messageDigest = md.digest(password.getBytes());
+			BigInteger no = new BigInteger(1, messageDigest);
+			String hashtext = no.toString(16);
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
+			password = hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException();
 		}
 		return dbReceiver.authorization(login, password);
 	}
