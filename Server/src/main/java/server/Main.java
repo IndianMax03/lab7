@@ -6,6 +6,7 @@ import listening.Response;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.ForkJoinPool;
 
 public class Main {
 
@@ -35,12 +36,17 @@ public class Main {
 					}
 				}
 
-				Request request = server.recieve();
-				if (request == null) {
-					continue;
-				}
-				Response response = serverInvoker.execute(request);
-				server.send(response, request.getClientAddres());
+				new Thread(() -> {
+					Request request = server.recieve();
+					if (request == null) {
+						return;
+					}
+					new Thread(() -> {
+						Response response = serverInvoker.execute(request);
+						server.send(response, request.getClientAddres());
+					}).start();
+				}).start();
+
 			}
 		} catch (NoSuchElementException ex){
 			System.exit(0);

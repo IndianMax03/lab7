@@ -8,6 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 import java.util.logging.Logger;
 
 public class Server {
@@ -53,16 +55,24 @@ public class Server {
 	}
 
 	public void send(Response response, SocketAddress clientAdress){
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try{
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(response);
-			channel.send(ByteBuffer.wrap(baos.toByteArray()), clientAdress);
-			logger.info("Ответ отправлен клиенту с адресом: " + clientAdress);
-
-		} catch (IOException e) {
-			System.out.println("Ошибка отправки данных клиенту.");;
+		class Action extends RecursiveAction{
+			private static final long serialVersionUID = -4212267061849350439L;
+			@Override
+			protected void compute() {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				try{
+					ObjectOutputStream oos = new ObjectOutputStream(baos);
+					oos.writeObject(response);
+					channel.send(ByteBuffer.wrap(baos.toByteArray()), clientAdress);
+					logger.info("Ответ отправлен клиенту с адресом: " + clientAdress);
+				} catch (IOException e) {
+					System.out.println("Ошибка отправки данных клиенту.");;
+				}
+			}
 		}
+		ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+		forkJoinPool.invoke(new Action());
+
 	}
 
 
