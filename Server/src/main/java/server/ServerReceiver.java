@@ -9,9 +9,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerReceiver {
 
+	private final ReentrantLock collectionLock = new ReentrantLock();
+	private final ReentrantLock usersLock = new ReentrantLock();
 	private SortedSet<City> collection = new TreeSet<>();
 	private final ZonedDateTime creationDate;
 	private final DataBaseReceiver dbReceiver = DataBaseReceiver.getInstance();
@@ -21,96 +24,145 @@ public class ServerReceiver {
 	}
 
 	public Response add(City city, String login) {
-		if (dbReceiver.add(city, login)){
-			return new Response("Город успешно добавлен.");
-		} else {
-			return new Response("Город добавить не удалось коллекция не предполагает хранение городов с одинаковым именем.");
+		collectionLock.lock();
+		try {
+			if (dbReceiver.add(city, login)) {
+				collection.add(city);
+				return new Response("Город успешно добавлен.");
+			} else {
+				return new Response("Город добавить не удалось коллекция не предполагает хранение городов с одинаковым именем.");
+			}
+		} finally {
+			collectionLock.unlock();
 		}
 	}
 
 	public Response addIfMin(City city, String login){
-		collection = dbReceiver.getActualCollection();
-		if (collection.first().compareTo(city) > 0){
-			dbReceiver.add(city, login);
-			return new Response("Ваш элемент добавлен в коллекцию. Условие выполнено.");
+		collectionLock.lock();
+		try {
+			if (collection.first().compareTo(city) > 0) {
+				if (dbReceiver.add(city, login)) {
+					collection.add(city);
+					return new Response("Ваш элемент добавлен в коллекцию. Условие выполнено.");
+				} else {
+					return new Response("Непредвиденная ошибка. Город не будет добавлен.");
+				}
+			}
+			return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
 	}
 
 	public Response filterStartsWithName(String name){
-		collection = dbReceiver.getActualCollection();
-		return new Response(
-				collection.stream()
-				.filter(city -> city.getName().startsWith(name))
-				.map(City::toUser)
-				.toArray(String[]::new)
-		);
+		collectionLock.lock();
+		try {
+			return new Response(
+					collection.stream()
+							.filter(city -> city.getName().startsWith(name))
+							.map(City::toUser)
+							.toArray(String[]::new)
+			);
+		} finally {
+			collectionLock.unlock();
+		}
 	}
 
 	public Response info(){
-		collection = dbReceiver.getActualCollection();
-		String[] information = new String[3];
-		information[0] = "Тип коллекции: " + collection.getClass();
-		information[1] = "Дата инициализации коллекции: " + creationDate;
-		information[2] = "Количество элементов коллекции: " + collection.size();
-		return new Response(information);
+		collectionLock.lock();
+		try {
+			String[] information = new String[3];
+			information[0] = "Тип коллекции: " + collection.getClass();
+			information[1] = "Дата инициализации коллекции: " + creationDate;
+			information[2] = "Количество элементов коллекции: " + collection.size();
+			return new Response(information);
+		} finally {
+			collectionLock.unlock();
+		}
 	}
 
 	public Response show(){
-		collection = dbReceiver.getActualCollection();
-		if (collection == null){
-			return new Response("Ошибка при выгрузке коллекции из базы данных.");
+		collectionLock.lock();
+		try {
+			return new Response(collection.stream()
+							.map(City::toUser)
+							.toArray(String[]::new)
+			);
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response(
-				collection.stream()
-				.map(City::toUser)
-				.toArray(String[]::new)
-		);
 	}
 
 	public Response printDescending(){
-		collection = dbReceiver.getActualCollection();
-		return new Response(
-				collection.stream()
-				.sorted(Collections.reverseOrder())
-				.map(City::toUser)
-				.toArray(String[]::new)
-		);
+		collectionLock.lock();
+		try {
+			return new Response(collection.stream()
+							.sorted(Collections.reverseOrder())
+							.map(City::toUser)
+							.toArray(String[]::new)
+			);
+		} finally {
+			collectionLock.unlock();
+		}
 	}
 
 	public Response removeAllByGovernment(String government, String login){
-		if (dbReceiver.removeAllByGovernment(government, login)){
-			return new Response("Из коллекции удалены все ваши города с полем government = " + government);
+		collectionLock.lock();
+		try {
+			if (dbReceiver.removeAllByGovernment(government, login)) {
+				collection.removeIf(city -> city.getGovernment().toString().equals(government) && city.getLogin().equals(login));
+				return new Response("Из коллекции удалены все ваши города с полем government = " + government);
+			}
+			return new Response("Удаление выполнить не удалось. Ошибка подключения сервера к базе данных.");
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response("Удаление выполнить не удалось. Ошибка подключения сервера к базе данных.");
 	}
 
 	public Response removeById(String idStr, String login){
-		int id;
-		try{
-			id = Integer.parseInt(idStr);
-		} catch (NumberFormatException ex){
-			return new Response("Клиент передал невалидный id.");
-		}
-		if (dbReceiver.removeById(id, login)){
-			return new Response("Ваш элемент с id = " + id + " успешно удален из коллекции.");
-		} else {
-			return new Response("Ошибка. Элемента с таким id не существует или он вам не принадлежит.");
+		collectionLock.lock();
+		try {
+			int id;
+			try {
+				id = Integer.parseInt(idStr);
+			} catch (NumberFormatException ex) {
+				return new Response("Клиент передал невалидный id.");
+			}
+			if (dbReceiver.removeById(id, login)) {
+				collection.removeIf(city -> city.getId().equals(id));
+				return new Response("Ваш элемент с id = " + id + " успешно удален из коллекции.");
+			} else {
+				return new Response("Ошибка. Элемента с таким id не существует или он вам не принадлежит.");
+			}
+		} finally {
+			collectionLock.unlock();
 		}
 	}
 
 	public Response removeGreater(City city, String login){
-		if (dbReceiver.removeGreater(city, login)){
-			return new Response("Из коллекции удалены ваши элементы, превышающие введённый.");
+		collectionLock.lock();
+		try {
+			if (dbReceiver.removeGreater(city, login)) {
+				collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) > 0 && cityFromColl.getLogin().equals(city.getLogin()));
+				return new Response("Из коллекции удалены ваши элементы, превышающие введённый.");
+			}
+			return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
 	}
 
 	public Response removeLower(City city, String login){
-		if (dbReceiver.removeLower(city, login)){
-			return new Response("Из коллекции удалены ваши элементы, меньшие, чем введённый.");
+		collectionLock.lock();
+		try {
+			if (dbReceiver.removeLower(city, login)) {
+				collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) < 0 && cityFromColl.getLogin().equals(city.getLogin()));
+				return new Response("Из коллекции удалены ваши элементы, меньшие, чем введённый.");
+			}
+			return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
 	}
 
 	public Response help(Map<String, ServerCommand> commandMap) {
@@ -123,11 +175,16 @@ public class ServerReceiver {
 	}
 
 	public Response clear(String login){
-		if (dbReceiver.clear(login)) {
-			collection.removeIf(city -> city.getLogin().equals(login));
-			return new Response("Из коллекции удалены все, созданные вами города.");
+		collectionLock.lock();
+		try {
+			if (dbReceiver.clear(login)) {
+				collection.removeIf(city -> city.getLogin().equals(login));
+				return new Response("Из коллекции удалены все, созданные вами города.");
+			}
+			return new Response("Не удалось выполнить удаление.");
+		} finally {
+			collectionLock.unlock();
 		}
-		return new Response("Не удалось выполнить удаление.");
 	}
 
 	public Response update(String idStr, City city, String login){
@@ -137,14 +194,21 @@ public class ServerReceiver {
 		} catch (NumberFormatException ex){
 			return new Response("Клиент передал невалидный id.");
 		}
-		return dbReceiver.update(id, city, login);
+		if (dbReceiver.update(id, city, login)){
+			collection.removeIf(cityFromColl -> cityFromColl.getId().equals(id));
+			collection.add(city);
+			return new Response("Поля города с id=" + id + " успешно обновлены.");
+		} else {
+			return new Response("Поля города с id=" + id + " обновить не удалось. Город не найден или вы не владелец.");
+		}
 	}
 
 	public Response authorization(String login, String password){
-		if (login.isEmpty()){
+		if (login.isEmpty()) {
 			return new Response("Имя пользователя не может быть пустой строкой.");
 		}
-		try{
+		//  hashing: https://clck.ru/t7zn9
+		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-224");
 			byte[] messageDigest = md.digest(password.getBytes());
 			BigInteger no = new BigInteger(1, messageDigest);
@@ -156,7 +220,12 @@ public class ServerReceiver {
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException();
 		}
-		return dbReceiver.authorization(login, password);
+		usersLock.lock();
+		try {
+			return dbReceiver.authorization(login, password);
+		} finally {
+			usersLock.unlock();
+		}
 	}
 
 	void initCollection(){

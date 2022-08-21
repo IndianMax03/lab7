@@ -52,7 +52,7 @@ public class DataBaseReceiver {
 			PreparedStatement statement = connection.prepareStatement("insert into cities (name, x, y, creation_date, " +
 					"area, population, meters_above_sea_level, climate, government, standard_of_living, governor, " +
 					"governor_height, governor_birthday, login)" +
-					"values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+					"values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) returning id;");
 			statement.setString(1, city.getName());
 			statement.setDouble(2, city.getCoordinates().getX());
 			statement.setDouble(3, city.getCoordinates().getY());
@@ -67,10 +67,14 @@ public class DataBaseReceiver {
 			statement.setInt(12, city.getGovernor().getHeight());
 			statement.setTimestamp(13, city.getGovernor().getBirthday());
 			statement.setString(14, login);
-			statement.executeUpdate();
-			return true;
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()){
+				city.setId(resultSet.getInt("id"));
+				city.setLogin(login);
+				return true;
+			}
+			return false;
 		} catch (SQLException ex) {
-			System.out.println(ex);
 			return false;
 		}
 	}
@@ -146,7 +150,7 @@ public class DataBaseReceiver {
 		return true;
 	}
 
-	public Response update(int id, City city, String login){
+	public boolean update(int id, City city, String login){
 		try {
 			PreparedStatement statement = connection.prepareStatement("select count(*) from cities where id = ? and login = ?;");
 			statement.setInt(1, id);
@@ -155,7 +159,7 @@ public class DataBaseReceiver {
 			result.next();
 			int count = result.getInt(1);
 			if (count == 0){
-				return new Response("Ошибка обновления. Города с данным id не существует или вы не являетесь его владельцем.");
+				return false;
 			}
 
 			statement = connection.prepareStatement("update cities set name = ?, x = ?, y = ?, creation_date = ?, " +
@@ -177,11 +181,12 @@ public class DataBaseReceiver {
 			statement.setInt(14, id);
 			statement.setString(15, login);
 			statement.executeUpdate();
-			return new Response("Поля города с id = " + id + " успешно обновлены.");
+			city.setId(id);
+			city.setLogin(login);
+			return true;
 
 		} catch (SQLException throwables) {
-			System.out.println(throwables);
-			return new Response("Ошибка обновления. Нарушена связь с базой данных.");
+			return false;
 		}
 	}
 
