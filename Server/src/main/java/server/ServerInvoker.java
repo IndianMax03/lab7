@@ -35,7 +35,7 @@ public class ServerInvoker {
 	}
 
 	public Response execute(Request request){
-		if (request.getLogin().isEmpty()){
+		if (!ServerReceiver.isUser(request.getLogin(), request.getPassword()) && !request.getCommandName().equals("authorization")){
 			return new Response("Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы авторизоваться в системе." );
 		}
 		String commandName = request.getCommandName();

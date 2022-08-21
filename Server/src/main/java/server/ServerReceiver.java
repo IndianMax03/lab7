@@ -13,17 +13,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerReceiver {
 
-	private final ReentrantLock collectionLock = new ReentrantLock();
-	private final ReentrantLock usersLock = new ReentrantLock();
+	private static final ReentrantLock collectionLock = new ReentrantLock();
+	private static final ReentrantLock usersLock = new ReentrantLock();
 	private SortedSet<City> collection = new TreeSet<>();
 	private final ZonedDateTime creationDate;
-	private final DataBaseReceiver dbReceiver = DataBaseReceiver.getInstance();
+	private static final DataBaseReceiver dbReceiver = DataBaseReceiver.getInstance();
 
 	public ServerReceiver() {
 		this.creationDate = ZonedDateTime.now();
 	}
 
 	public Response add(City city, String login) {
+		//  TEST1 System.out.println("Пытается добавить пользователь: " + login);
 		collectionLock.lock();
 		try {
 			if (dbReceiver.add(city, login)) {
@@ -223,6 +224,27 @@ public class ServerReceiver {
 		usersLock.lock();
 		try {
 			return dbReceiver.authorization(login, password);
+		} finally {
+			usersLock.unlock();
+		}
+	}
+
+	public static boolean isUser(String login, String password){
+		usersLock.lock();
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-224");
+			byte[] messageDigest = md.digest(password.getBytes());
+			BigInteger no = new BigInteger(1, messageDigest);
+			String hashtext = no.toString(16);
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
+			password = hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException();
+		}
+		try {
+			return dbReceiver.isUser(login, password);
 		} finally {
 			usersLock.unlock();
 		}

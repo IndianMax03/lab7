@@ -190,6 +190,23 @@ public class DataBaseReceiver {
 		}
 	}
 
+	public boolean isUser(String login,  String password){
+		try {
+			PreparedStatement statement = connection.prepareStatement("select count(*) from users where login = ? and password = ?;");
+			statement.setString(1, login);
+			statement.setString(2, password);
+			ResultSet result = statement.executeQuery();
+			result.next();
+			int count = result.getInt(1);
+			if (count == 0) {
+				return false;
+			}
+			return true;
+		} catch (SQLException throwables) {
+			return false;
+		}
+	}
+
 	public Response authorization(String login, String password){
 		if (login.length() > 20) {
 			return new Response("Длина логина не может превышать 20 символов.");
@@ -263,6 +280,7 @@ public class DataBaseReceiver {
 		}
 		return collection;
 	}
+
 
 	public static DataBaseReceiver getInstance() {
 		if (instance == null){
