@@ -1,8 +1,6 @@
 package client;
 
-import base.User;
 import commands.ExecuteScript;
-import input.Validator;
 import listening.Request;
 import listening.Response;
 
@@ -37,7 +35,7 @@ public class Terminal {
 			String line = fileScanner.nextLine();
 			Request request = lineHandler(line);
 			if (request == null) {
-				return "Выполнение execute_script принудительно прекращено на файле " + filename + ", строкой: " + line;
+				return "Выполнение execute_script в файле: "+ filename + " принудительно прекращено строкой с рекурсивным вызовом: " + line;
 			} else if (request.getCommandName().equals("execute_script")){
 				System.out.println(startFile(request.getArgument()));
 				continue;
@@ -89,8 +87,8 @@ public class Terminal {
 			if (request == null)
 				continue;
 			if (request.getCommandName().equals("execute_script")){
-				ExecuteScript.clearPaths();
 				System.out.println(startFile(request.getArgument()));
+				ExecuteScript.clearPaths();
 				continue;
 			}
 			request.setLogin(login);
@@ -152,3 +150,5 @@ public class Terminal {
 		}
 	}
 }
+
+
