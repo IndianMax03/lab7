@@ -25,11 +25,13 @@ public class Main {
 					try {
 						servcomment = (new Scanner(System.in)).nextLine();
 					} catch (NullPointerException e) {
+						serverReceiver.dropConnection();
 						System.exit(0);
 						return;
 					}
 					if (servcomment.equals("exit")) {
 						System.out.println("Сервер завершает свою работу.");
+						serverReceiver.dropConnection();
 						System.exit(0);
 					} else {
 						System.out.println("Сервер поддерживает только одну команду: exit.");
@@ -48,8 +50,8 @@ public class Main {
 				}).start();
 
 			}
-		} catch (NoSuchElementException ex){
-			System.exit(0);
+		} finally {
+			serverReceiver.dropConnection();
 		}
 	}
 }

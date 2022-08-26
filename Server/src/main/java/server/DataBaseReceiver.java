@@ -6,10 +6,13 @@ import listening.Response;
 import java.sql.*;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataBaseReceiver {
 
 	Connection connection;
+	private static final Logger logger = Logger.getAnonymousLogger();
 	private static DataBaseReceiver instance;
 
 	private DataBaseReceiver(){
@@ -40,9 +43,9 @@ public class DataBaseReceiver {
 							"foreign key (login) references users (login)" +
 							");");
 			statement.executeUpdate();
-			System.out.println("База подгружена, всё ок =)");
+			logger.info("Соединение с базой данных успешно установлено.");
 		} catch (SQLException ex){
-			System.out.println("Ошибка при подключении сервера к базе данных. Сервер не может начать работу.");
+			logger.log(Level.WARNING, "Ошибка при подключении сервера к базе данных. Сервер не может начать работу.");
 			System.exit(-1);
 		}
 	}
@@ -261,13 +264,13 @@ public class DataBaseReceiver {
 					city = new City(id, name, x, y, crDate, area, population, meters, climate, government, standard,
 						governor, governor_height, governor_birthday, login);
 				} catch (NullPointerException ex){
-					System.out.println("ВНИМАНИЕ. В БАЗЕ ДАННЫХ ОБНАРУЖЕН НЕВАЛИДНЫЙ ГОРОД. ОН НЕМЕДЛЕННО БУДЕТ УДАЛЁН.");
+					logger.log(Level.WARNING,"В БАЗЕ ДАННЫХ ОБНАРУЖЕН НЕВАЛИДНЫЙ ГОРОД. ОН НЕМЕДЛЕННО БУДЕТ УДАЛЁН.");
 					statement = connection.prepareStatement("delete from cities where name = ?");
 					statement.setString(1, name);
 					statement.executeUpdate();
 				}
 				if (city != null && !collection.add(city)){
-					System.out.println("ВНИМАНИЕ. В БАЗЕ ДАННЫХ ОБНАРУЖЕН ГОРОД, НАРУШАЮЩИЙ УСЛОВИЕ ПОЛЬЗОВАНИЯ КОЛЛЕКЦИЕЙ. " +
+					logger.log(Level.WARNING, "ВНИМАНИЕ. В БАЗЕ ДАННЫХ ОБНАРУЖЕН ГОРОД, НАРУШАЮЩИЙ УСЛОВИЕ ПОЛЬЗОВАНИЯ КОЛЛЕКЦИЕЙ. " +
 							"ПРИЧИНА: ПОВТОР. ОН НЕМЕДЛЕННО БУДЕТ УДАЛЁН.");
 					statement = connection.prepareStatement("delete from cities where name = ?");
 					statement.setString(1, name);
@@ -275,7 +278,7 @@ public class DataBaseReceiver {
 				}
 			}
 		} catch (SQLException ex){
-			System.out.println("При выгрузке коллекции из базы данных произошла ошибка.");
+			logger.log(Level.WARNING, "При выгрузке коллекции из базы данных произошла ошибка.");
 			return null;
 		}
 		return collection;
@@ -288,4 +291,14 @@ public class DataBaseReceiver {
 		}
 		return instance;
 	}
+
+	public void dropConnection(){
+		try {
+			connection.close();
+			logger.info("Соединение с базой данных разорвано");
+		} catch (SQLException throwables) {
+			logger.log(Level.WARNING, "Серверу не удалось разорвать соединение с базой данных.");
+		}
+	}
+
 }
