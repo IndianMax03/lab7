@@ -1,49 +1,79 @@
 package server;
 
+import command.CommandsEnum;
 import commands.*;
 import commands.ServerCommand;
 import listening.Request;
 import listening.Response;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class ServerInvoker {
 
-	private final HashMap<String, ServerCommand> commandMap = new HashMap<>();
+    private final HashMap<String, ServerCommand> commandMap = new HashMap<>();
 
-	public void register(String commandName, ServerCommand command){
-		commandMap.put(commandName, command);
-	}
+    private void register(String commandName, ServerCommand command) {
+        commandMap.put(commandName, command);
+    }
 
-	public ServerInvoker(ServerReceiver serverReceiver){
-		commandMap.put("help", new Help(serverReceiver, commandMap));
-		commandMap.put("add", new Add(serverReceiver));
-		commandMap.put("clear", new Clear(serverReceiver));
-		commandMap.put("show", new Show(serverReceiver));
-		commandMap.put("authorization", new Authorization(serverReceiver));
-		commandMap.put("add_if_min", new AddIfMin(serverReceiver));
-		commandMap.put("filter_starts_with_name", new FilterStartsWithName(serverReceiver));
-		commandMap.put("info", new Info(serverReceiver));
-		commandMap.put("print_descending", new PrintDescending(serverReceiver));
-		commandMap.put("remove_all_by_government", new RemoveAllByGovernment(serverReceiver));
-		commandMap.put("remove_by_id", new RemoveById(serverReceiver));
-		commandMap.put("remove_greater", new RemoveGreater(serverReceiver));
-		commandMap.put("remove_lower", new RemoveLower(serverReceiver));
-		commandMap.put("update", new Update(serverReceiver));
-		commandMap.put("execute_script", new ExecuteScript());
-		commandMap.put("exit", new Exit());
-	}
+    public ServerInvoker(ServerReceiver serverReceiver) {
+        for (CommandsEnum command : CommandsEnum.values()) {
+            Optional<ServerCommand> optional = create(serverReceiver, command);
+            optional.ifPresent(serverCommand -> register(command.title, serverCommand));
+        }
+    }
 
-	public Response execute(Request request){
-		if (!ServerReceiver.isUser(request.getLogin(), request.getPassword()) && !request.getCommandName().equals("authorization")){
-			return new Response("Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы авторизоваться в системе." );
-		}
-		String commandName = request.getCommandName();
-		return this.commandMap.get(commandName).execute(request);
-	}
+    public Response execute(Request request) {
+        String commandName = request.getCommandName();
+        if (!ServerReceiver.isUser(request.getLogin(), request.getPassword()) && !commandName.equals("authorization")) {
+            return new Response(
+                    "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы авторизоваться в системе.");
+        }
+        return this.commandMap.get(commandName).execute(request);
+    }
 
-	public HashMap<String, ServerCommand> getCommandMap(){
-		return this.commandMap;
-	}
+    public HashMap<String, ServerCommand> getCommandMap() {
+        return this.commandMap;
+    }
+
+    private Optional<ServerCommand> create(ServerReceiver serverReceiver, CommandsEnum command) {
+        switch (command) {
+            case ADD:
+                return Optional.of(new Add(serverReceiver));
+            case ADD_IF_MIN:
+                return Optional.of(new AddIfMin(serverReceiver));
+            case CLEAR:
+                return Optional.of(new Clear(serverReceiver));
+            case EXECUTE_SCRIPT:
+                return Optional.of(new ExecuteScript());
+            case EXIT:
+                return Optional.of(new Exit());
+            case FILTER_STARTS_WITH_NAME:
+                return Optional.of(new FilterStartsWithName(serverReceiver));
+            case HELP:
+                return Optional.of(new Help(serverReceiver, getCommandMap()));
+            case INFO:
+                return Optional.of(new Info(serverReceiver));
+            case PRINT_DESCENDING:
+                return Optional.of(new PrintDescending(serverReceiver));
+            case REMOVE_ALL_BY_GOVERNMENT:
+                return Optional.of(new RemoveAllByGovernment(serverReceiver));
+            case REMOVE_BY_ID:
+                return Optional.of(new RemoveById(serverReceiver));
+            case REMOVE_GREATER:
+                return Optional.of(new RemoveGreater(serverReceiver));
+            case REMOVE_LOWER:
+                return Optional.of(new RemoveLower(serverReceiver));
+            case SHOW:
+                return Optional.of(new Show(serverReceiver));
+            case UPDATE:
+                return Optional.of(new Update(serverReceiver));
+            case AUTHORIZATION:
+                return Optional.of(new Authorization(serverReceiver));
+            default:
+                return Optional.empty();
+        }
+    }
 
 }
