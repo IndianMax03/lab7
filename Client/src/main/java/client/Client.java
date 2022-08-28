@@ -6,56 +6,58 @@ import listening.Response;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
 
-	private final byte[] ip = new byte[]{127, 0, 0, 1};
-	private final int PORT = 9000;
-	private final int BUF_SIZE = 32768;
 	private DatagramSocket socket;
-	private DatagramPacket packet;
 	private InetAddress host;
+	private static final Logger logger = Logger.getAnonymousLogger();
 
 	public Client(){
 		try{
-			host = InetAddress.getByAddress(ip);
+			host = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
 			socket = new DatagramSocket();
-			System.out.println("Клиентский модуль начал работу.");
+			logger.info("Клиентский модуль начал работу.");
 		} catch (SocketException e) {
-			System.out.println("Ошибка создания сокета. Широковещательное слушание не может быть начато.");
-			System.exit(-1);
+			logger.log(Level.WARNING,"Широковещательное слушание не может быть начато.");
+			System.exit(-1); //  cause can't create DSocket
 		}
 		catch (UnknownHostException e) {
-			System.out.println("Ошибка подключения: хост не найден. Обратитесь к разработчику программы.");
-			System.exit(-1);
+			logger.log(Level.WARNING, "Хост не найден. Обратитесь к разработчику программы.");
+			System.exit(1); //  cause can't find host
 		}
 	}
-//  todo потоки
+
 	public Response recieve(){
+		final int BUF_SIZE = 1024 * 1024; //  1MiB
 		try {
 			ByteBuffer buffer = ByteBuffer.allocate(BUF_SIZE);
-			packet = new DatagramPacket(buffer.array(), buffer.array().length);
+			final byte [] array = buffer.array();
+			DatagramPacket packet = new DatagramPacket(array, array.length);
 			socket.receive(packet);
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(buffer.array()));
-			Response response = (Response) ois.readObject();
-			return response;
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
+			return (Response) ois.readObject();
 		} catch (IOException e) {
-			System.out.println("Ошибка чтения. Сервер не отвечает.");;
+			logger.warning("Сервер не отвечает.");
 			return null;
 		} catch (ClassNotFoundException e) {
-			System.out.println("Ошибка десериализации. Нарушен кастинг к классу читаемого объекта.");
+			logger.warning("Нарушен кастинг к классу читаемого объекта.");
 			return null;
 		}
 	}
-//todo потоки
+
 	public void send(Request request){
+		final int PORT = 9000; //  сделать переменной окружения
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(request);
-			socket.send(new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, InetAddress.getByAddress(ip), PORT));
+			byte[] sendArray = baos.toByteArray();
+			socket.send(new DatagramPacket(sendArray, sendArray.length, host, PORT));
 		} catch (IOException e) {
-			System.out.println("Ошибка отправки. Запрос не может быть записан и доставлен.");
+			logger.warning("Запрос не может быть записан и доставлен.");
 		}
 	}
 }
