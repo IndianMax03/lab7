@@ -49,12 +49,13 @@ public class Client {
 	}
 
 	public void send(Request request){
-		final int PORT = 9000;
+		final int PORT = 9000; //  сделать переменной окружения
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(request);
-			socket.send(new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, host, PORT));
+			byte[] sendArray = baos.toByteArray();
+			socket.send(new DatagramPacket(sendArray, sendArray.length, host, PORT));
 		} catch (IOException e) {
 			logger.warning("Запрос не может быть записан и доставлен.");
 		}
