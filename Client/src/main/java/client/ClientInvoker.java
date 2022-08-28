@@ -17,7 +17,6 @@ public class ClientInvoker {
         for (CommandsEnum command : CommandsEnum.values()) {
             Optional<ClientCommand> optional = create(clientReceiver, command);
             optional.ifPresent(clientCommand -> commandMap.put(command.title, clientCommand));
-            System.out.println(commandMap);
         }
     }
 
