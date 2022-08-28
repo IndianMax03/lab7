@@ -12,11 +12,16 @@ public class ClientInvoker {
 
     private final Map<String, ClientCommand> commandMap = new HashMap<>();
 
+    private void register(String commandName, ClientCommand command) {
+        commandMap.put(commandName, command);
+    }
+
+
     public ClientInvoker(ClientReceiver clientReceiver) {
 
         for (CommandsEnum command : CommandsEnum.values()) {
             Optional<ClientCommand> optional = create(clientReceiver, command);
-            optional.ifPresent(clientCommand -> commandMap.put(command.title, clientCommand));
+            optional.ifPresent(clientCommand -> register(command.title, clientCommand));
         }
     }
 
