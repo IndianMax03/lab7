@@ -3,10 +3,12 @@ package commands;
 import listening.Request;
 import listening.Response;
 
+import java.util.Optional;
+
 public class ExecuteScript extends ServerCommand {
     @Override
-    public Response execute(Request arg) {
-        return null;
+    public Optional<Response> execute(Request arg) {
+        return Optional.empty();
     }
 
     @Override

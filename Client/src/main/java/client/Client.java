@@ -6,6 +6,7 @@ import listening.Response;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +30,7 @@ public class Client {
         }
     }
 
-    public Response recieve() {
+    public Optional<Response> recieve() {
         final int BUF_SIZE = 1024 * 1024; // 1MiB
         try {
             ByteBuffer buffer = ByteBuffer.allocate(BUF_SIZE);
@@ -37,13 +38,13 @@ public class Client {
             DatagramPacket packet = new DatagramPacket(array, array.length);
             socket.receive(packet);
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
-            return (Response) ois.readObject();
+            return Optional.of((Response) ois.readObject());
         } catch (IOException e) {
             logger.warning("Сервер не отвечает.");
-            return null;
+            return Optional.empty();
         } catch (ClassNotFoundException e) {
             logger.warning("Нарушен кастинг к классу читаемого объекта.");
-            return null;
+            return Optional.empty();
         }
     }
 

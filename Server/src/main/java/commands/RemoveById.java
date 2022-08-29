@@ -4,6 +4,8 @@ import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
 
+import java.util.Optional;
+
 public class RemoveById extends ServerCommand {
 
     private final ServerReceiver serverReceiver;
@@ -13,8 +15,8 @@ public class RemoveById extends ServerCommand {
     }
 
     @Override
-    public Response execute(Request arg) {
-        return serverReceiver.removeById(arg.getArgument(), arg.getLogin());
+    public Optional<Response> execute(Request arg) {
+        return Optional.of(serverReceiver.removeById(arg.getArgument(), arg.getLogin()));
     }
 
     @Override

@@ -3,6 +3,8 @@ package commands;
 import client.ClientReceiver;
 import listening.Request;
 
+import java.util.Optional;
+
 public class Add extends ClientCommand {
 
     private final ClientReceiver clientReceiver;
@@ -12,10 +14,10 @@ public class Add extends ClientCommand {
     }
 
     @Override
-    public Request execute(String arg) {
+    public Optional<Request> execute(String arg) {
         if (arg != null) {
             System.out.println("Команда add не принимает аргументы.");
-            return null;
+            return Optional.empty();
         }
         return clientReceiver.add();
     }

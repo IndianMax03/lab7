@@ -25,11 +25,11 @@ public class ClientInvoker {
         }
     }
 
-    public Request check(String commandName, String argument) {
+    public Optional<Request> check(String commandName, String argument) {
         if (this.commandMap.containsKey(commandName))
             return this.commandMap.get(commandName).execute(argument);
         System.out.println("Введённой команды не существует.");
-        return null;
+        return Optional.empty();
     }
 
     private Optional<ClientCommand> create(ClientReceiver clientReceiver, CommandsEnum command) {

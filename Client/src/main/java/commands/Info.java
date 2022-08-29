@@ -2,13 +2,15 @@ package commands;
 
 import listening.Request;
 
+import java.util.Optional;
+
 public class Info extends ClientCommand {
     @Override
-    public Request execute(String arg) {
+    public Optional<Request> execute(String arg) {
         if (arg != null) {
             System.out.println("Команда info не принимает аргументы.");
-            return null;
+            return Optional.empty();
         }
-        return new Request("info");
+        return Optional.of(new Request("info"));
     }
 }

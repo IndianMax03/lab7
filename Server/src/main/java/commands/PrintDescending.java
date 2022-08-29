@@ -4,6 +4,8 @@ import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
 
+import java.util.Optional;
+
 public class PrintDescending extends ServerCommand {
 
     private final ServerReceiver serverReceiver;
@@ -13,8 +15,8 @@ public class PrintDescending extends ServerCommand {
     }
 
     @Override
-    public Response execute(Request arg) {
-        return serverReceiver.printDescending();
+    public Optional<Response> execute(Request arg) {
+        return Optional.of(serverReceiver.printDescending());
     }
 
     @Override

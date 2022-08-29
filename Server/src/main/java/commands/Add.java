@@ -4,6 +4,8 @@ import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
 
+import java.util.Optional;
+
 public class Add extends ServerCommand {
 
     private final ServerReceiver serverReceiver;
@@ -13,8 +15,8 @@ public class Add extends ServerCommand {
     }
 
     @Override
-    public Response execute(Request request) {
-        return serverReceiver.add(request.getCity(), request.getLogin());
+    public Optional<Response> execute(Request request) {
+        return Optional.of(serverReceiver.add(request.getCity(), request.getLogin()));
     }
 
     @Override

@@ -6,6 +6,7 @@ import listening.Response;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Terminal {
@@ -33,26 +34,31 @@ public class Terminal {
         }
         while (fileScanner.hasNext()) {
             String line = fileScanner.nextLine();
-            Request request = lineHandler(line);
-            if (request == null) {
+            Optional<Request> optRequest = lineHandler(line);
+            if (!optRequest.isPresent()) {
                 return "Выполнение execute_script в файле: " + filename
                         + " принудительно прекращено строкой с рекурсивным вызовом: " + line;
-            } else if (request.getCommandName().equals("execute_script")) {
-                System.out.println(startFile(request.getArgument()));
-                continue;
-            }
-            request.setLogin(login);
-            request.setPassword(password);
-            client.send(request);
-            Response response = client.recieve();
-            if (response == null) {
-                return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
-            }
-            if (response.getAnswer() == null) {
-                System.out.println(response.getMessage());
             } else {
-                for (String ans : response.getAnswer()) {
-                    System.out.println(ans);
+                Request request = optRequest.get();
+                if (request.getCommandName().equals("execute_script")) {
+                    System.out.println(startFile(request.getArgument()));
+                    continue;
+                }
+                request.setLogin(login);
+                request.setPassword(password);
+                client.send(request);
+                Optional<Response> optResponse = client.recieve();
+                if (!optResponse.isPresent()) {
+                    return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
+                } else {
+                    Response response = optResponse.get();
+                    if (response.getAnswer() == null) {
+                        System.out.println(response.getMessage());
+                    } else {
+                        for (String ans : response.getAnswer()) {
+                            System.out.println(ans);
+                        }
+                    }
                 }
             }
         }
@@ -84,47 +90,47 @@ public class Terminal {
             System.out.print("Введите команду:\n>");
             String line = scanner.nextLine();
 
-            Request request = lineHandler(line);
-            if (request == null)
-                continue;
-            if (request.getCommandName().equals("execute_script")) {
-                System.out.println(startFile(request.getArgument()));
-                ExecuteScript.clearPaths();
-                continue;
-            }
-            request.setLogin(login);
-            request.setPassword(password);
+            Optional<Request> optRequest = lineHandler(line);
+            if (optRequest.isPresent()) {
+                Request request = optRequest.get();
+                if (request.getCommandName().equals("execute_script")) {
+                    System.out.println(startFile(request.getArgument()));
+                    ExecuteScript.clearPaths();
+                    continue;
+                }
+                request.setLogin(login);
+                request.setPassword(password);
 
-            client.send(request);
-            Response response = client.recieve();
+                client.send(request);
+                Optional<Response> optResponse = client.recieve();
 
-            if (response == null) {
-                System.exit(-1);
-            }
-
-            if (response.getAnswer() == null) {
-                System.out.println(response.getMessage());
-            } else {
-                for (String ans : response.getAnswer()) {
-                    System.out.println(ans);
+                if (!optResponse.isPresent()) {
+                    System.exit(-1);
+                } else {
+                    Response response = optResponse.get();
+                    if (response.getAnswer() == null) {
+                        System.out.println(response.getMessage());
+                    } else {
+                        for (String ans : response.getAnswer()) {
+                            System.out.println(ans);
+                        }
+                    }
                 }
             }
-
         }
     }
 
-    private Request lineHandler(String line) throws NullPointerException {
+    private Optional<Request> lineHandler(String line) throws NullPointerException {
 
         while (line.contains("  ")) {
             line = line.replace("  ", " ");
         }
         String[] commandLine = line.split(" ");
         String command = commandLine[0].trim();
-        Request request = null;
         if (command.equals("authorization")) {
             authorization();
             System.out.println("Вы вошли в систему под именем: " + login);
-            return null;
+            return Optional.empty();
         }
         if (commandLine.length == 1) {
             return clientInvoker.check(command, null);
@@ -132,7 +138,7 @@ public class Terminal {
         if (commandLine.length == 2) {
             return clientInvoker.check(command, commandLine[1]);
         }
-        return request;
+        return Optional.empty();
     }
 
     private void authorization() {
@@ -144,10 +150,13 @@ public class Terminal {
         authRequest.setLogin(login);
         authRequest.setPassword(password);
         client.send(authRequest);
-        Response response = client.recieve();
-        if (!response.getMessage().isEmpty()) {
-            System.out.println(response.getMessage());
-            authorization();
+        Optional<Response> optResponse = client.recieve();
+        if (optResponse.isPresent()) {
+            Response response = optResponse.get();
+            if (!response.getMessage().isEmpty()) {
+                System.out.println(response.getMessage());
+                authorization();
+            }
         }
     }
 }
