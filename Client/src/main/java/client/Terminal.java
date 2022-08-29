@@ -6,6 +6,7 @@ import listening.Response;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Terminal {
@@ -44,15 +45,17 @@ public class Terminal {
             request.setLogin(login);
             request.setPassword(password);
             client.send(request);
-            Response response = client.recieve();
-            if (response == null) {
+            Optional<Response> optResponse = client.recieve();
+            if (!optResponse.isPresent()) {
                 return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
-            }
-            if (response.getAnswer() == null) {
-                System.out.println(response.getMessage());
             } else {
-                for (String ans : response.getAnswer()) {
-                    System.out.println(ans);
+                Response response = optResponse.get();
+                if (response.getAnswer() == null) {
+                    System.out.println(response.getMessage());
+                } else {
+                    for (String ans : response.getAnswer()) {
+                        System.out.println(ans);
+                    }
                 }
             }
         }
@@ -96,20 +99,20 @@ public class Terminal {
             request.setPassword(password);
 
             client.send(request);
-            Response response = client.recieve();
+            Optional<Response> optResponse = client.recieve();
 
-            if (response == null) {
+            if (!optResponse.isPresent()) {
                 System.exit(-1);
-            }
-
-            if (response.getAnswer() == null) {
-                System.out.println(response.getMessage());
             } else {
-                for (String ans : response.getAnswer()) {
-                    System.out.println(ans);
+                Response response = optResponse.get();
+                if (response.getAnswer() == null) {
+                    System.out.println(response.getMessage());
+                } else {
+                    for (String ans : response.getAnswer()) {
+                        System.out.println(ans);
+                    }
                 }
             }
-
         }
     }
 
@@ -144,10 +147,13 @@ public class Terminal {
         authRequest.setLogin(login);
         authRequest.setPassword(password);
         client.send(authRequest);
-        Response response = client.recieve();
-        if (!response.getMessage().isEmpty()) {
-            System.out.println(response.getMessage());
-            authorization();
+        Optional<Response> optResponse = client.recieve();
+        if (optResponse.isPresent()) {
+            Response response = optResponse.get();
+            if (!response.getMessage().isEmpty()) {
+                System.out.println(response.getMessage());
+                authorization();
+            }
         }
     }
 }
