@@ -4,6 +4,8 @@ import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
 
+import java.util.Optional;
+
 public class RemoveGreater extends ServerCommand {
 
     private final ServerReceiver serverReceiver;
@@ -13,8 +15,8 @@ public class RemoveGreater extends ServerCommand {
     }
 
     @Override
-    public Response execute(Request arg) {
-        return serverReceiver.removeGreater(arg.getCity(), arg.getLogin());
+    public Optional<Response> execute(Request arg) {
+        return Optional.of(serverReceiver.removeGreater(arg.getCity(), arg.getLogin()));
     }
 
     @Override

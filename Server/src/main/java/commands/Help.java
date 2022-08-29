@@ -5,6 +5,7 @@ import listening.Response;
 import server.ServerReceiver;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Help extends ServerCommand {
 
@@ -17,8 +18,8 @@ public class Help extends ServerCommand {
     }
 
     @Override
-    public Response execute(Request arg) {
-        return serverReceiver.help(commandMap);
+    public Optional<Response> execute(Request arg) {
+        return Optional.of(serverReceiver.help(commandMap));
     }
 
     @Override
