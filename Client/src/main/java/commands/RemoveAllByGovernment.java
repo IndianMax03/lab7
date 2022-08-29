@@ -4,7 +4,7 @@ import base.Government;
 import client.ClientReceiver;
 import listening.Request;
 
-import java.util.List;
+import java.util.Optional;
 
 public class RemoveAllByGovernment extends ClientCommand {
 
@@ -15,7 +15,7 @@ public class RemoveAllByGovernment extends ClientCommand {
     }
 
     @Override
-    public Request execute(String arg) {
+    public Optional<Request> execute(String arg) {
         if (arg == null) {
             System.out.println("Команда remove_all_by_government принимает аргумент government.");
             System.out.println(
@@ -24,7 +24,7 @@ public class RemoveAllByGovernment extends ClientCommand {
             for (Government government : Government.values()) {
                 System.out.println(i + ") " + government.toString());
             }
-            return null;
+            return Optional.empty();
         }
         return clientReceiver.removeAllByGovernment(arg);
     }

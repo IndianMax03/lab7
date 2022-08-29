@@ -27,7 +27,7 @@ public class ClientInvoker {
 
     public Optional<Request> check(String commandName, String argument) {
         if (this.commandMap.containsKey(commandName))
-            return Optional.of(this.commandMap.get(commandName).execute(argument));
+            return this.commandMap.get(commandName).execute(argument);
         System.out.println("Введённой команды не существует.");
         return Optional.empty();
     }
