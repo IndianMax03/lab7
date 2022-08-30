@@ -26,10 +26,11 @@ public class ServerInvoker {
 
     public Optional<Response> execute(Request request) {
         String commandName = request.getCommandName();
-        if (!ServerReceiver.isUser(request.getLogin(), request.getPassword()) && !commandName.equals("authorization")) {
+        if (request.getLogin().equals("") && !commandName.equals("authorization")) {
             return Optional.of(new Response(
-                    "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы авторизоваться в системе."));
+                    "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы зарегестрироваться в системе."));
         }
+
         return this.commandMap.get(commandName).execute(request);
     }
 
