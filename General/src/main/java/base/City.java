@@ -5,10 +5,20 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class City implements Comparable<City>, Serializable {
 
 	private static final long serialVersionUID = -3000033697508215511L;
+
+	private static final Map<String, ? super Number> limitation = new HashMap<>();
+
+	static {
+		limitation.put("coordinateY", -628d);
+		limitation.put("area", 0f);
+		limitation.put("population", 0);
+	}
 
 	private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
 	private String name; //Поле не может быть null, Строка не может быть пустой
@@ -68,6 +78,8 @@ public class City implements Comparable<City>, Serializable {
 				", governor=" + governor +
 				'}';
 	}
+
+
 
 	@Override
 	public int compareTo(City anotherCity) {
@@ -173,4 +185,9 @@ public class City implements Comparable<City>, Serializable {
 	public String toUser(){
 		return "Город: " + name + ", id: " + id + ", тип правления: " + government + ", владелец: " + login;
 	}
+
+	public static Map<String, ? super Number> getLimitation() {
+		return limitation;
+	}
+
 }

@@ -2,9 +2,6 @@ package input;
 
 import base.*;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
-
 public class Validator {
 
     private Validator() {
@@ -37,14 +34,14 @@ public class Validator {
             return null;
         }
 
-        String xString = coordinates[0];
-        String yString = coordinates[1];
+        String xLine = coordinates[0];
+        String yLine = coordinates[1];
         double x, y;
 
         try {
-            x = Double.parseDouble(xString);
-            y = Double.parseDouble(yString);
-            if (y <= -628) {
+            x = Double.parseDouble(xLine);
+            y = Double.parseDouble(yLine);
+            if (y <= (Double) City.getLimitation().get("coordinateY")) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
@@ -57,7 +54,7 @@ public class Validator {
         float area;
         try {
             area = Float.parseFloat(arg);
-            if (area <= 0) {
+            if (area <= (Float) City.getLimitation().get("area")) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
@@ -70,7 +67,7 @@ public class Validator {
         int population;
         try {
             population = Integer.parseInt(arg);
-            if (population <= 0) {
+            if (population <= (Integer) City.getLimitation().get("population")) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
