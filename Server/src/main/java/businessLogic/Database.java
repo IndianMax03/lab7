@@ -2,6 +2,7 @@ package businessLogic;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -11,6 +12,9 @@ public class Database {
     private static final String DB_USER = "labber";
     private static final String DB_PASSWORD = "laba";
     private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    protected Database() {
+    }
 
     protected static Connection getConnection() {
         Connection connection = null;
@@ -22,16 +26,24 @@ public class Database {
         return connection;
     }
 
-    protected static boolean closeConnection(Connection connection) {
+    protected static void closeConnection(Connection connection) {
         if (connection != null) {
             try {
                 connection.close();
-                return true;
             } catch (SQLException throwables) {
-                return false;
+                LOGGER.warning("Не удалось закрыть подключение.");
             }
-        } else {
-            return true;
         }
     }
+
+    protected static void closeStatement(PreparedStatement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException throwables) {
+                LOGGER.warning("Не удалось закрыть вырыжание statement.");
+            }
+        }
+    }
+
 }

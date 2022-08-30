@@ -12,23 +12,30 @@ import java.util.logging.Logger;
 
 public class CityService extends Database implements CityDAO {
 
-    private final Connection connection = getConnection();
+    private Connection connection = null;
+    private PreparedStatement statement = null;
     private final Logger logger = Logger.getAnonymousLogger();
 
     public CityService() {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQLCity.INIT.QUERY);
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.INIT.QUERY);
             statement.executeUpdate();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при создании таблицы cities");
             System.exit(-1);
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
     }
 
     @Override
     public int create(City city, String login) {
         int result = -1;
-        try (PreparedStatement statement = connection.prepareStatement(CityService.SQLCity.INSERT.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(CityService.SQLCity.INSERT.QUERY);
             statement.setString(1, city.getName());
             statement.setDouble(2, city.getCoordinates().getX());
             statement.setDouble(3, city.getCoordinates().getY());
@@ -52,6 +59,9 @@ public class CityService extends Database implements CityDAO {
             }
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при добавлении города.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -59,7 +69,9 @@ public class CityService extends Database implements CityDAO {
     @Override
     public SortedSet<City> readAll() {
         SortedSet<City> result = new TreeSet<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.READ_ALL.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.READ_ALL.QUERY);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
@@ -94,24 +106,31 @@ public class CityService extends Database implements CityDAO {
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при чтении содержимого.");
             return new TreeSet<>();
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
 
     private void deleteInvalidCity(String name) {
         try {
-            PreparedStatement warningStatement = connection.prepareStatement(SQLCity.REMOVE_BY_NAME.QUERY);
-            warningStatement.setString(1, name);
-            warningStatement.executeUpdate();
+            statement = connection.prepareStatement(SQLCity.REMOVE_BY_NAME.QUERY);
+            statement.setString(1, name);
+            statement.executeUpdate();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при удалении невалидного города из базы данных.");
+        } finally {
+            closeStatement(statement);
         }
     }
 
     @Override
     public boolean updateById(int id, City city, String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.UPDATE_BY_ID.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.UPDATE_BY_ID.QUERY);
             statement.setString(1, city.getName());
             statement.setDouble(2, city.getCoordinates().getX());
             statement.setDouble(3, city.getCoordinates().getY());
@@ -130,6 +149,9 @@ public class CityService extends Database implements CityDAO {
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при обновлении города.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -137,12 +159,17 @@ public class CityService extends Database implements CityDAO {
     @Override
     public boolean removeById(int id, String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.REMOVE_BY_ID.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.REMOVE_BY_ID.QUERY);
             statement.setInt(1, id);
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при удалении города по его id.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -150,11 +177,16 @@ public class CityService extends Database implements CityDAO {
     @Override
     public boolean clearByUser(String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.CLEAR_BY_USER.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.CLEAR_BY_USER.QUERY);
             statement.setString(1, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -162,12 +194,17 @@ public class CityService extends Database implements CityDAO {
     @Override
     public boolean removeAllByGovernment(String government, String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.REMOVE_ALL_BY_GOVERNMENT.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.REMOVE_ALL_BY_GOVERNMENT.QUERY);
             statement.setString(1, government);
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -175,12 +212,17 @@ public class CityService extends Database implements CityDAO {
     @Override
     public boolean removeGreater(City city, String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.REMOVE_GREATER.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.REMOVE_GREATER.QUERY);
             statement.setString(1, city.getName());
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при удалению городов больших, чем заданный.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }
@@ -188,12 +230,17 @@ public class CityService extends Database implements CityDAO {
     @Override
     public boolean removeLower(City city, String login) {
         boolean result = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQLCity.REMOVE_LOWER.QUERY)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(SQLCity.REMOVE_LOWER.QUERY);
             statement.setString(1, city.getName());
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
             logger.warning("Ошибка при обращении к базе данных при удалению городов меньших, чем заданный.");
+        } finally {
+            closeStatement(statement);
+            closeConnection(connection);
         }
         return result;
     }

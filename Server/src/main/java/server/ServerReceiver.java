@@ -1,8 +1,11 @@
 package server;
 
 import base.City;
+import businessLogic.Database;
 import commands.ServerCommand;
 import listening.Response;
+import service.CityService;
+import service.UserService;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -17,19 +20,20 @@ public class ServerReceiver {
     private static final ReentrantLock usersLock = new ReentrantLock();
     private SortedSet<City> collection = new TreeSet<>();
     private final ZonedDateTime creationDate;
-    private static final DataBaseReceiver dbReceiver = DataBaseReceiver.getInstance();
+    private static final CityService cityService = new CityService();
+    private static final UserService userService = new UserService();
 
     public ServerReceiver() {
         this.creationDate = ZonedDateTime.now();
     }
 
     public Response add(City city, String login) {
-        // TEST1 System.out.println("Пытается добавить пользователь: " + login);
         collectionLock.lock();
         try {
-            if (dbReceiver.add(city, login)) {
+            int id = cityService.create(city, login);
+            if (id > 0) {
                 collection.add(city);
-                return new Response("Город успешно добавлен.");
+                return new Response("Город успешно добавлен. Его id = " + id);
             } else {
                 return new Response(
                         "Город добавить не удалось коллекция не предполагает хранение городов с одинаковым именем.");
@@ -43,12 +47,9 @@ public class ServerReceiver {
         collectionLock.lock();
         try {
             if (collection.first().compareTo(city) > 0) {
-                if (dbReceiver.add(city, login)) {
-                    collection.add(city);
-                    return new Response("Ваш элемент добавлен в коллекцию. Условие выполнено.");
-                } else {
-                    return new Response("Непредвиденная ошибка. Город не будет добавлен.");
-                }
+                int id = cityService.create(city, login);
+                collection.add(city);
+                return new Response("Ваш элемент добавлен в коллекцию. Его id = " + id);
             }
             return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
         } finally {
@@ -101,12 +102,13 @@ public class ServerReceiver {
     public Response removeAllByGovernment(String government, String login) {
         collectionLock.lock();
         try {
-            if (dbReceiver.removeAllByGovernment(government, login)) {
+            if (cityService.removeAllByGovernment(government, login)) {
                 collection.removeIf(
                         city -> city.getGovernment().toString().equals(government) && city.getLogin().equals(login));
                 return new Response("Из коллекции удалены все ваши города с полем government = " + government);
+            } else {
+                return new Response("Удаление выполнить не удалось. Вы еще не создали города с данным условием.");
             }
-            return new Response("Удаление выполнить не удалось. Ошибка подключения сервера к базе данных.");
         } finally {
             collectionLock.unlock();
         }
@@ -121,11 +123,11 @@ public class ServerReceiver {
             } catch (NumberFormatException ex) {
                 return new Response("Клиент передал невалидный id.");
             }
-            if (dbReceiver.removeById(id, login)) {
+            if (cityService.removeById(id, login)) {
                 collection.removeIf(city -> city.getId().equals(id));
                 return new Response("Ваш элемент с id = " + id + " успешно удален из коллекции.");
             } else {
-                return new Response("Ошибка. Элемента с таким id не существует или он вам не принадлежит.");
+                return new Response("Элемента с таким id не существует или он вам не принадлежит.");
             }
         } finally {
             collectionLock.unlock();
@@ -135,12 +137,12 @@ public class ServerReceiver {
     public Response removeGreater(City city, String login) {
         collectionLock.lock();
         try {
-            if (dbReceiver.removeGreater(city, login)) {
+            if (cityService.removeGreater(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) > 0
                         && cityFromColl.getLogin().equals(city.getLogin()));
                 return new Response("Из коллекции удалены ваши элементы, превышающие введённый.");
             }
-            return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+            return new Response("Ни один элемент не был удалён.");
         } finally {
             collectionLock.unlock();
         }
@@ -149,12 +151,12 @@ public class ServerReceiver {
     public Response removeLower(City city, String login) {
         collectionLock.lock();
         try {
-            if (dbReceiver.removeLower(city, login)) {
+            if (cityService.removeLower(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) < 0
                         && cityFromColl.getLogin().equals(city.getLogin()));
                 return new Response("Из коллекции удалены ваши элементы, меньшие, чем введённый.");
             }
-            return new Response("Удаление прошло неуспешно. Ошибка подключения к базе данных.");
+            return new Response("Ни один элемент не был удалён.");
         } finally {
             collectionLock.unlock();
         }
@@ -167,11 +169,11 @@ public class ServerReceiver {
     public Response clear(String login) {
         collectionLock.lock();
         try {
-            if (dbReceiver.clear(login)) {
+            if (cityService.clearByUser(login)) {
                 collection.removeIf(city -> city.getLogin().equals(login));
                 return new Response("Из коллекции удалены все, созданные вами города.");
             }
-            return new Response("Не удалось выполнить удаление.");
+            return new Response("Ни один элемент не был удалён.");
         } finally {
             collectionLock.unlock();
         }
@@ -184,7 +186,7 @@ public class ServerReceiver {
         } catch (NumberFormatException ex) {
             return new Response("Клиент передал невалидный id.");
         }
-        if (dbReceiver.update(id, city, login)) {
+        if (cityService.updateById(id, city, login)) {
             collection.removeIf(cityFromColl -> cityFromColl.getId().equals(id));
             collection.add(city);
             return new Response("Поля города с id=" + id + " успешно обновлены.");
@@ -212,14 +214,20 @@ public class ServerReceiver {
         }
         usersLock.lock();
         try {
-            return dbReceiver.authorization(login, password);
+            if (userService.checkExists(login, password)) {
+                return new Response("");
+            } else if (userService.checkImpostor(login, password)) {
+                return new Response("Неверный пароль для пользователя " + login);
+            } else {
+                userService.create(login, password);
+                return new Response("");
+            }
         } finally {
             usersLock.unlock();
         }
     }
 
     public static boolean isUser(String login, String password) {
-        usersLock.lock();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-224");
             byte[] messageDigest = md.digest(password.getBytes());
@@ -232,18 +240,16 @@ public class ServerReceiver {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException();
         }
+        usersLock.lock();
         try {
-            return dbReceiver.isUser(login, password);
+            return userService.checkExists(login, password);
         } finally {
             usersLock.unlock();
         }
     }
 
     void initCollection() {
-        collection = dbReceiver.getActualCollection();
+        collection = cityService.readAll();
     }
 
-    void dropConnection() {
-        dbReceiver.dropConnection();
-    }
 }
