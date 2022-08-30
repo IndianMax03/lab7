@@ -16,7 +16,6 @@ public class ClientInvoker {
         commandMap.put(commandName, command);
     }
 
-
     public ClientInvoker(ClientReceiver clientReceiver) {
 
         for (CommandsEnum command : CommandsEnum.values()) {
