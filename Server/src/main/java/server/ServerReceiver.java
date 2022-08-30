@@ -31,6 +31,8 @@ public class ServerReceiver {
         try {
             int id = cityService.create(city, login);
             if (id > 0) {
+                city.setId(id);
+                city.setLogin(login);
                 collection.add(city);
                 return new Response("Город успешно добавлен. Его id = " + id);
             } else {
@@ -47,6 +49,8 @@ public class ServerReceiver {
         try {
             if (collection.first().compareTo(city) > 0) {
                 int id = cityService.create(city, login);
+                city.setId(id);
+                city.setLogin(login);
                 collection.add(city);
                 return new Response("Ваш элемент добавлен в коллекцию. Его id = " + id);
             }
@@ -187,6 +191,8 @@ public class ServerReceiver {
         }
         if (cityService.updateById(id, city, login)) {
             collection.removeIf(cityFromColl -> cityFromColl.getId().equals(id));
+            city.setId(id);
+            city.setLogin(login);
             collection.add(city);
             return new Response("Поля города с id=" + id + " успешно обновлены.");
         } else {
