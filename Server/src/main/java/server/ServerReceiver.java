@@ -1,7 +1,6 @@
 package server;
 
 import base.City;
-import businessLogic.Database;
 import commands.ServerCommand;
 import listening.Response;
 import service.CityService;
@@ -20,8 +19,8 @@ public class ServerReceiver {
     private static final ReentrantLock usersLock = new ReentrantLock();
     private SortedSet<City> collection = new TreeSet<>();
     private final ZonedDateTime creationDate;
-    private static final CityService cityService = new CityService();
-    private static final UserService userService = new UserService();
+    private final CityService cityService = new CityService();
+    private final UserService userService = new UserService();
 
     public ServerReceiver() {
         this.creationDate = ZonedDateTime.now();
@@ -222,27 +221,6 @@ public class ServerReceiver {
                 userService.create(login, password);
                 return new Response("");
             }
-        } finally {
-            usersLock.unlock();
-        }
-    }
-
-    public static boolean isUser(String login, String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-224");
-            byte[] messageDigest = md.digest(password.getBytes());
-            BigInteger no = new BigInteger(1, messageDigest);
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            password = hashtext;
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException();
-        }
-        usersLock.lock();
-        try {
-            return userService.checkExists(login, password);
         } finally {
             usersLock.unlock();
         }
