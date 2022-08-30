@@ -1,5 +1,7 @@
 package businessLogic;
 
+import org.apache.commons.dbutils.DbUtils;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,22 +29,18 @@ public class Database {
     }
 
     protected static void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException throwables) {
-                LOGGER.warning("Не удалось закрыть подключение.");
-            }
+        try {
+            DbUtils.close(connection);
+        } catch (SQLException throwables) {
+            LOGGER.warning("Не удалось закрыть подключение.");
         }
     }
 
     protected static void closeStatement(PreparedStatement statement) {
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException throwables) {
-                LOGGER.warning("Не удалось закрыть вырыжание statement.");
-            }
+        try {
+            DbUtils.close(statement);
+        } catch (SQLException throwables) {
+            LOGGER.warning("Не удалось закрыть вырыжание statement.");
         }
     }
 

@@ -13,6 +13,12 @@
     <artifactId>Server</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.5</version>
+        </dependency>
         <dependency>
             <groupId>lab7</groupId>
             <artifactId>General</artifactId>
