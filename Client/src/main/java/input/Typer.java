@@ -22,7 +22,8 @@ public class Typer {
         Coordinates coordinates = Validator.validateCoordinates(scanner.nextLine());
         if (coordinates == null) {
             System.out.println(
-                    "Координат должно быть две. Обе координаты должны быть типа Double. Координата 'y' должна превышать -628.");
+                    "Координат должно быть две. Обе координаты должны быть типа Double. Координата 'y' должна превышать: "
+                            + City.getLimitation().get("coordinateY") + ".");
             return typeCoordinates();
         }
         return coordinates;
@@ -32,7 +33,8 @@ public class Typer {
         System.out.print("Введите площадь города:" + "\n>");
         Float area = Validator.validateArea(scanner.nextLine());
         if (area == null) {
-            System.out.println("Площадь города должна быть типа Float, её значение должно быть больше, чем 0.");
+            System.out.println("Площадь города должна быть типа Float, её значение должно быть больше, чем: "
+                    + City.getLimitation().get("area") + ".");
             return typeArea();
         }
         return area;
@@ -42,7 +44,8 @@ public class Typer {
         System.out.print("Введите население города:" + "\n>");
         Integer population = Validator.validatePopulation(scanner.nextLine());
         if (population == null) {
-            System.out.println("Население города должно быть типа Integer. Значение не должно быть меньше 0.");
+            System.out.println("Население города должно быть типа Integer. Значение должно быть больше, чем: "
+                    + City.getLimitation().get("population") + ".");
             return typePopulation();
         }
         return population;
