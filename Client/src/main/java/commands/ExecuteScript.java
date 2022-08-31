@@ -1,5 +1,6 @@
 package commands;
 
+import client.ClientReceiver;
 import listening.Request;
 
 import java.io.File;
@@ -10,6 +11,10 @@ import java.util.Set;
 public class ExecuteScript extends ClientCommand {
 
     private static final Set<String> paths = new HashSet<>();
+
+    public ExecuteScript(ClientReceiver clientReceiver) {
+        super(clientReceiver);
+    }
 
     @Override
     public Optional<Request> execute(String arg) {

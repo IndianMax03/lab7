@@ -38,19 +38,19 @@ public class ClientInvoker {
         case ADD_IF_MIN:
             return Optional.of(new AddIfMin(clientReceiver));
         case CLEAR:
-            return Optional.of(new Clear());
+            return Optional.of(new Clear(clientReceiver));
         case EXECUTE_SCRIPT:
-            return Optional.of(new ExecuteScript());
+            return Optional.of(new ExecuteScript(clientReceiver));
         case EXIT:
-            return Optional.of(new Exit());
+            return Optional.of(new Exit(clientReceiver));
         case FILTER_STARTS_WITH_NAME:
-            return Optional.of(new FilterStartsWithName());
+            return Optional.of(new FilterStartsWithName(clientReceiver));
         case HELP:
-            return Optional.of(new Help());
+            return Optional.of(new Help(clientReceiver));
         case INFO:
-            return Optional.of(new Info());
+            return Optional.of(new Info(clientReceiver));
         case PRINT_DESCENDING:
-            return Optional.of(new PrintDescending());
+            return Optional.of(new PrintDescending(clientReceiver));
         case REMOVE_ALL_BY_GOVERNMENT:
             return Optional.of(new RemoveAllByGovernment(clientReceiver));
         case REMOVE_BY_ID:
@@ -60,7 +60,7 @@ public class ClientInvoker {
         case REMOVE_LOWER:
             return Optional.of(new RemoveLower(clientReceiver));
         case SHOW:
-            return Optional.of(new Show());
+            return Optional.of(new Show(clientReceiver));
         case UPDATE:
             return Optional.of(new Update(clientReceiver));
         case AUTHORIZATION:
