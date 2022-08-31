@@ -26,7 +26,8 @@ public class ServerInvoker {
 
     public Optional<Response> execute(Request request) {
         String commandName = request.getCommandName();
-        if (request.getLogin() == null || request.getPassword() == null || request.getLogin().equals("") && !commandName.equals("authorization")) {
+        if (request.getLogin() == null || request.getPassword() == null
+                || request.getLogin().equals("") && !commandName.equals("authorization")) {
             return Optional.of(new Response(
                     "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы зарегестрироваться в системе."));
         }
