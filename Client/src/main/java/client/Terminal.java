@@ -51,13 +51,7 @@ public class Terminal {
                     return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
                 } else {
                     Response response = optResponse.get();
-                    if (response.getAnswer() == null) {
-                        System.out.println(response.getMessage());
-                    } else {
-                        for (String ans : response.getAnswer()) {
-                            System.out.println(ans);
-                        }
-                    }
+                    responseProcessing(response);
                 }
             }
         }
@@ -92,13 +86,7 @@ public class Terminal {
                 Optional<Response> optResponse = client.recieve();
                 if (optResponse.isPresent()) {
                     Response response = optResponse.get();
-                    if (response.getAnswer() == null) {
-                        System.out.println(response.getMessage());
-                    } else {
-                        for (String ans : response.getAnswer()) {
-                            System.out.println(ans);
-                        }
-                    }
+                    responseProcessing(response);
                 }
 
             }
@@ -170,6 +158,16 @@ public class Terminal {
             scanner = new Scanner(file);
         } catch (FileNotFoundException ignored) {
             scanner = null;
+        }
+    }
+
+    private void responseProcessing(Response response) {
+        if (response.getAnswer() == null) {
+            System.out.println(response.getMessage());
+        } else {
+            for (String ans : response.getAnswer()) {
+                System.out.println(ans);
+            }
         }
     }
 
