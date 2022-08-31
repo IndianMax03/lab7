@@ -10,8 +10,8 @@ public class Main {
         Terminal terminal = new Terminal(invoker, client);
         try {
             terminal.startKeyboard();
-        } catch (NoSuchElementException ex) {
-            System.exit(1);
+        } catch (NoSuchElementException ignored) {
+
         }
     }
 }
