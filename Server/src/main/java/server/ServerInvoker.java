@@ -26,7 +26,8 @@ public class ServerInvoker {
 
     public Optional<Response> execute(Request request) {
         String commandName = request.getCommandName();
-        if (request.getLogin().equals("") && !commandName.equals("authorization")) {
+        if (request.getLogin() == null || request.getPassword() == null
+                || request.getLogin().equals("") && !commandName.equals("authorization")) {
             return Optional.of(new Response(
                     "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы зарегестрироваться в системе."));
         }
@@ -47,9 +48,9 @@ public class ServerInvoker {
         case CLEAR:
             return Optional.of(new Clear(serverReceiver));
         case EXECUTE_SCRIPT:
-            return Optional.of(new ExecuteScript());
+            return Optional.of(new ExecuteScript(serverReceiver));
         case EXIT:
-            return Optional.of(new Exit());
+            return Optional.of(new Exit(serverReceiver));
         case FILTER_STARTS_WITH_NAME:
             return Optional.of(new FilterStartsWithName(serverReceiver));
         case HELP:

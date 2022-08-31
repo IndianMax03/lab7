@@ -52,10 +52,13 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response("Ваш элемент добавлен в коллекцию. Его id = " + id);
+                return new Response("Город успешно добавлен. Его id = " + id);
             }
             return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
-        } finally {
+        } catch (NoSuchElementException ex) {
+            return add(city, login);
+        }
+        finally {
             collectionLock.unlock();
         }
     }

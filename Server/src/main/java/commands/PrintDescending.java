@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class PrintDescending extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public PrintDescending(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public class RemoveLower extends ClientCommand {
 
-    private final ClientReceiver clientReceiver;
-
     public RemoveLower(ClientReceiver clientReceiver) {
-        this.clientReceiver = clientReceiver;
+        super(clientReceiver);
     }
 
     @Override

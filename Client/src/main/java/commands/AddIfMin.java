@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public class AddIfMin extends ClientCommand {
 
-    private final ClientReceiver clientReceiver;
-
     public AddIfMin(ClientReceiver clientReceiver) {
-        this.clientReceiver = clientReceiver;
+        super(clientReceiver);
     }
 
     @Override

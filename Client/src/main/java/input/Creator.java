@@ -4,8 +4,13 @@ import base.*;
 
 public class Creator {
 
-    public static City createCity() {
-        Typer typer = new Typer();
+    private final Typer typer;
+
+    public Creator(Typer typer) {
+        this.typer = typer;
+    }
+
+    public City createCity() {
 
         String name = typer.typeName();
 

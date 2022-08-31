@@ -7,11 +7,8 @@ import server.ServerReceiver;
 import java.util.Optional;
 
 public class AddIfMin extends ServerCommand {
-
-    private final ServerReceiver serverReceiver;
-
     public AddIfMin(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

@@ -7,11 +7,8 @@ import listening.Request;
 import java.util.Optional;
 
 public class RemoveAllByGovernment extends ClientCommand {
-
-    private final ClientReceiver clientReceiver;
-
     public RemoveAllByGovernment(ClientReceiver clientReceiver) {
-        this.clientReceiver = clientReceiver;
+        super(clientReceiver);
     }
 
     @Override

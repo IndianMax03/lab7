@@ -7,11 +7,8 @@ import server.ServerReceiver;
 import java.util.Optional;
 
 public class Authorization extends ServerCommand {
-
-    private final ServerReceiver serverReceiver;
-
     public Authorization(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

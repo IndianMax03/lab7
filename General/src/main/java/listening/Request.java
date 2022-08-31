@@ -1,7 +1,6 @@
 package listening;
 
 import base.City;
-import base.User;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
@@ -10,9 +9,9 @@ public class Request implements Serializable {
 
 	private static final long serialVersionUID = 2837967881502539406L;
 
-	private String commandName;
-	private String argument;
-	private City city;
+	private final String commandName;
+	private final String argument;
+	private final City city;
 	private SocketAddress clientAddres = null;
 	private String login;
 	private String password;
@@ -39,24 +38,12 @@ public class Request implements Serializable {
 		return commandName;
 	}
 
-	public void setCommandName(String commandName) {
-		this.commandName = commandName;
-	}
-
 	public String getArgument() {
 		return argument;
 	}
 
-	public void setArgument(String argument) {
-		this.argument = argument;
-	}
-
 	public City getCity() {
 		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
 	}
 
 	public SocketAddress getClientAddres() {

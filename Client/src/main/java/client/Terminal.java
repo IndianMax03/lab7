@@ -6,6 +6,7 @@ import listening.Response;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -23,17 +24,15 @@ public class Terminal {
     }
 
     public String startFile(String filename) {
+
         System.out.println("Выполняется файл: " + filename);
-        String pathToFile = new File(filename).getAbsolutePath();
-        File file = new File(pathToFile);
-        Scanner fileScanner;
-        try {
-            fileScanner = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            return "Файл не найден.";
+        setScanner(filename);
+        if (scanner == null) {
+            return "Файл не найден";
         }
-        while (fileScanner.hasNext()) {
-            String line = fileScanner.nextLine();
+
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
             Optional<Request> optRequest = lineHandler(line);
             if (!optRequest.isPresent()) {
                 return "Выполнение execute_script в файле: " + filename
@@ -52,13 +51,7 @@ public class Terminal {
                     return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
                 } else {
                     Response response = optResponse.get();
-                    if (response.getAnswer() == null) {
-                        System.out.println(response.getMessage());
-                    } else {
-                        for (String ans : response.getAnswer()) {
-                            System.out.println(ans);
-                        }
-                    }
+                    responseProcessing(response);
                 }
             }
         }
@@ -68,22 +61,7 @@ public class Terminal {
     public void startKeyboard() {
 
         scanner = new Scanner(System.in);
-        System.out.println(
-                "Для начала работы вам необходимо авторизоваться в системе. В противном случае вы войдёте как гость.");
-        System.out.println("Вы хотите авторизоваться? [Да/Нет]");
-        while (true) {
-            System.out.print(">");
-            String ans = scanner.nextLine().trim();
-            if (ans.equals("Да")) {
-                authorization();
-                System.out.println("Вы вошли в систему под именем: " + login);
-                break;
-            } else if (ans.equals("Нет")) {
-                System.out.println("Вы вошли в систему как гость.");
-                break;
-            }
-            System.out.println("[Да/Нет]");
-        }
+        greeting();
 
         while (true) {
 
@@ -92,30 +70,25 @@ public class Terminal {
 
             Optional<Request> optRequest = lineHandler(line);
             if (optRequest.isPresent()) {
+
                 Request request = optRequest.get();
                 if (request.getCommandName().equals("execute_script")) {
                     System.out.println(startFile(request.getArgument()));
                     ExecuteScript.clearPaths();
+                    scanner = new Scanner(System.in);
                     continue;
                 }
+
                 request.setLogin(login);
                 request.setPassword(password);
-
                 client.send(request);
-                Optional<Response> optResponse = client.recieve();
 
-                if (!optResponse.isPresent()) {
-                    System.exit(-1);
-                } else {
+                Optional<Response> optResponse = client.recieve();
+                if (optResponse.isPresent()) {
                     Response response = optResponse.get();
-                    if (response.getAnswer() == null) {
-                        System.out.println(response.getMessage());
-                    } else {
-                        for (String ans : response.getAnswer()) {
-                            System.out.println(ans);
-                        }
-                    }
+                    responseProcessing(response);
                 }
+
             }
         }
     }
@@ -159,4 +132,43 @@ public class Terminal {
             }
         }
     }
+
+    private void greeting() {
+        System.out.println(
+                "Для начала работы вам необходимо авторизоваться в системе. В противном случае вы войдёте как гость.");
+        System.out.println("Вы хотите авторизоваться? [да/нет]");
+        while (true) {
+            System.out.print(">");
+            String ans = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+            if (ans.equals("да")) {
+                authorization();
+                System.out.println("Вы вошли в систему под именем: " + login);
+                break;
+            } else if (ans.equals("нет")) {
+                System.out.println("Вы вошли в систему как гость.");
+                break;
+            }
+            System.out.println("[да/нет]");
+        }
+    }
+
+    private void setScanner(String filename) {
+        File file = new File(filename).getAbsoluteFile();
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException ignored) {
+            scanner = null;
+        }
+    }
+
+    private void responseProcessing(Response response) {
+        if (response.getAnswer() == null) {
+            System.out.println(response.getMessage());
+        } else {
+            for (String ans : response.getAnswer()) {
+                System.out.println(ans);
+            }
+        }
+    }
+
 }

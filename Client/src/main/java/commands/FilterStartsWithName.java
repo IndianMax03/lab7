@@ -1,10 +1,15 @@
 package commands;
 
+import client.ClientReceiver;
 import listening.Request;
 
 import java.util.Optional;
 
 public class FilterStartsWithName extends ClientCommand {
+
+    public FilterStartsWithName(ClientReceiver clientReceiver) {
+        super(clientReceiver);
+    }
 
     @Override
     public Optional<Request> execute(String arg) {

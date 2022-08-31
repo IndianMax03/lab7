@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public class RemoveById extends ClientCommand {
 
-    private final ClientReceiver clientReceiver;
-
     public RemoveById(ClientReceiver clientReceiver) {
-        this.clientReceiver = clientReceiver;
+        super(clientReceiver);
     }
 
     @Override

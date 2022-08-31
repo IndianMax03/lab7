@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class Clear extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public Clear(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

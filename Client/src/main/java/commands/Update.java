@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public class Update extends ClientCommand {
 
-    private final ClientReceiver clientReceiver;
-
     public Update(ClientReceiver clientReceiver) {
-        this.clientReceiver = clientReceiver;
+        super(clientReceiver);
     }
 
     @Override

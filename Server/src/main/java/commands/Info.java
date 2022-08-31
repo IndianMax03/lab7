@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class Info extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public Info(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

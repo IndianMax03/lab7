@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class FilterStartsWithName extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public FilterStartsWithName(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override
