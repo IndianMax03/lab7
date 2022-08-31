@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class RemoveGreater extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public RemoveGreater(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

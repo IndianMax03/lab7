@@ -8,12 +8,10 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class Help extends ServerCommand {
-
-    private final ServerReceiver serverReceiver;
     private final HashMap<String, ServerCommand> commandMap;
 
     public Help(ServerReceiver serverReceiver, HashMap<String, ServerCommand> commandMap) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
         this.commandMap = commandMap;
     }
 

@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class RemoveAllByGovernment extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public RemoveAllByGovernment(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override

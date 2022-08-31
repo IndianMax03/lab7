@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public class RemoveById extends ServerCommand {
 
-    private final ServerReceiver serverReceiver;
-
     public RemoveById(ServerReceiver serverReceiver) {
-        this.serverReceiver = serverReceiver;
+        super(serverReceiver);
     }
 
     @Override
