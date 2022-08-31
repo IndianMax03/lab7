@@ -6,8 +6,6 @@ public abstract class AbstractCommand<T, R> {
 
 	public abstract Optional<R> execute(T arg);
 
-	public String getHelp(){
-		return "";
-	}
+	public abstract String getHelp();
 
 }

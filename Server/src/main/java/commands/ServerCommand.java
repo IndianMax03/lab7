@@ -12,4 +12,5 @@ public abstract class ServerCommand extends AbstractCommand<Request, Response> {
     public ServerCommand(ServerReceiver serverReceiver) {
         this.serverReceiver = serverReceiver;
     }
+
 }

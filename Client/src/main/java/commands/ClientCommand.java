@@ -11,4 +11,9 @@ public abstract class ClientCommand extends AbstractCommand<String, Request> {
     public ClientCommand(ClientReceiver clientReceiver) {
         this.clientReceiver = clientReceiver;
     }
+
+    @Override
+    public String getHelp() {
+        return "";
+    }
 }
