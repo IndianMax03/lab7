@@ -7,28 +7,29 @@ import input.Validator;
 import listening.Request;
 
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class ClientReceiver {
 
     private final Creator creator;
+    private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     public ClientReceiver() {
         this.creator = new Creator(new Typer());
     }
 
     public Optional<Request> removeLower() {
-        System.out.println("Создайте элемент. Из базы данных будут удалены все ваши элементы, меньшие, чем заданный.");
+        System.out.println(RB.getString("askRL"));
         return Optional.of(new Request("remove_lower", creator.createCity()));
     }
 
     public Optional<Request> removeGreater() {
-        System.out.println("Создайте элемент. Из базы данных будут удалены все ваши элементы, превышающие заданный.");
+        System.out.println(RB.getString("askRG"));
         return Optional.of(new Request("remove_greater", creator.createCity()));
     }
 
     public Optional<Request> addIfMin() {
-        System.out.println(
-                "Создайте элемент. Если его значение меньше, чем у наименьшего элемента в базе данных, то он будет добавлен.");
+        System.out.println(RB.getString("askAIM"));
         return Optional.of(new Request("add_if_min", creator.createCity()));
     }
 
@@ -38,16 +39,14 @@ public class ClientReceiver {
 
     public Optional<Request> update(String arg) {
         Long id = Validator.validateId(arg);
-        System.out.println(
-                "Создайте город, который заменит город с указанным id (если существует и у вас есть права на изменение).");
+        System.out.println(RB.getString("askUpd"));
         return Optional.of(new Request("update", arg, creator.createCity()));
     }
 
     public Optional<Request> removeById(String arg) {
         Long id = Validator.validateId(arg);
         if (id == null) {
-            System.out.println("Аргумент id передан неверно.");
-            System.out.println("id не может быть отрицательным числом или нулём.");
+            System.out.println(RB.getString("invalidId"));
             return Optional.empty();
         }
         return Optional.of(new Request("remove_by_id", arg));
@@ -57,7 +56,7 @@ public class ClientReceiver {
         if (Government.asLowerCaseStringList().contains(arg.toLowerCase())) {
             return Optional.of(new Request("remove_all_by_government", Government.fromString(arg).toString()));
         }
-        System.out.println("Передан неверный аргумент government.");
+        System.out.println(RB.getString("invalidGov"));
         return Optional.empty();
     }
 

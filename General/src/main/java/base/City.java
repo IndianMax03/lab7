@@ -15,6 +15,7 @@ public class City implements Comparable<City>, Serializable {
 	private static final Map<String, ? super Number> limitation = new HashMap<>();
 
 	static {
+		limitation.put("id", 0);
 		limitation.put("coordinateY", -628d);
 		limitation.put("area", 0f);
 		limitation.put("population", 0);

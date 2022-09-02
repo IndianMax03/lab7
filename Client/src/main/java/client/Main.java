@@ -3,10 +3,12 @@ package client;
 import clientLogger.ClientLogger;
 
 import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class Main {
     private static final Logger LOGGER = ClientLogger.getLogger();
+    private static final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     public static void main(String[] args) {
         try {
@@ -16,7 +18,7 @@ public class Main {
             Terminal terminal = new Terminal(invoker, client);
             terminal.startKeyboard();
         } catch (NoSuchElementException ex) {
-            LOGGER.info("Клиентский модуль завершил работу.");
+            LOGGER.info(RB.getString("stop"));
         }
     }
 }

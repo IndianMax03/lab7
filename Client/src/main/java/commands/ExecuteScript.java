@@ -1,6 +1,7 @@
 package commands;
 
 import client.ClientReceiver;
+import command.CommandsEnum;
 import listening.Request;
 
 import java.io.File;
@@ -19,14 +20,13 @@ public class ExecuteScript extends ClientCommand {
     @Override
     public Optional<Request> execute(String arg) {
         if (arg.isEmpty()) {
-            System.out.println("Команда execute_script требует аргуемент - filename.");
+            System.out.println(CommandsEnum.EXECUTE_SCRIPT.title + ": " + RB.getString("needArg"));
             return Optional.empty();
         }
         String path = new File(arg).getAbsolutePath();
         if (paths.add(path)) {
             return Optional.of(new Request("execute_script", arg));
         } else {
-            System.out.println("Обнаружена рекурсия.");
             return Optional.empty();
         }
     }

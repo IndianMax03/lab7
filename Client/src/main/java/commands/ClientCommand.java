@@ -4,7 +4,11 @@ import client.ClientReceiver;
 import command.AbstractCommand;
 import listening.Request;
 
+import java.util.ResourceBundle;
+
 public abstract class ClientCommand extends AbstractCommand<String, Request> {
+
+    protected final ResourceBundle RB = ResourceBundle.getBundle("commands");
 
     protected ClientReceiver clientReceiver;
 

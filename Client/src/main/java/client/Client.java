@@ -9,6 +9,7 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,19 +18,19 @@ public class Client {
     private DatagramSocket socket;
     private InetAddress host;
     private static final Logger LOGGER = ClientLogger.getLogger();
+    private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     public Client() {
         try {
             host = InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
             socket = new DatagramSocket();
-            LOGGER.info("Клиентский модуль начал работу.");
+            LOGGER.info(RB.getString("start"));
         } catch (SocketException e) {
             // can't create DSocket
-            LOGGER.log(Level.WARNING, "Широковещательное слушание не может быть начато.", new NoSuchElementException());
+            LOGGER.log(Level.WARNING, RB.getString("socketEx"), new NoSuchElementException());
         } catch (UnknownHostException e) {
             // can't find host
-            LOGGER.log(Level.WARNING, "Хост не найден. Обратитесь к разработчику программы.",
-                    new NoSuchElementException());
+            LOGGER.log(Level.WARNING, RB.getString("unknHost"), new NoSuchElementException());
         }
     }
 
@@ -43,10 +44,10 @@ public class Client {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
             return Optional.of((Response) ois.readObject());
         } catch (IOException e) {
-            LOGGER.warning("Сервер не отвечает.");
+            LOGGER.warning(RB.getString("ignore"));
             return Optional.empty();
         } catch (ClassNotFoundException e) {
-            LOGGER.warning("Нарушен кастинг к классу читаемого объекта.");
+            LOGGER.warning(RB.getString("badCasting"));
             return Optional.empty();
         }
     }
@@ -60,7 +61,7 @@ public class Client {
             byte[] sendArray = baos.toByteArray();
             socket.send(new DatagramPacket(sendArray, sendArray.length, host, PORT));
         } catch (IOException e) {
-            LOGGER.warning("Запрос не может быть записан и доставлен.");
+            LOGGER.warning(RB.getString("cantSend"));
         }
     }
 }
