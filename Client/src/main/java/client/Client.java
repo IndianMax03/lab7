@@ -1,11 +1,13 @@
 package client;
 
+import clientLogger.ClientLogger;
 import listening.Request;
 import listening.Response;
 
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,19 +16,20 @@ public class Client {
 
     private DatagramSocket socket;
     private InetAddress host;
-    private static final Logger logger = Logger.getAnonymousLogger();
+    private static final Logger LOGGER = ClientLogger.getLogger();
 
     public Client() {
         try {
             host = InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
             socket = new DatagramSocket();
-            logger.info("Клиентский модуль начал работу.");
+            LOGGER.info("Клиентский модуль начал работу.");
         } catch (SocketException e) {
-            logger.log(Level.WARNING, "Широковещательное слушание не может быть начато.");
-            System.exit(-1); // cause can't create DSocket
+            // can't create DSocket
+            LOGGER.log(Level.WARNING, "Широковещательное слушание не может быть начато.", new NoSuchElementException());
         } catch (UnknownHostException e) {
-            logger.log(Level.WARNING, "Хост не найден. Обратитесь к разработчику программы.");
-            System.exit(1); // cause can't find host
+            // can't find host
+            LOGGER.log(Level.WARNING, "Хост не найден. Обратитесь к разработчику программы.",
+                    new NoSuchElementException());
         }
     }
 
@@ -40,10 +43,10 @@ public class Client {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
             return Optional.of((Response) ois.readObject());
         } catch (IOException e) {
-            logger.warning("Сервер не отвечает.");
+            LOGGER.warning("Сервер не отвечает.");
             return Optional.empty();
         } catch (ClassNotFoundException e) {
-            logger.warning("Нарушен кастинг к классу читаемого объекта.");
+            LOGGER.warning("Нарушен кастинг к классу читаемого объекта.");
             return Optional.empty();
         }
     }
@@ -57,7 +60,7 @@ public class Client {
             byte[] sendArray = baos.toByteArray();
             socket.send(new DatagramPacket(sendArray, sendArray.length, host, PORT));
         } catch (IOException e) {
-            logger.warning("Запрос не может быть записан и доставлен.");
+            LOGGER.warning("Запрос не может быть записан и доставлен.");
         }
     }
 }

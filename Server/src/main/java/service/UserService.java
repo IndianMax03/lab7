@@ -2,16 +2,18 @@ package service;
 
 import businessLogic.Database;
 import daoPattern.UserDAO;
+import serverLogger.ServerLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UserService extends Database implements UserDAO {
 
-    private final Logger logger = Logger.getAnonymousLogger();
+    private final Logger LOGGER = ServerLogger.getLogger();
     private Connection connection = null;
     private PreparedStatement statement = null;
 
@@ -21,8 +23,8 @@ public class UserService extends Database implements UserDAO {
             statement = connection.prepareStatement(SQLUser.INIT.QUERY);
             statement.executeUpdate();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при создании таблицы users");
-            System.exit(-1);
+            LOGGER.log(Level.SEVERE, "Ошибка при обращении к базе данных при создании таблицы users",
+                    new RuntimeException());
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -39,7 +41,7 @@ public class UserService extends Database implements UserDAO {
             statement.setString(2, password);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при добавлении пользователя.");
+            LOGGER.warning("Ошибка при обращении к базе данных при добавлении пользователя.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -57,7 +59,7 @@ public class UserService extends Database implements UserDAO {
             statement.setString(2, password);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при проверке пользователя.");
+            LOGGER.warning("Ошибка при обращении к базе данных при проверке пользователя.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -80,7 +82,7 @@ public class UserService extends Database implements UserDAO {
                 return false;
             }
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при проверке пользователя.");
+            LOGGER.warning("Ошибка при обращении к базе данных при проверке пользователя.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -98,7 +100,7 @@ public class UserService extends Database implements UserDAO {
             statement.setString(2, password);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при удалении пользователя.");
+            LOGGER.warning("Ошибка при обращении к базе данных при удалении пользователя.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);

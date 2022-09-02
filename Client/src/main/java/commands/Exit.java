@@ -3,6 +3,7 @@ package commands;
 import client.ClientReceiver;
 import listening.Request;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Exit extends ClientCommand {
@@ -17,7 +18,6 @@ public class Exit extends ClientCommand {
             return Optional.empty();
         }
         System.out.println("Спасибо за работу. До свидания.");
-        System.exit(1);
-        return Optional.empty();
+        throw new NoSuchElementException();
     }
 }

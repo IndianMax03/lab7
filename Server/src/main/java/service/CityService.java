@@ -3,6 +3,7 @@ package service;
 import base.City;
 import businessLogic.Database;
 import daoPattern.CityDAO;
+import serverLogger.ServerLogger;
 
 import java.sql.*;
 import java.util.SortedSet;
@@ -14,7 +15,7 @@ public class CityService extends Database implements CityDAO {
 
     private Connection connection = null;
     private PreparedStatement statement = null;
-    private final Logger logger = Logger.getAnonymousLogger();
+    private final Logger LOGGER = ServerLogger.getLogger();
 
     public CityService() {
         try {
@@ -22,8 +23,8 @@ public class CityService extends Database implements CityDAO {
             statement = connection.prepareStatement(SQLCity.INIT.QUERY);
             statement.executeUpdate();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при создании таблицы cities");
-            System.exit(-1);
+            LOGGER.log(Level.SEVERE, "Ошибка при обращении к базе данных при создании таблицы cities",
+                    new RuntimeException());
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -58,7 +59,7 @@ public class CityService extends Database implements CityDAO {
                 return result;
             }
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при добавлении города.");
+            LOGGER.warning("Ошибка при обращении к базе данных при добавлении города.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -94,17 +95,17 @@ public class CityService extends Database implements CityDAO {
                     city = new City(id, name, x, y, crDate, area, population, meters, climate, government, standard,
                             governor, governor_height, governor_birthday, login);
                 } catch (NullPointerException ex) {
-                    logger.log(Level.WARNING, "В базе данных обнаружен невалидный город. Он немедленно будет удален.");
+                    LOGGER.log(Level.WARNING, "В базе данных обнаружен невалидный город. Он немедленно будет удален.");
                     deleteInvalidCity(name);
                 }
                 if (city != null && !result.add(city)) {
-                    logger.warning(
+                    LOGGER.warning(
                             "В базе данных обнаружены города с одинаковым названием. Они немедленно будут удалены.");
                     deleteInvalidCity(name);
                 }
             }
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при чтении содержимого.");
+            LOGGER.warning("Ошибка при обращении к базе данных при чтении содержимого.");
             return new TreeSet<>();
         } finally {
             closeStatement(statement);
@@ -119,7 +120,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(1, name);
             statement.executeUpdate();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при удалении невалидного города из базы данных.");
+            LOGGER.warning("Ошибка при удалении невалидного города из базы данных.");
         } finally {
             closeStatement(statement);
         }
@@ -148,7 +149,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(15, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при обновлении города.");
+            LOGGER.warning("Ошибка при обращении к базе данных при обновлении города.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -166,7 +167,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при удалении города по его id.");
+            LOGGER.warning("Ошибка при обращении к базе данных при удалении города по его id.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -183,7 +184,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(1, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
+            LOGGER.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -201,7 +202,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
+            LOGGER.warning("Ошибка при обращении к базе данных при очистке коллекции пользователем.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -219,7 +220,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при удалению городов больших, чем заданный.");
+            LOGGER.warning("Ошибка при обращении к базе данных при удалению городов больших, чем заданный.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);
@@ -237,7 +238,7 @@ public class CityService extends Database implements CityDAO {
             statement.setString(2, login);
             result = statement.executeQuery().next();
         } catch (SQLException throwables) {
-            logger.warning("Ошибка при обращении к базе данных при удалению городов меньших, чем заданный.");
+            LOGGER.warning("Ошибка при обращении к базе данных при удалению городов меньших, чем заданный.");
         } finally {
             closeStatement(statement);
             closeConnection(connection);

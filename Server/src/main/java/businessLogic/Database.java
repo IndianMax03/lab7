@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
@@ -23,7 +24,7 @@ public class Database {
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException throwables) {
-            LOGGER.warning("Не удалось установить соединение с базой данных.");
+            LOGGER.log(Level.SEVERE, "Не удалось установить соединение с базой данных.", new RuntimeException());
         }
         return connection;
     }

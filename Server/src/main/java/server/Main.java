@@ -2,13 +2,16 @@ package server;
 
 import listening.Request;
 import listening.Response;
+import serverLogger.ServerLogger;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
 
+    private static final Logger LOGGER = ServerLogger.getLogger();
     private static final ServerReceiver serverReceiver = new ServerReceiver();
     private static final ServerInvoker serverInvoker = new ServerInvoker(serverReceiver);
 
@@ -20,8 +23,10 @@ public class Main {
 
         while (true) {
 
-            if (parseComment() == 0)
+            if (parseComment() == 0) {
+                LOGGER.info("Сервер завершает свою работу.");
                 return;
+            }
 
             new Thread(() -> {
                 Optional<Request> optRequest = server.recieve();
