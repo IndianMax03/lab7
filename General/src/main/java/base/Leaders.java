@@ -1,11 +1,13 @@
 package base;
 
+import java.util.ResourceBundle;
+
 public enum Leaders {
-	MAXIM("Максим Прогер"),
-	MARTIN("Мартин Надзиратель"),
-	ANTONY("Антон Терпила"),
-	ALINA("Алина Прекрасная"),
-	ILIA("Юникс Бессмертный");
+	MAXIM(ResourceBundle.getBundle("enums").getString("maxim")),
+	MARTIN(ResourceBundle.getBundle("enums").getString("martin")),
+	ANTONY(ResourceBundle.getBundle("enums").getString("antony")),
+	ALINA(ResourceBundle.getBundle("enums").getString("alina")),
+	ILIA(ResourceBundle.getBundle("enums").getString("ilia"));
 
 	private final String title;
 

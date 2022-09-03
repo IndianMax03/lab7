@@ -3,12 +3,13 @@ package base;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public enum Climate implements Serializable {
 
-	HUMIDCONTINENTAL("Влажный континентальный"),
-	SUBARCTIC("Субарктический"),
-	TUNDRA("Тундра");
+	HUMIDCONTINENTAL(ResourceBundle.getBundle("enums").getString("humidcontinental")),
+	SUBARCTIC(ResourceBundle.getBundle("enums").getString("subarctic")),
+	TUNDRA(ResourceBundle.getBundle("enums").getString("tundra"));
 
 	private final String title;
 

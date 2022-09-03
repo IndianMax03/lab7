@@ -7,12 +7,15 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class City implements Comparable<City>, Serializable {
 
 	private static final long serialVersionUID = -3000033697508215511L;
 
 	private static final Map<String, ? super Number> limitation = new HashMap<>();
+
+	private final ResourceBundle RB = ResourceBundle.getBundle("base");
 
 	static {
 		limitation.put("id", 0);
@@ -184,7 +187,8 @@ public class City implements Comparable<City>, Serializable {
 	}
 
 	public String toUser(){
-		return "Город: " + name + ", id: " + id + ", тип правления: " + government + ", владелец: " + login;
+		return RB.getString("city") + ": " + name + ", id: " + id + ", " +  RB.getString("gov") + ": "
+				+ government + ", " + RB.getString("user") + ": " + login;
 	}
 
 	public static Map<String, ? super Number> getLimitation() {

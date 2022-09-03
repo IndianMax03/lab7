@@ -1,14 +1,13 @@
 package base;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ResourceBundle;
 
 public enum StandardOfLiving implements Serializable {
 
-	ULTRA_HIGH("Очень высокий"),
-	HIGH("Высокий"),
-	ULTRA_LOW("Очень низкий");
+	ULTRA_HIGH(ResourceBundle.getBundle("enums").getString("ultraHigh")),
+	HIGH(ResourceBundle.getBundle("enums").getString("high")),
+	ULTRA_LOW(ResourceBundle.getBundle("enums").getString("ultraLow"));
 
 	private final String title;
 
