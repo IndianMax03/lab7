@@ -18,6 +18,7 @@ public class ServerReceiver {
     private static final ReentrantLock collectionLock = new ReentrantLock();
     private static final ReentrantLock usersLock = new ReentrantLock();
     private SortedSet<City> collection = new TreeSet<>();
+    private final ResourceBundle RB = ResourceBundle.getBundle("server");
     private final ZonedDateTime creationDate;
     private final CityService cityService = new CityService();
     private final UserService userService = new UserService();
@@ -34,10 +35,9 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response("Город успешно добавлен. Его id = " + id);
+                return new Response(RB.getString("cityAdded") + ", id = " + id);
             } else {
-                return new Response(
-                        "Город добавить не удалось коллекция не предполагает хранение городов с одинаковым именем.");
+                return new Response(RB.getString("addingEx") + ":\n" + RB.getString("sameNames"));
             }
         } finally {
             collectionLock.unlock();
@@ -52,13 +52,12 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response("Город успешно добавлен. Его id = " + id);
+                return new Response(RB.getString("cityAdded") + ", id = " + id);
             }
-            return new Response("Ваш элемент не добавлен в коллекцию. Условие не выполнено.");
+            return new Response(RB.getString("addingEx") + ":\n" + RB.getString("failedCond"));
         } catch (NoSuchElementException ex) {
             return add(city, login);
-        }
-        finally {
+        } finally {
             collectionLock.unlock();
         }
     }
@@ -66,7 +65,7 @@ public class ServerReceiver {
     public Response filterStartsWithName(String name) {
         collectionLock.lock();
         try {
-            return new Response(collection.stream().filter(city -> city.getName().startsWith(name)).map(City::toUser)
+            return new Response(collection.stream().filter(city -> city.getName().startsWith(name)).map(City::toString)
                     .toArray(String[]::new));
         } finally {
             collectionLock.unlock();
@@ -77,9 +76,9 @@ public class ServerReceiver {
         collectionLock.lock();
         try {
             String[] information = new String[3];
-            information[0] = "Тип коллекции: " + collection.getClass();
-            information[1] = "Дата инициализации коллекции: " + creationDate;
-            information[2] = "Количество элементов коллекции: " + collection.size();
+            information[0] = RB.getString("type") + ": " + collection.getClass();
+            information[1] = RB.getString("date") + ": " + creationDate;
+            information[2] = RB.getString("size") + ": " + collection.size();
             return new Response(information);
         } finally {
             collectionLock.unlock();
@@ -89,7 +88,7 @@ public class ServerReceiver {
     public Response show() {
         collectionLock.lock();
         try {
-            return new Response(collection.stream().map(City::toUser).toArray(String[]::new));
+            return new Response(collection.stream().map(City::toString).toArray(String[]::new));
         } finally {
             collectionLock.unlock();
         }
@@ -99,7 +98,7 @@ public class ServerReceiver {
         collectionLock.lock();
         try {
             return new Response(
-                    collection.stream().sorted(Collections.reverseOrder()).map(City::toUser).toArray(String[]::new));
+                    collection.stream().sorted(Collections.reverseOrder()).map(City::toString).toArray(String[]::new));
         } finally {
             collectionLock.unlock();
         }
@@ -111,9 +110,9 @@ public class ServerReceiver {
             if (cityService.removeAllByGovernment(government, login)) {
                 collection.removeIf(
                         city -> city.getGovernment().toString().equals(government) && city.getLogin().equals(login));
-                return new Response("Из коллекции удалены все ваши города с полем government = " + government);
+                return new Response(RB.getString("niceRemoving") + ":\n" + "'government' = " + government);
             } else {
-                return new Response("Удаление выполнить не удалось. Вы еще не создали города с данным условием.");
+                return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne"));
             }
         } finally {
             collectionLock.unlock();
@@ -131,9 +130,10 @@ public class ServerReceiver {
             }
             if (cityService.removeById(id, login)) {
                 collection.removeIf(city -> city.getId().equals(id));
-                return new Response("Ваш элемент с id = " + id + " успешно удален из коллекции.");
+                return new Response(RB.getString("niceRemoving" + ":\n" + "id = " + id));
             } else {
-                return new Response("Элемента с таким id не существует или он вам не принадлежит.");
+                return new Response(RB.getString("failedRemoving)") + ":\n" + RB.getString("noOne") + " "
+                        + RB.getString("or") + " " + RB.getString("notYour"));
             }
         } finally {
             collectionLock.unlock();
@@ -146,9 +146,9 @@ public class ServerReceiver {
             if (cityService.removeGreater(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) > 0
                         && cityFromColl.getLogin().equals(city.getLogin()));
-                return new Response("Из коллекции удалены ваши элементы, превышающие введённый.");
+                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("greater") + ".");
             }
-            return new Response("Ни один элемент не был удалён.");
+            return new Response(RB.getString("noOne") + ":\n" + RB.getString("greater") + ".");
         } finally {
             collectionLock.unlock();
         }
@@ -160,9 +160,9 @@ public class ServerReceiver {
             if (cityService.removeLower(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) < 0
                         && cityFromColl.getLogin().equals(city.getLogin()));
-                return new Response("Из коллекции удалены ваши элементы, меньшие, чем введённый.");
+                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("lower") + ".");
             }
-            return new Response("Ни один элемент не был удалён.");
+            return new Response(RB.getString("noOne") + ":\n" + RB.getString("lower") + ".");
         } finally {
             collectionLock.unlock();
         }
@@ -177,9 +177,9 @@ public class ServerReceiver {
         try {
             if (cityService.clearByUser(login)) {
                 collection.removeIf(city -> city.getLogin().equals(login));
-                return new Response("Из коллекции удалены все, созданные вами города.");
+                return new Response(RB.getString("clearNice"));
             }
-            return new Response("Ни один элемент не был удалён.");
+            return new Response(RB.getString("clearBad"));
         } finally {
             collectionLock.unlock();
         }
@@ -197,15 +197,16 @@ public class ServerReceiver {
             city.setId(id);
             city.setLogin(login);
             collection.add(city);
-            return new Response("Поля города с id=" + id + " успешно обновлены.");
+            return new Response(RB.getString("updNice"));
         } else {
-            return new Response("Поля города с id=" + id + " обновить не удалось. Город не найден или вы не владелец.");
+            return new Response(RB.getString("updBad") + ":\n" + RB.getString("noOne") + " " + RB.getString("or") + " "
+                    + RB.getString("notYour"));
         }
     }
 
     public Response authorization(String login, String password) {
         if (login.isEmpty()) {
-            return new Response("Имя пользователя не может быть пустой строкой.");
+            return new Response(RB.getString("emptyLine"));
         }
         // hashing: https://clck.ru/t7zn9
         try {
@@ -225,7 +226,7 @@ public class ServerReceiver {
             if (userService.checkExists(login, password)) {
                 return new Response("");
             } else if (userService.checkImpostor(login, password)) {
-                return new Response("Неверный пароль для пользователя " + login);
+                return new Response(RB.getString("badPass") + ": " + login);
             } else {
                 userService.create(login, password);
                 return new Response("");

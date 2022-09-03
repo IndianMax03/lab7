@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class PrintDescending extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите print_descending, чтобы вывести элементы коллекции в порядке убывания";
+        return CommandsEnum.PRINT_DESCENDING.title + " : " + RB.getString("printDesc");
     }
 }

@@ -1,11 +1,8 @@
 package base;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public enum Climate implements Serializable {
-
 	HUMIDCONTINENTAL("Влажный континентальный"),
 	SUBARCTIC("Субарктический"),
 	TUNDRA("Тундра");
@@ -25,4 +22,5 @@ public enum Climate implements Serializable {
 		}
 		return null;
 	}
+
 }

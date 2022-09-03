@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class Show extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите show, чтобы вывести в стандартный поток вывода все элементы коллекции в строковом представлении";
+        return CommandsEnum.SHOW.title + " : " + RB.getString("show");
     }
 }

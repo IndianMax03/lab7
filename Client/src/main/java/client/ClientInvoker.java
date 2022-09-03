@@ -7,8 +7,11 @@ import listening.Request;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class ClientInvoker {
+
+    private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     private final Map<String, ClientCommand> commandMap = new HashMap<>();
 
@@ -27,7 +30,7 @@ public class ClientInvoker {
     public Optional<Request> check(String commandName, String argument) {
         if (this.commandMap.containsKey(commandName))
             return this.commandMap.get(commandName).execute(argument);
-        System.out.println("Введённой команды не существует.");
+        System.out.println(RB.getString("badCommand"));
         return Optional.empty();
     }
 

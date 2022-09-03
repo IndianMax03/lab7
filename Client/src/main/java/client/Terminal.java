@@ -1,5 +1,6 @@
 package client;
 
+import clientLogger.ClientLogger;
 import commands.ExecuteScript;
 import listening.Request;
 import listening.Response;
@@ -8,9 +9,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.logging.*;
 
 public class Terminal {
+
+    private final Logger LOGGER = ClientLogger.getLogger();
+    private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     Scanner scanner;
     private final ClientInvoker clientInvoker;
@@ -23,24 +29,25 @@ public class Terminal {
         this.client = client;
     }
 
-    public String startFile(String filename) {
-
-        System.out.println("Выполняется файл: " + filename);
+    public void startFile(String filename) {
+        System.out.println(RB.getString("startFile") + filename);
         setScanner(filename);
         if (scanner == null) {
-            return "Файл не найден";
+            System.out.println(RB.getString("fileNotFound"));
+            return;
         }
 
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
             Optional<Request> optRequest = lineHandler(line);
             if (!optRequest.isPresent()) {
-                return "Выполнение execute_script в файле: " + filename
-                        + " принудительно прекращено строкой с рекурсивным вызовом: " + line;
+                System.out.println(
+                        RB.getString("executing") + filename + " " + RB.getString("recoursiveLine") + " " + line);
+                return;
             } else {
                 Request request = optRequest.get();
                 if (request.getCommandName().equals("execute_script")) {
-                    System.out.println(startFile(request.getArgument()));
+                    startFile(request.getArgument());
                     continue;
                 }
                 request.setLogin(login);
@@ -48,24 +55,24 @@ public class Terminal {
                 client.send(request);
                 Optional<Response> optResponse = client.recieve();
                 if (!optResponse.isPresent()) {
-                    return "На сервер прошла команда execute_script или сервер не ответил. Выполнение команды остановлено.";
+                    LOGGER.log(Level.SEVERE, RB.getString("brokenExecute"), new RuntimeException());
                 } else {
                     Response response = optResponse.get();
                     responseProcessing(response);
                 }
             }
         }
-        return "Команда execute_script с файлом " + filename + " завершена.";
+        System.out.println(RB.getString("executing") + filename + RB.getString("ended"));
     }
 
     public void startKeyboard() {
 
         scanner = new Scanner(System.in);
+
         greeting();
 
         while (true) {
-
-            System.out.print("Введите команду:\n>");
+            System.out.print(RB.getString("inputCommand") + "\n>");
             String line = scanner.nextLine();
 
             Optional<Request> optRequest = lineHandler(line);
@@ -73,7 +80,7 @@ public class Terminal {
 
                 Request request = optRequest.get();
                 if (request.getCommandName().equals("execute_script")) {
-                    System.out.println(startFile(request.getArgument()));
+                    startFile(request.getArgument());
                     ExecuteScript.clearPaths();
                     scanner = new Scanner(System.in);
                     continue;
@@ -102,7 +109,7 @@ public class Terminal {
         String command = commandLine[0].trim();
         if (command.equals("authorization")) {
             authorization();
-            System.out.println("Вы вошли в систему под именем: " + login);
+            System.out.println(RB.getString("auth") + login);
             return Optional.empty();
         }
         if (commandLine.length == 1) {
@@ -115,9 +122,9 @@ public class Terminal {
     }
 
     private void authorization() {
-        System.out.print("Введите логин: ");
+        System.out.print(RB.getString("inpLogin") + "\n>");
         login = scanner.nextLine();
-        System.out.print("Введите пароль (можно не вводить): ");
+        System.out.print(RB.getString("inpPassword") + "\n>");
         password = scanner.nextLine();
         Request authRequest = new Request("authorization");
         authRequest.setLogin(login);
@@ -134,21 +141,19 @@ public class Terminal {
     }
 
     private void greeting() {
-        System.out.println(
-                "Для начала работы вам необходимо авторизоваться в системе. В противном случае вы войдёте как гость.");
-        System.out.println("Вы хотите авторизоваться? [да/нет]");
+        System.out.println(RB.getString("greeting"));
         while (true) {
             System.out.print(">");
             String ans = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-            if (ans.equals("да")) {
+            if (ans.equals(RB.getString("yes"))) {
                 authorization();
-                System.out.println("Вы вошли в систему под именем: " + login);
-                break;
-            } else if (ans.equals("нет")) {
-                System.out.println("Вы вошли в систему как гость.");
-                break;
+                System.out.println(RB.getString("auth") + login);
+                return;
+            } else if (ans.equals(RB.getString("no"))) {
+                System.out.println(RB.getString("auth") + RB.getString("guest"));
+                return;
             }
-            System.out.println("[да/нет]");
+            System.out.println(RB.getString("yes") + "/" + RB.getString("no"));
         }
     }
 

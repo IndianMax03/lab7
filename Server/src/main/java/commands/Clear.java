@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -18,6 +19,6 @@ public class Clear extends ServerCommand {
     }
 
     public String getHelp() {
-        return "Введите clear, чтобы очистить коллекцию";
+        return CommandsEnum.CLEAR.title + " : " + RB.getString("clear");
     }
 }

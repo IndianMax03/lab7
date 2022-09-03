@@ -15,10 +15,10 @@ public class Coordinates implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Координаты{" +
+		return "(" +
 				"x=" + x +
 				", y=" + y +
-				'}';
+				')';
 	}
 
 	public Double getX() {

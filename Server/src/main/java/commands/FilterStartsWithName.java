@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,7 +20,6 @@ public class FilterStartsWithName extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите filter_starts_with_name name, чтобы вывести элементы, значение поля name которых начинается с "
-                + "заданной подстроки";
+        return CommandsEnum.FILTER_STARTS_WITH_NAME.title + " name : " + RB.getString("filterSWN");
     }
 }

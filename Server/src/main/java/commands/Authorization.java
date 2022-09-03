@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -18,6 +19,6 @@ public class Authorization extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите authorization, чтобы авторизоваться в системе.";
+        return CommandsEnum.AUTHORIZATION.title + " : " + RB.getString("auth");
     }
 }
