@@ -24,7 +24,7 @@ public class Database {
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException throwables) {
-            LOGGER.log(Level.SEVERE, "Не удалось установить соединение с базой данных.", new RuntimeException());
+            LOGGER.log(Level.SEVERE, "Не удалось установить соединение с базой данных", new RuntimeException());
         }
         return connection;
     }
@@ -33,7 +33,7 @@ public class Database {
         try {
             DbUtils.close(connection);
         } catch (SQLException throwables) {
-            LOGGER.warning("Не удалось закрыть подключение.");
+            LOGGER.warning("Не удалось закрыть подключение");
         }
     }
 
@@ -41,7 +41,7 @@ public class Database {
         try {
             DbUtils.close(statement);
         } catch (SQLException throwables) {
-            LOGGER.warning("Не удалось закрыть вырыжание statement.");
+            LOGGER.warning("Не удалось закрыть состояние statement");
         }
     }
 

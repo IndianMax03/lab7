@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -18,8 +19,7 @@ public class AddIfMin extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите add_if_min {element}, чтобы добавить новый элемент в коллекцию, если его значение меньше, чем у"
-                + " наименьшего элемента этой коллекции";
+        return CommandsEnum.ADD_IF_MIN.title + " {element} : " + RB.getString("addIfMin");
     }
 
 }

@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -18,6 +19,6 @@ public class ExecuteScript extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите execute_script file_name, чтобы считать и исполнить скрипт из указанного файла.";
+        return CommandsEnum.EXECUTE_SCRIPT.title + " filename : " + RB.getString("execScr");
     }
 }

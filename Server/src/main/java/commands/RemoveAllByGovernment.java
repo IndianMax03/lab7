@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,7 +20,6 @@ public class RemoveAllByGovernment extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите remove_all_by_government government, чтобы удалить из коллекции все элементы, значение поля"
-                + " government которого эквивалентно заданному";
+        return CommandsEnum.REMOVE_ALL_BY_GOVERNMENT.title + " government : " + RB.getString("removeByGov");
     }
 }

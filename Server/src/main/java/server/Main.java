@@ -6,12 +6,14 @@ import serverLogger.ServerLogger;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class Main {
 
     private static final Logger LOGGER = ServerLogger.getLogger();
+    private static final ResourceBundle RB = ResourceBundle.getBundle("server");
     private static final ServerReceiver serverReceiver = new ServerReceiver();
     private static final ServerInvoker serverInvoker = new ServerInvoker(serverReceiver);
 
@@ -24,7 +26,7 @@ public class Main {
         while (true) {
 
             if (parseComment() == 0) {
-                LOGGER.info("Сервер завершает свою работу.");
+                LOGGER.info(RB.getString("end"));
                 return;
             }
 

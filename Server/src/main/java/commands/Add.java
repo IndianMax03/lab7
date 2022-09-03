@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class Add extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите add {element}, чтобы добавить новый элемент в коллекцию";
+        return CommandsEnum.ADD.title + " {element} : " + RB.getString("add");
     }
 }

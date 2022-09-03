@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -22,7 +23,7 @@ public class Help extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите help, если хотитите вывести справку по доступным командам";
+        return CommandsEnum.HELP.title + " : " + RB.getString("help");
     }
 
 }

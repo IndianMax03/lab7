@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class RemoveGreater extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите remove_greater {element}, чтобы удалить из коллекции все элементы, превышающие заданный";
+        return CommandsEnum.REMOVE_GREATER.title + " {element} : " + RB.getString("removeGreater");
     }
 }

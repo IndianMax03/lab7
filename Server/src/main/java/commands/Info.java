@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,7 +20,6 @@ public class Info extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите info, чтобы вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации,"
-                + " количество элементов)";
+        return CommandsEnum.INFO.title + " : " + RB.getString("info");
     }
 }

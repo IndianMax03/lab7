@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class RemoveById extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите remove_by_id id, чтобы удалить элемент из коллекции по его id";
+        return CommandsEnum.REMOVE_BY_ID.title + " id : " + RB.getString("removeById");
     }
 }

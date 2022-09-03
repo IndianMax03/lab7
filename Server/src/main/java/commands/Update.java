@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -19,6 +20,6 @@ public class Update extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите update id {element}, чтобы обновить значение элемента коллекции, id которого равен заданному";
+        return CommandsEnum.UPDATE.title + " {element} : " + RB.getString("update");
     }
 }

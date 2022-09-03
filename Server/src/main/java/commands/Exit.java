@@ -1,5 +1,6 @@
 package commands;
 
+import command.CommandsEnum;
 import listening.Request;
 import listening.Response;
 import server.ServerReceiver;
@@ -18,6 +19,6 @@ public class Exit extends ServerCommand {
 
     @Override
     public String getHelp() {
-        return "Введите exit, чтобы завершить программу (без сохранения в файл).";
+        return CommandsEnum.EXIT.title + " : " + RB.getString("exit");
     }
 }

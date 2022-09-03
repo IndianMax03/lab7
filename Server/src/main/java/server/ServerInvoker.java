@@ -8,10 +8,12 @@ import listening.Response;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class ServerInvoker {
 
     private final HashMap<String, ServerCommand> commandMap = new HashMap<>();
+    private final ResourceBundle RB = ResourceBundle.getBundle("server");
 
     private void register(String commandName, ServerCommand command) {
         commandMap.put(commandName, command);
@@ -28,8 +30,7 @@ public class ServerInvoker {
         String commandName = request.getCommandName();
         if (request.getLogin() == null || request.getPassword() == null
                 || request.getLogin().equals("") && !commandName.equals("authorization")) {
-            return Optional.of(new Response(
-                    "Выполнение команд не доступно неавторизованным пользователям.\nВведите authorization, чтобы зарегестрироваться в системе."));
+            return Optional.of(new Response(RB.getString("badReq")));
         }
 
         return this.commandMap.get(commandName).execute(request);
