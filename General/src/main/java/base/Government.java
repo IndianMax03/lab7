@@ -2,14 +2,13 @@ package base;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public enum Government {
 
-	ANARCHY(ResourceBundle.getBundle("enums").getString("anarchy")),
-	DICTATORSHIP(ResourceBundle.getBundle("enums").getString("dictatorship")),
-	THALASSOCRACY(ResourceBundle.getBundle("enums").getString("thalassocracy")),
-	THEOCRACY(ResourceBundle.getBundle("enums").getString("theocracy"));
+	ANARCHY("Анархия"),
+	DICTATORSHIP("Диктатура"),
+	THALASSOCRACY("Талассократия"),
+	THEOCRACY("Теократия");
 
 	private final String title;
 

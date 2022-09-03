@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 public class Coordinates implements Serializable {
 
 	private static final long serialVersionUID = -6206775671942678111L;
-	private final ResourceBundle RB = ResourceBundle.getBundle("base");
+	transient private final ResourceBundle RB = ResourceBundle.getBundle("base");
 	private Double x; //Поле не может быть null
 	private Double y; //Значение поля должно быть больше -628, Поле не может быть null
 

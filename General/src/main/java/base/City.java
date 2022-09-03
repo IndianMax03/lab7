@@ -15,7 +15,7 @@ public class City implements Comparable<City>, Serializable {
 
 	private static final Map<String, ? super Number> limitation = new HashMap<>();
 
-	private final ResourceBundle RB = ResourceBundle.getBundle("base");
+	transient private final ResourceBundle RB = ResourceBundle.getBundle("base");
 
 	static {
 		limitation.put("id", 0);
