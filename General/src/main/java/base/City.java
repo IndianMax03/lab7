@@ -7,15 +7,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class City implements Comparable<City>, Serializable {
 
 	private static final long serialVersionUID = -3000033697508215511L;
 
 	private static final Map<String, ? super Number> limitation = new HashMap<>();
-
-	transient private final ResourceBundle RB = ResourceBundle.getBundle("base");
 
 	static {
 		limitation.put("id", 0);
@@ -68,19 +65,12 @@ public class City implements Comparable<City>, Serializable {
 
 	@Override
 	public String toString() {
-		return "City{" +
+		return "[" +
 				"id=" + id +
 				", name='" + name + '\'' +
-				", coordinates=" + coordinates +
-				", creationDate=" + creationDate +
-				", area=" + area +
-				", population=" + population +
-				", metersAboveSeaLevel=" + metersAboveSeaLevel +
-				", climate=" + climate +
 				", government=" + government +
-				", standardOfLiving=" + standardOfLiving +
-				", governor=" + governor +
-				'}';
+				", user=" + login +
+				']';
 	}
 
 
@@ -184,11 +174,6 @@ public class City implements Comparable<City>, Serializable {
 
 	public void setGovernor(Human governor) {
 		this.governor = governor;
-	}
-
-	public String toUser(){
-		return RB.getString("city") + ": " + name + ", id: " + id + ", " +  RB.getString("gov") + ": "
-				+ government + ", " + RB.getString("user") + ": " + login;
 	}
 
 	public static Map<String, ? super Number> getLimitation() {
