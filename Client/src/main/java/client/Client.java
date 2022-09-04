@@ -24,6 +24,7 @@ public class Client {
         try {
             host = InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
             socket = new DatagramSocket();
+            socket.setSoTimeout(7000);
             LOGGER.info(RB.getString("start"));
         } catch (SocketException e) {
             // can't create DSocket
@@ -44,8 +45,8 @@ public class Client {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
             return Optional.of((Response) ois.readObject());
         } catch (IOException e) {
-            LOGGER.warning(RB.getString("ignore"));
-            return Optional.empty();
+            LOGGER.log(Level.SEVERE, RB.getString("ignore"));
+            throw new NoSuchElementException();
         } catch (ClassNotFoundException e) {
             LOGGER.warning(RB.getString("badCasting"));
             return Optional.empty();
