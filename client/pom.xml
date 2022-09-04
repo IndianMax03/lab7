@@ -10,12 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
     <version>1.0</version>
 
-    <artifactId>Client</artifactId>
+    <artifactId>client</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>lab7</groupId>
-            <artifactId>General</artifactId>
+            <artifactId>general</artifactId>
             <version>${version}</version>
         </dependency>
     </dependencies>
