@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserService extends Database implements UserDAO {
 
@@ -34,6 +36,10 @@ public class UserService extends Database implements UserDAO {
     @Override
     public boolean create(String login, String password) {
         boolean result = false;
+        Matcher matcher = Pattern.compile("\\s*").matcher(login);
+        if (matcher.matches()) {
+            return false;
+        }
         try {
             connection = getConnection();
             statement = connection.prepareStatement(SQLUser.INSERT.QUERY);
