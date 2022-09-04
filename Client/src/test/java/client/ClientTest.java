@@ -20,7 +20,7 @@ public class ClientTest {
 
     private final Client client = new Client();
     private final Response response = new Response("answer");
-    final int PORT = 9000;
+    final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final int BUF_SIZE = 32768;
     private DatagramChannel channel;
 

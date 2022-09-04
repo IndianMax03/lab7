@@ -19,7 +19,7 @@ public class ServerTest {
     private final InetAddress host = InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
 
     private final Server server = new Server();
-    final int PORT = 9000;
+    final int PORT = Integer.parseInt(System.getenv("PORT"));
     private Request request;
 
     public ServerTest() throws UnknownHostException {

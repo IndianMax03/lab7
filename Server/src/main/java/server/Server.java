@@ -21,7 +21,7 @@ public class Server {
 
     private static final Logger LOGGER = ServerLogger.getLogger();
     private static final ResourceBundle RB = ResourceBundle.getBundle("server");
-    private static final int PORT = 9000;
+    private static final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final int BUF_SIZE = 32768;
     private static DatagramChannel channel;
 

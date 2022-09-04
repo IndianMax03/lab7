@@ -19,6 +19,8 @@ public class Main {
             terminal.startKeyboard();
         } catch (NoSuchElementException ex) {
             LOGGER.info(RB.getString("stop"));
+        } catch (NumberFormatException ex) {
+            LOGGER.severe(RB.getString("badPort"));
         }
     }
 }

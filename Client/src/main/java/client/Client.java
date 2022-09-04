@@ -17,6 +17,7 @@ public class Client {
 
     private DatagramSocket socket;
     private InetAddress host;
+    final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final Logger LOGGER = ClientLogger.getLogger();
     private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
@@ -54,7 +55,6 @@ public class Client {
     }
 
     public void send(Request request) {
-        final int PORT = 9000; // сделать переменной окружения
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
