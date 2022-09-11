@@ -132,7 +132,7 @@ public class ServerReceiver {
                 collection.removeIf(city -> city.getId().equals(id));
                 return new Response(RB.getString("niceRemoving" + ":\n" + "id = " + id));
             } else {
-                return new Response(RB.getString("failedRemoving)") + ":\n" + RB.getString("noOne") + " "
+                return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne") + " "
                         + RB.getString("or") + " " + RB.getString("notYour"));
             }
         } finally {
