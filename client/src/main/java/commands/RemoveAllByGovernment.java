@@ -18,7 +18,7 @@ public class RemoveAllByGovernment extends ClientCommand {
             System.out.println(CommandsEnum.REMOVE_ALL_BY_GOVERNMENT.title + ": " + RB.getString("needArg"));
             byte i = 1;
             for (Government government : Government.values()) {
-                System.out.println(i + ") " + government.toString());
+                System.out.println(i++ + ") " + government.toString());
             }
             return Optional.empty();
         }

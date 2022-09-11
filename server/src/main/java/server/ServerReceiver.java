@@ -130,7 +130,7 @@ public class ServerReceiver {
             }
             if (cityService.removeById(id, login)) {
                 collection.removeIf(city -> city.getId().equals(id));
-                return new Response(RB.getString("niceRemoving" + ":\n" + "id = " + id));
+                return new Response(RB.getString("niceRemoving") + ":\n" + "id = " + id);
             } else {
                 return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne") + " "
                         + RB.getString("or") + " " + RB.getString("notYour"));
@@ -145,7 +145,7 @@ public class ServerReceiver {
         try {
             if (cityService.removeGreater(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) > 0
-                        && cityFromColl.getLogin().equals(city.getLogin()));
+                        && cityFromColl.getLogin().equals(login));
                 return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("greater") + ".");
             }
             return new Response(RB.getString("noOne") + ":\n" + RB.getString("greater") + ".");
@@ -159,7 +159,7 @@ public class ServerReceiver {
         try {
             if (cityService.removeLower(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) < 0
-                        && cityFromColl.getLogin().equals(city.getLogin()));
+                        && cityFromColl.getLogin().equals(login));
                 return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("lower") + ".");
             }
             return new Response(RB.getString("noOne") + ":\n" + RB.getString("lower") + ".");
