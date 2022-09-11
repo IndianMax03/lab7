@@ -19,18 +19,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Server server;
-        try {
-            server = new Server();
-        } catch (NumberFormatException ex) {
-            LOGGER.severe(RB.getString("badPort"));
-            LOGGER.info(RB.getString("end"));
-            return;
-        }
+        Server server = new Server();
 
         serverReceiver.initCollection();
-
         while (true) {
+
 
             if (parseComment() == 0) {
                 LOGGER.info(RB.getString("end"));
@@ -50,7 +43,6 @@ public class Main {
                     }).start();
                 }
             }).start();
-
         }
 
     }

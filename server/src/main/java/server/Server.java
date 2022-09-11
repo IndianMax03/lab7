@@ -21,18 +21,22 @@ public class Server {
 
     private static final Logger LOGGER = ServerLogger.getLogger();
     private static final ResourceBundle RB = ResourceBundle.getBundle("server");
-    private static final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final int BUF_SIZE = 32768;
     private static DatagramChannel channel;
 
     static {
         try {
+            int PORT = Integer.parseInt(System.getenv("PORT"));
             channel = DatagramChannel.open(); // Открыли канал
             channel.bind(new InetSocketAddress(PORT)); // Привязали канал к порту
             channel.configureBlocking(false); // Неблокирующий режим
             LOGGER.info(RB.getString("start"));
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, RB.getString("cantStart"), new RuntimeException());
+        } catch (NumberFormatException ex) {
+            LOGGER.log(Level.SEVERE, RB.getString("badPort"));
+            LOGGER.info(RB.getString("end"));
+            System.exit(0);
         }
     }
 
@@ -56,6 +60,8 @@ public class Server {
             return Optional.empty();
         } catch (ClassNotFoundException e) {
             LOGGER.warning(RB.getString("castingEx"));
+            return Optional.empty();
+        } catch (NullPointerException ex) {
             return Optional.empty();
         }
     }
