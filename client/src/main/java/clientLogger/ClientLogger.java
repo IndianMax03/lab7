@@ -1,13 +1,19 @@
 package clientLogger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 public class ClientLogger {
     static {
-        String path = ClientLogger.class.getClassLoader().getResource("logging.properties").getFile();
-        System.setProperty("java.util.logging.config.file", path);
+        try (InputStream is = ClientLogger.class.getClassLoader().getResourceAsStream("logging.properties")) {
+            LogManager.getLogManager().readConfiguration(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static final Logger LOGGER = Logger.getLogger(ClientLogger.class.getName());

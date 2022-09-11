@@ -4,6 +4,7 @@ import clientLogger.ClientLogger;
 
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
@@ -17,10 +18,11 @@ public class Main {
             ClientInvoker invoker = new ClientInvoker(clientReceiver);
             Terminal terminal = new Terminal(invoker, client);
             terminal.startKeyboard();
-        } catch (NoSuchElementException ex) {
-            LOGGER.info(RB.getString("stop"));
+        } catch (NoSuchElementException ignore) {
         } catch (NumberFormatException ex) {
-            LOGGER.severe(RB.getString("badPort"));
+            LOGGER.log(Level.SEVERE, RB.getString("badPort"));
+        } finally {
+            LOGGER.info(RB.getString("stop"));
         }
     }
 }

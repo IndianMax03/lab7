@@ -17,7 +17,7 @@ public class Client {
 
     private DatagramSocket socket;
     private InetAddress host;
-    final int PORT = Integer.parseInt(System.getenv("PORT"));
+    private final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final Logger LOGGER = ClientLogger.getLogger();
     private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
@@ -25,7 +25,7 @@ public class Client {
         try {
             host = InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
             socket = new DatagramSocket();
-            socket.setSoTimeout(7000);
+            socket.setSoTimeout(5000);
             LOGGER.info(RB.getString("start"));
         } catch (SocketException e) {
             // can't create DSocket
@@ -47,7 +47,7 @@ public class Client {
             return Optional.of((Response) ois.readObject());
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, RB.getString("ignore"));
-            throw new NoSuchElementException();
+            throw new NumberFormatException();
         } catch (ClassNotFoundException e) {
             LOGGER.warning(RB.getString("badCasting"));
             return Optional.empty();
