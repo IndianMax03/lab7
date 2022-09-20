@@ -131,6 +131,17 @@ public class AuthView {
 
 		frame.getRootPane().setDefaultButton(confButton);
 		frame.revalidate();
+	}
+
+	public void showMessage(String msg) {
+		JOptionPane.showMessageDialog(frame, msg, "Message", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void show() {
 		frame.setVisible(true);
+	}
+
+	public void hide() {
+		frame.setVisible(false);
 	}
 }

@@ -7,13 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AccountView {
-	static Font font = MainFrame.getFont();
-	static JFrame frame = MainFrame.getFrame();
-	static JPanel mainPanel = new JPanel();
-	static String login = "max";
-	static JTable table = new JTable(new CitiesTable());
+	private Font font = MainFrame.getFont();
+	private JFrame frame = MainFrame.getFrame();
+	private JPanel mainPanel = new JPanel();
+	private String login = "max";
+	private JTable table = new JTable(new CitiesTable());
 
-	public static void main(String[] args) {
+	public AccountView(String login) {
+
 		frame.setTitle("Account");
 		mainPanel.setLayout(new BorderLayout());
 		frame.getContentPane().add(mainPanel);
@@ -63,8 +64,6 @@ public class AccountView {
 		commandPanel.add(removeGreaterButton);
 		JButton removeLowerButton = new JButton("remove_lower");
 		commandPanel.add(removeLowerButton);
-		JButton showButton = new JButton("show");
-		commandPanel.add(showButton);
 		JButton updateButton = new JButton("update");
 		commandPanel.add(updateButton);
 		JButton exitButton = new JButton("exit");
@@ -72,7 +71,14 @@ public class AccountView {
 
 		mainPanel.add(commandPanel, BorderLayout.WEST);
 
-		mainPanel.revalidate();
+		frame.revalidate();
+	}
+
+	public void show() {
 		frame.setVisible(true);
+	}
+
+	public void hide() {
+		frame.setVisible(false);
 	}
 }
