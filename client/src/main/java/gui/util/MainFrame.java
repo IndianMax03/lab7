@@ -1,4 +1,4 @@
-package gui;
+package gui.util;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -28,7 +28,7 @@ public class MainFrame {
 		return FRAME;
 	}
 
-	public static Font getFONT() {
+	public static Font getFont() {
 		return FONT;
 	}
 }

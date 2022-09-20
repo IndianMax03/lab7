@@ -1,5 +1,6 @@
-package gui;
+package gui.view;
 
+import gui.util.MainFrame;
 import gui.listeners.LoginPasswordListener;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AuthView {
 
 	JFrame frame = MainFrame.getFrame();
-	Font font = MainFrame.getFONT();
+	Font font = MainFrame.getFont();
 	private static String login;
 	private static String password;
 	private final List<LoginPasswordListener> lpListeners = new ArrayList<>();

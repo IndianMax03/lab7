@@ -2,7 +2,7 @@ package client;
 
 import clientLogger.ClientLogger;
 import commands.ExecuteScript;
-import gui.AuthView;
+import gui.view.AuthView;
 import gui.listeners.LoginPasswordListener;
 import listening.Request;
 import listening.Response;
@@ -113,7 +113,7 @@ public class Terminal {
         String[] commandLine = line.split(" ");
         String command = commandLine[0].trim();
         if (command.equals("authorization")) {
-            authorization();
+            authorization(login, password);
             System.out.println(RB.getString("auth") + login);
             return Optional.empty();
         }
@@ -126,10 +126,10 @@ public class Terminal {
         return Optional.empty();
     }
 
-    private void authorization() {
+    private void authorization(String log, String pas) {
         Request authRequest = new Request("authorization");
-        authRequest.setLogin(login);
-        authRequest.setPassword(password);
+        authRequest.setLogin(log);
+        authRequest.setPassword(pas);
         client.send(authRequest);
         Optional<Response> optResponse = client.recieve();
         if (optResponse.isPresent()) {
@@ -137,6 +137,10 @@ public class Terminal {
             if (!response.getMessage().isEmpty()) {
                 System.out.println(response.getMessage());
                 greeting();
+            }
+            else {
+                login = log;
+                password = pas;
             }
         }
     }
@@ -148,7 +152,7 @@ public class Terminal {
                 public void created(String log, String pas) {
                     login = log;
                     password = pas;
-                    authorization();
+                    authorization(log, pas);
                 }
             });
         });
