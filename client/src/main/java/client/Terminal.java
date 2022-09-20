@@ -23,8 +23,8 @@ public class Terminal {
     Scanner scanner;
     private final ClientInvoker clientInvoker;
     private final Client client;
-    volatile String login = "";
-    volatile String password = "";
+    volatile private String login = "";
+    volatile private String password = "";
 
     public Terminal(ClientInvoker clientInvoker, Client client) {
         this.clientInvoker = clientInvoker;
