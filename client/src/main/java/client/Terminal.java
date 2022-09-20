@@ -2,12 +2,14 @@ package client;
 
 import clientLogger.ClientLogger;
 import commands.ExecuteScript;
+import gui.AuthView;
+import gui.listeners.LoginPasswordListener;
 import listening.Request;
 import listening.Response;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -21,8 +23,8 @@ public class Terminal {
     Scanner scanner;
     private final ClientInvoker clientInvoker;
     private final Client client;
-    private String login = "";
-    private String password = "";
+    volatile String login = "";
+    volatile String password = "";
 
     public Terminal(ClientInvoker clientInvoker, Client client) {
         this.clientInvoker = clientInvoker;
@@ -72,6 +74,9 @@ public class Terminal {
         greeting();
 
         while (true) {
+            if (login.isEmpty()) {
+                continue;
+            }
             System.out.print(RB.getString("inputCommand") + "\n>");
             String line = scanner.nextLine();
 
@@ -122,10 +127,6 @@ public class Terminal {
     }
 
     private void authorization() {
-        System.out.print(RB.getString("inpLogin") + "\n>");
-        login = scanner.nextLine();
-        System.out.print(RB.getString("inpPassword") + "\n>");
-        password = scanner.nextLine();
         Request authRequest = new Request("authorization");
         authRequest.setLogin(login);
         authRequest.setPassword(password);
@@ -135,26 +136,22 @@ public class Terminal {
             Response response = optResponse.get();
             if (!response.getMessage().isEmpty()) {
                 System.out.println(response.getMessage());
-                authorization();
+                greeting();
             }
         }
     }
 
     private void greeting() {
-        System.out.println(RB.getString("greeting"));
-        while (true) {
-            System.out.print(">");
-            String ans = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-            if (ans.equals(RB.getString("yes"))) {
-                authorization();
-                System.out.println(RB.getString("auth") + login);
-                return;
-            } else if (ans.equals(RB.getString("no"))) {
-                System.out.println(RB.getString("auth") + RB.getString("guest"));
-                return;
-            }
-            System.out.println(RB.getString("yes") + "/" + RB.getString("no"));
-        }
+        SwingUtilities.invokeLater(() -> {
+            new AuthView().addLPListener(new LoginPasswordListener() {
+                @Override
+                public void created(String log, String pas) {
+                    login = log;
+                    password = pas;
+                    authorization();
+                }
+            });
+        });
     }
 
     private void setScanner(String filename) {

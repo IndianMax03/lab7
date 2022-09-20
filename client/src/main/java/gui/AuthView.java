@@ -1,11 +1,15 @@
 package gui;
 
+import gui.listeners.LoginPasswordListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuthView {
 
@@ -13,9 +17,20 @@ public class AuthView {
 	Font font = MainFrame.getFONT();
 	private static String login;
 	private static String password;
+	private final List<LoginPasswordListener> lpListeners = new ArrayList<>();
+
+	public void addLPListener(LoginPasswordListener lpListener) {
+		lpListeners.add(lpListener);
+	}
+
+	private void notifylpListeners(String login, String password) {
+		for (LoginPasswordListener listener : lpListeners) {
+			listener.created(login, password);
+		}
+	}
 
 
-	private AuthView() {
+	public AuthView() {
 		frame.setTitle("Authorization Window");
 		JPanel mainPanel = new JPanel();
 		frame.add(mainPanel);
@@ -108,6 +123,7 @@ public class AuthView {
 			public void actionPerformed(ActionEvent e) {
 				login = loginField.getText();
 				password = String.valueOf(passField.getPassword());
+				notifylpListeners(login, password);
 			}
 		});
 
@@ -115,10 +131,5 @@ public class AuthView {
 		frame.getRootPane().setDefaultButton(confButton);
 		frame.revalidate();
 		frame.setVisible(true);
-	}
-
-	public static String[] getResult() {
-		new AuthView();
-		return new String[] {login, password};
 	}
 }
