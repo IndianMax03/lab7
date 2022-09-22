@@ -35,9 +35,9 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response(RB.getString("cityAdded") + ", id = " + id);
+                return new Response(RB.getString("cityAdded") + ", id = " + id, true);
             } else {
-                return new Response(RB.getString("addingEx") + ":\n" + RB.getString("sameNames"));
+                return new Response(RB.getString("addingEx") + ":\n" + RB.getString("sameNames"), false);
             }
         } finally {
             collectionLock.unlock();
@@ -52,9 +52,9 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response(RB.getString("cityAdded") + ", id = " + id);
+                return new Response(RB.getString("cityAdded") + ", id = " + id, true);
             }
-            return new Response(RB.getString("addingEx") + ":\n" + RB.getString("failedCond"));
+            return new Response(RB.getString("addingEx") + ":\n" + RB.getString("failedCond"), false);
         } catch (NoSuchElementException ex) {
             return add(city, login);
         } finally {
@@ -66,7 +66,7 @@ public class ServerReceiver {
         collectionLock.lock();
         try {
             return new Response(collection.stream().filter(city -> city.getName().startsWith(name)).map(City::toString)
-                    .toArray(String[]::new));
+                    .toArray(String[]::new), true);
         } finally {
             collectionLock.unlock();
         }
@@ -79,7 +79,7 @@ public class ServerReceiver {
             information[0] = RB.getString("type") + ": " + collection.getClass();
             information[1] = RB.getString("date") + ": " + creationDate;
             information[2] = RB.getString("size") + ": " + collection.size();
-            return new Response(information);
+            return new Response(information, true);
         } finally {
             collectionLock.unlock();
         }
@@ -88,7 +88,7 @@ public class ServerReceiver {
     public Response show() {
         collectionLock.lock();
         try {
-            return new Response(collection.stream().map(City::toString).toArray(String[]::new));
+            return new Response(collection.stream().map(City::toString).toArray(String[]::new), true);
         } finally {
             collectionLock.unlock();
         }
@@ -98,7 +98,7 @@ public class ServerReceiver {
         collectionLock.lock();
         try {
             return new Response(
-                    collection.stream().sorted(Collections.reverseOrder()).map(City::toString).toArray(String[]::new));
+                    collection.stream().sorted(Collections.reverseOrder()).map(City::toString).toArray(String[]::new), true);
         } finally {
             collectionLock.unlock();
         }
@@ -110,9 +110,9 @@ public class ServerReceiver {
             if (cityService.removeAllByGovernment(government, login)) {
                 collection.removeIf(
                         city -> city.getGovernment().toString().equals(government) && city.getLogin().equals(login));
-                return new Response(RB.getString("niceRemoving") + ":\n" + "'government' = " + government);
+                return new Response(RB.getString("niceRemoving") + ":\n" + "'government' = " + government, true);
             } else {
-                return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne"));
+                return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne"), false);
             }
         } finally {
             collectionLock.unlock();
@@ -126,14 +126,14 @@ public class ServerReceiver {
             try {
                 id = Integer.parseInt(idStr);
             } catch (NumberFormatException ex) {
-                return new Response("Клиент передал невалидный id.");
+                return new Response("Клиент передал невалидный id.", false);
             }
             if (cityService.removeById(id, login)) {
                 collection.removeIf(city -> city.getId().equals(id));
-                return new Response(RB.getString("niceRemoving") + ":\n" + "id = " + id);
+                return new Response(RB.getString("niceRemoving") + ":\n" + "id = " + id, true);
             } else {
                 return new Response(RB.getString("failedRemoving") + ":\n" + RB.getString("noOne") + " "
-                        + RB.getString("or") + " " + RB.getString("notYour"));
+                        + RB.getString("or") + " " + RB.getString("notYour"), false);
             }
         } finally {
             collectionLock.unlock();
@@ -146,9 +146,9 @@ public class ServerReceiver {
             if (cityService.removeGreater(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) > 0
                         && cityFromColl.getLogin().equals(login));
-                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("greater") + ".");
+                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("greater") + ".", true);
             }
-            return new Response(RB.getString("noOne") + ":\n" + RB.getString("greater") + ".");
+            return new Response(RB.getString("noOne") + ":\n" + RB.getString("greater") + ".", false);
         } finally {
             collectionLock.unlock();
         }
@@ -160,16 +160,16 @@ public class ServerReceiver {
             if (cityService.removeLower(city, login)) {
                 collection.removeIf(cityFromColl -> cityFromColl.compareTo(city) < 0
                         && cityFromColl.getLogin().equals(login));
-                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("lower") + ".");
+                return new Response(RB.getString("niceRemoving") + ":\n" + RB.getString("lower") + ".", true);
             }
-            return new Response(RB.getString("noOne") + ":\n" + RB.getString("lower") + ".");
+            return new Response(RB.getString("noOne") + ":\n" + RB.getString("lower") + ".", false);
         } finally {
             collectionLock.unlock();
         }
     }
 
     public Response help(Map<String, ServerCommand> commandMap) {
-        return new Response(commandMap.values().stream().map(ServerCommand::getHelp).toArray(String[]::new));
+        return new Response(commandMap.values().stream().map(ServerCommand::getHelp).toArray(String[]::new), true);
     }
 
     public Response clear(String login) {
@@ -177,9 +177,9 @@ public class ServerReceiver {
         try {
             if (cityService.clearByUser(login)) {
                 collection.removeIf(city -> city.getLogin().equals(login));
-                return new Response(RB.getString("clearNice"));
+                return new Response(RB.getString("clearNice"), true);
             }
-            return new Response(RB.getString("clearBad"));
+            return new Response(RB.getString("clearBad"), false);
         } finally {
             collectionLock.unlock();
         }
@@ -190,23 +190,23 @@ public class ServerReceiver {
         try {
             id = Integer.parseInt(idStr);
         } catch (NumberFormatException ex) {
-            return new Response("Клиент передал невалидный id.");
+            return new Response("Клиент передал невалидный id.", false);
         }
         if (cityService.updateById(id, city, login)) {
             collection.removeIf(cityFromColl -> cityFromColl.getId().equals(id));
             city.setId(id);
             city.setLogin(login);
             collection.add(city);
-            return new Response(RB.getString("updNice"));
+            return new Response(RB.getString("updNice"), true);
         } else {
             return new Response(RB.getString("updBad") + ":\n" + RB.getString("noOne") + " " + RB.getString("or") + " "
-                    + RB.getString("notYour"));
+                    + RB.getString("notYour"), false);
         }
     }
 
     public Response authorization(String login, String password) {
         if (login.isEmpty()) {
-            return new Response(RB.getString("emptyLine"));
+            return new Response(RB.getString("emptyLine"), false);
         }
         // hashing: https://clck.ru/t7zn9
         try {
@@ -224,12 +224,12 @@ public class ServerReceiver {
         usersLock.lock();
         try {
             if (userService.checkExists(login, password)) {
-                return new Response("");
+                return new Response("", true);
             } else if (userService.checkImpostor(login, password)) {
-                return new Response(RB.getString("badPass") + ": " + login);
+                return new Response(RB.getString("badPass") + ": " + login, false);
             } else {
                 userService.create(login, password);
-                return new Response("");
+                return new Response("", true);
             }
         } finally {
             usersLock.unlock();

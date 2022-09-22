@@ -8,18 +8,20 @@ public class Response implements Serializable {
 
     private final String message;
     private final String[] answer;
+    private boolean done;
 
-    public Response(String message, String[] answer) {
+    public Response(String message, String[] answer, boolean done) {
         this.message = message;
         this.answer = answer;
+        this.done = done;
     }
 
-    public Response(String message) {
-        this(message, null);
+    public Response(String message, boolean done) {
+        this(message, null, done);
     }
 
-    public Response(String[] answer) {
-        this(null, answer);
+    public Response(String[] answer, boolean done) {
+        this(null, answer, done);
     }
 
     public String[] getAnswer() {
@@ -28,6 +30,14 @@ public class Response implements Serializable {
 
     public String getMessage() {
         return message;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public boolean isDone() {
+        return done;
     }
 
 }

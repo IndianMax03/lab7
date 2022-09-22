@@ -30,7 +30,7 @@ public class ServerInvoker {
         String commandName = request.getCommandName();
         if (request.getLogin() == null || request.getPassword() == null
                 || request.getLogin().equals("") && !commandName.equals("authorization")) {
-            return Optional.of(new Response(RB.getString("badReq")));
+            return Optional.of(new Response(RB.getString("badReq"), false));
         }
 
         return this.commandMap.get(commandName).execute(request);

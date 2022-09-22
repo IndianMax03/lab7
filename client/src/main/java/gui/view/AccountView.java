@@ -75,11 +75,7 @@ public class AccountView {
 							Optional<Response> resp = client.recieve();
 							if (resp.isPresent()) {
 								Response response = resp.get();
-								if (response.getAnswer() != null) {
-									showAnswer(response.getAnswer());
-								} else if (response.getMessage() != null){
-									showMessage(response.getMessage());
-								}
+								parseResponse(response);
 							} else {
 								showError("ERROR");
 							}
@@ -105,15 +101,26 @@ public class AccountView {
 		frame.setVisible(false);
 	}
 
-	public void showMessage(String msg) {
+	public void showInfo(String... msg) {
 		JOptionPane.showMessageDialog(frame, msg, "INFO", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	public void showAnswer(String[] answer) {
-		JOptionPane.showMessageDialog(frame, answer, "INFO", JOptionPane.INFORMATION_MESSAGE);
+	public void showError(String... error) {
+		JOptionPane.showMessageDialog(frame, error, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
-	public void showError(String error) {
-		JOptionPane.showMessageDialog(frame, error, "ERROR", JOptionPane.ERROR_MESSAGE);
+	private void parseResponse(Response response) {
+		String message = response.getMessage();
+		String[] answer = response.getAnswer();
+		boolean isDone = response.isDone();
+		if (isDone) {
+			if (message != null) {
+				showInfo(message);
+			} else {
+				showInfo(answer);
+			}
+		} else {
+			showError(message);
+		}
 	}
 }
