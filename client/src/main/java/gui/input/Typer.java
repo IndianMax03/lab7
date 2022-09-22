@@ -18,7 +18,6 @@ public class Typer {
         JPanel mainPanel = new JPanel();
         Font font = DialogFrame.getFont();
         frame.add(mainPanel);
-        frame.setTitle("Создание нового города");
 
         mainPanel.setLayout(new GridBagLayout());
 
@@ -175,6 +174,10 @@ public class Typer {
 
     public void hide() {
         frame.setVisible(false);
+    }
+
+    public void setTitle(String title) {
+        frame.setTitle(title);
     }
 
 }

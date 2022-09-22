@@ -1,6 +1,7 @@
 package client;
 
 import base.City;
+import base.Government;
 import gui.util.DialogFrame;
 import listening.Request;
 
@@ -54,39 +55,35 @@ public class ClientReceiver {
     public Optional<Request> filterStartsWithName(String line) {
         return Optional.of(new Request("filter_starts_with_name", line));
     }
-//    public Optional<Request> removeLower() {
-//        System.out.println(RB.getString("askRL"));
-//        return Optional.of(new Request("remove_lower", creator.createCity()));
-//    }
-//
-//    public Optional<Request> removeGreater() {
-//        System.out.println(RB.getString("askRG"));
-//        return Optional.of(new Request("remove_greater", creator.createCity()));
-//    }
-//
 
-//
-//    public Optional<Request> update(String arg) {
-//        Long id = Validator.validateId(arg);
-//        System.out.println(RB.getString("askUpd"));
-//        return Optional.of(new Request("update", arg, creator.createCity()));
-//    }
-//
-//    public Optional<Request> removeById(String arg) {
-//        Long id = Validator.validateId(arg);
-//        if (id == null) {
-//            System.out.println(RB.getString("invalidId"));
-//            return Optional.empty();
-//        }
-//        return Optional.of(new Request("remove_by_id", arg));
-//    }
-//
-//    public Optional<Request> removeAllByGovernment(String arg) {
-//        if (Government.asLowerCaseStringList().contains(arg.toLowerCase())) {
-//            return Optional.of(new Request("remove_all_by_government", Government.fromString(arg).toString()));
-//        }
-//        System.out.println(RB.getString("invalidGov"));
-//        return Optional.empty();
-//    }
+    public Optional<Request> removeAllByGovernment(Government government) {
+        return Optional.of(new Request("remove_all_by_government", government.toString()));
+    }
+
+    public Optional<Request> removeGreater(City city) {
+        if (city == null) {
+            return Optional.empty();
+        }
+        return Optional.of(new Request("remove_greater", city));
+    }
+
+    public Optional<Request> removeLower(City city) {
+        if (city == null) {
+            return Optional.empty();
+        }
+        return Optional.of(new Request("remove_lower", city));
+    }
+
+    public Optional<Request> removeById(Integer arg) {
+        return Optional.of(new Request("remove_by_id", arg.toString()));
+    }
+
+    public Optional<Request> update(Integer arg, City city) {
+        return Optional.of(new Request("update", arg.toString(), city));
+    }
+
+
+
+
 
 }

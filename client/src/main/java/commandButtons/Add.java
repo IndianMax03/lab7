@@ -19,6 +19,7 @@ public class Add extends ClientButton{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Typer typer = new Typer();
+				typer.setTitle("Добавление");
 				typer.addCityListener(new CityListener() {
 					@Override
 					public void created(City city) {

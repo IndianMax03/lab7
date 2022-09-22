@@ -30,7 +30,7 @@ public class FilterView {
 
 		filter.gridx = 0;
 		filter.gridy = 0;
-		JLabel filterLabel = new JLabel("Подстрока:");
+		JLabel filterLabel = new JLabel("Введите подстроку:");
 		filterLabel.setFont(font);
 		mainPanel.add(filterLabel, filter);
 		filter.gridx = 1;
