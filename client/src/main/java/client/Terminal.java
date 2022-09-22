@@ -9,31 +9,23 @@ import listening.Response;
 
 import javax.swing.*;
 import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.logging.*;
 
 public class Terminal {
 
-    private final Logger LOGGER = ClientLogger.getLogger();
-    private final ResourceBundle RB = ResourceBundle.getBundle("client");
-
-    Scanner scanner;
-    private final ClientInvoker clientInvoker;
     private final Client client;
     volatile private String login = "";
     volatile private String password = "";
 
     private final AuthView authView = new AuthView();
+    private AccountView accountView;
 
-    public Terminal(ClientInvoker clientInvoker, Client client) {
-        this.clientInvoker = clientInvoker;
+    public Terminal(Client client) {
         this.client = client;
     }
 
     public void startApp() {
 
-    greeting();
+        greeting();
 
     }
 
@@ -46,7 +38,7 @@ public class Terminal {
         if (optResponse.isPresent()) {
             Response response = optResponse.get();
             if (!response.getMessage().isEmpty()) {
-                authView.showMessage(response.getMessage());
+                authView.showErrorMessage(response.getMessage());
             }
             else {
                 login = log;
@@ -73,7 +65,7 @@ public class Terminal {
 
     private void personalAccount() {
         SwingUtilities.invokeLater(() -> {
-            AccountView accountView = new AccountView(login);
+            accountView = new AccountView(login, password, client);
             accountView.show();
         });
     }

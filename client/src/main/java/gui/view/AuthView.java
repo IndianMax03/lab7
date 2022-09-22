@@ -133,8 +133,8 @@ public class AuthView {
 		frame.revalidate();
 	}
 
-	public void showMessage(String msg) {
-		JOptionPane.showMessageDialog(frame, msg, "Message", JOptionPane.ERROR_MESSAGE);
+	public void showErrorMessage(String msg) {
+		JOptionPane.showMessageDialog(frame, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void show() {

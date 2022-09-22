@@ -1,22 +1,10 @@
-package input;
+package gui.input;
 
 import base.*;
 
 public class Validator {
 
     private Validator() {
-    }
-
-    public static Long validateId(String arg) {
-        long id;
-        try {
-            id = Long.parseLong(arg);
-            if (id <= 0)
-                throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return id;
     }
 
     public static String validateName(String arg) {
@@ -84,54 +72,6 @@ public class Validator {
             return null;
         }
         return masl;
-    }
-
-    public static Climate validateClimateNum(String arg) {
-        int climateNum;
-        try {
-            climateNum = Integer.parseInt(arg);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        if (climateNum < 1 || climateNum > Climate.values().length)
-            return null;
-        return Climate.values()[climateNum - 1];
-    }
-
-    public static Government validateGovernmentNum(String arg) {
-        int governmentNum;
-        try {
-            governmentNum = Integer.parseInt(arg);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        if (governmentNum < 1 || governmentNum > Government.values().length)
-            return null;
-        return Government.values()[governmentNum - 1];
-    }
-
-    public static StandardOfLiving validateStandardOfLivingNum(String arg) {
-        int standardNum;
-        try {
-            standardNum = Integer.parseInt(arg);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        if (standardNum < 1 || standardNum > StandardOfLiving.values().length)
-            return null;
-        return StandardOfLiving.values()[standardNum - 1];
-    }
-
-    public static Leaders validateLeaderNum(String arg) {
-        int leadersNum;
-        try {
-            leadersNum = Integer.parseInt(arg);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        if (leadersNum < 1 || leadersNum > Leaders.values().length)
-            return null;
-        return Leaders.values()[leadersNum - 1];
     }
 
 }
