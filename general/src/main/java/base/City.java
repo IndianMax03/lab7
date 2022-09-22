@@ -72,6 +72,26 @@ public class City implements Comparable<City>, Serializable {
         return "[" + "id=" + id + ", name='" + name + '\'' + ", government=" + government + ", user=" + login + ']';
     }
 
+    public Object[] getArray() {
+        Object[] fields = new Object[15];
+        fields[0] = getId();
+        fields[1] = getName();
+        fields[2] = getCoordinates().getX();
+        fields[3] = getCoordinates().getY();
+        fields[4] = getCreationDate();
+        fields[5] = getArea();
+        fields[6] = getPopulation();
+        fields[7] = getMetersAboveSeaLevel();
+        fields[8] = getClimate();
+        fields[9] = getGovernment();
+        fields[10] = getStandardOfLiving();
+        fields[11] = getGovernor();
+        fields[12] = getGovernor().getHeight();
+        fields[13] = getGovernor().getBirthday();
+        fields[14] = getLogin();
+        return fields;
+    }
+
     @Override
     public int compareTo(City anotherCity) {
         return this.name.compareTo(anotherCity.getName());

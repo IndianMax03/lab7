@@ -1,11 +1,15 @@
 package gui.util;
 
+import base.City;
+
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.TreeSet;
 
 public class CitiesTable extends AbstractTableModel {
 	//  todo tollbar'ы на ячейках
@@ -13,15 +17,14 @@ public class CitiesTable extends AbstractTableModel {
 	//  todo дата в ячейках
 	//  todo фильтры в колонках
 
+	private static final TreeSet<City> collection = new TreeSet<>();
+
+	private Integer rowToAdd = 0;
+
 	private static final String[] columnNames = {"id", "name", "x", "y", "creation date", "area", "population",
 			"meters_above_sea_level", "climate", "government", "standard_of_living", "governor", "governor_height",
 			"governor_birthday", "login"};
-	private static Object[][] data = {
-			{1, "Maxim", 6f, 7f, Date.valueOf(LocalDate.now()), 12f, 666, -10, "Хороший", "Анархия", "Высокий", "Максимчик",
-					180, Date.valueOf(LocalDate.now()), "max"},
-			{2, "Anton", 90f, 103f, Date.valueOf(LocalDate.now()), 111f, 777, -102, "Нормик", "Диктатура", "Низкий", "Антончик",
-					180, Date.valueOf(LocalDate.now()), "antony"}
-	};
+	private static Object[][] data = new Object[1000000][15];
 
 	@Override
 	public void addTableModelListener(TableModelListener l) {
@@ -34,6 +37,18 @@ public class CitiesTable extends AbstractTableModel {
 			column = table.getColumnModel().getColumn(i);
 			column.setPreferredWidth(50);
 			column.setHeaderValue(columnNames[i]);
+		}
+	}
+
+	public void addCityToCollection(City city) {
+		Object[] fields = city.getArray();
+		int row = rowToAdd++;
+		int col = 0;
+		for (Object field : fields) {
+			data[row][col] = field;
+			setValueAt(field, row, col);
+			fireTableCellUpdated(row, col);
+			col++;
 		}
 	}
 

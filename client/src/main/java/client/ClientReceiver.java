@@ -2,6 +2,7 @@ package client;
 
 import base.City;
 import base.Government;
+import gui.util.CitiesTable;
 import gui.util.DialogFrame;
 import listening.Request;
 
@@ -82,6 +83,9 @@ public class ClientReceiver {
         return Optional.of(new Request("update", arg.toString(), city));
     }
 
+    public void doneAdd(City city, CitiesTable table) {
+        table.addCityToCollection(city);
+    }
 
 
 

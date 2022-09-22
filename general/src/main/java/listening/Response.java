@@ -1,5 +1,7 @@
 package listening;
 
+import base.City;
+
 import java.io.Serializable;
 
 public class Response implements Serializable {
@@ -9,6 +11,7 @@ public class Response implements Serializable {
     private final String message;
     private final String[] answer;
     private boolean done;
+    private City usedCity = null;
 
     public Response(String message, String[] answer, boolean done) {
         this.message = message;
@@ -40,4 +43,11 @@ public class Response implements Serializable {
         return done;
     }
 
+    public City getUsedCity() {
+        return usedCity;
+    }
+
+    public void setUsedCity(City usedCity) {
+        this.usedCity = usedCity;
+    }
 }

@@ -35,7 +35,9 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response(RB.getString("cityAdded") + ", id = " + id, true);
+                Response response = new Response(RB.getString("cityAdded") + ", id = " + id, true);
+                response.setUsedCity(city);
+                return response;
             } else {
                 return new Response(RB.getString("addingEx") + ":\n" + RB.getString("sameNames"), false);
             }
@@ -52,7 +54,8 @@ public class ServerReceiver {
                 city.setId(id);
                 city.setLogin(login);
                 collection.add(city);
-                return new Response(RB.getString("cityAdded") + ", id = " + id, true);
+                Response response = new Response(RB.getString("cityAdded") + ", id = " + id, true);
+                response.setUsedCity(city);
             }
             return new Response(RB.getString("addingEx") + ":\n" + RB.getString("failedCond"), false);
         } catch (NoSuchElementException ex) {

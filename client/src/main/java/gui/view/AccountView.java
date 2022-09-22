@@ -1,5 +1,6 @@
 package gui.view;
 
+import base.City;
 import client.Client;
 import client.ClientInvoker;
 import client.ClientReceiver;
@@ -19,11 +20,13 @@ public class AccountView {
 	private Font font = MainFrame.getFont();
 	private JFrame frame = MainFrame.getFrame();
 	private JPanel mainPanel = new JPanel();
-	private JTable table = new JTable(new CitiesTable());
+	private final CitiesTable citiesTable = new CitiesTable();
+	private final JTable table = new JTable(citiesTable);
 
 	private final String login;
 	private final String password;
 	private final ClientReceiver CR = new ClientReceiver();
+	private final ClientInvoker clientInvoker = new ClientInvoker(CR);
 
 
 	public AccountView(String login, String passord, Client client) {
@@ -56,7 +59,6 @@ public class AccountView {
 		comLabel.setFont(font);
 		commandPanel.add(comLabel);
 
-		ClientInvoker clientInvoker = new ClientInvoker(CR);
 
 		Map<String, ClientButton> buttons = clientInvoker.getCommandMap();
 
@@ -65,17 +67,17 @@ public class AccountView {
 			commandPanel.add(button);
 			button.addCommandListener(new CommandListener() {
 				@Override
-				public void created(Optional<Request> request) {
-					if (request.isPresent()) {
-						Request req = request.get();
-						req.setLogin(login);
-						req.setPassword(password);
-						client.send(req);
+				public void created(Optional<Request> optionalRequest) {
+					if (optionalRequest.isPresent()) {
+						Request request = optionalRequest.get();
+						request.setLogin(login);
+						request.setPassword(password);
+						client.send(request);
 						try {
 							Optional<Response> resp = client.recieve();
 							if (resp.isPresent()) {
 								Response response = resp.get();
-								parseResponse(response);
+								parseAnswer(response, request);
 							} else {
 								showError("ERROR");
 							}
@@ -109,11 +111,12 @@ public class AccountView {
 		JOptionPane.showMessageDialog(frame, error, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void parseResponse(Response response) {
+	private void parseAnswer(Response response, Request request) {
 		String message = response.getMessage();
 		String[] answer = response.getAnswer();
 		boolean isDone = response.isDone();
 		if (isDone) {
+			changeTable(request, response.getUsedCity());
 			if (message != null) {
 				showInfo(message);
 			} else {
@@ -123,4 +126,10 @@ public class AccountView {
 			showError(message);
 		}
 	}
+
+	private void changeTable(Request request, City city) {
+		clientInvoker.execute(request, citiesTable, city);
+		table.repaint();
+	}
+
 }

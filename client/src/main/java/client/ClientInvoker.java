@@ -1,17 +1,18 @@
 package client;
 
+import base.City;
 import command.CommandsEnum;
 import commandButtons.*;
+import gui.util.CitiesTable;
 import listening.Request;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ClientInvoker {
-
-    private final ResourceBundle RB = ResourceBundle.getBundle("client");
 
     private final Map<String, ClientButton> commandMap = new HashMap<>();
 
@@ -24,6 +25,12 @@ public class ClientInvoker {
             Optional<ClientButton> optional = create(clientReceiver, command);
             optional.ifPresent(clientCommand -> register(command.title, clientCommand));
         }
+    }
+
+    public void execute(Request request, CitiesTable table, City city) {
+        String commandName = request.getCommandName();
+        ClientButton command = commandMap.get(commandName);
+        command.executeCommand(request.getArgument(), city, table);
     }
 
     public Map<String, ClientButton> getCommandMap() {
