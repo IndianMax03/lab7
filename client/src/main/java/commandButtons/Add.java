@@ -5,7 +5,6 @@ import client.ClientReceiver;
 import command.CommandsEnum;
 import gui.listeners.CityListener;
 import gui.input.Typer;
-import gui.util.CitiesTable;
 import listening.Request;
 
 import java.awt.event.ActionEvent;
@@ -32,10 +31,5 @@ public class Add extends ClientButton{
 
 			}
 		});
-	}
-
-	@Override
-	public void executeCommand(String argument, City city, CitiesTable table) {
-		clientReceiver.doneAdd(city, table);
 	}
 }

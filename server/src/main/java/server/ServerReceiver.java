@@ -56,6 +56,7 @@ public class ServerReceiver {
                 collection.add(city);
                 Response response = new Response(RB.getString("cityAdded") + ", id = " + id, true);
                 response.setUsedCity(city);
+                return response;
             }
             return new Response(RB.getString("addingEx") + ":\n" + RB.getString("failedCond"), false);
         } catch (NoSuchElementException ex) {

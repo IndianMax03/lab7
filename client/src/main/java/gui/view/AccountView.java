@@ -6,6 +6,7 @@ import client.ClientInvoker;
 import client.ClientReceiver;
 import commandButtons.*;
 import gui.listeners.CommandListener;
+import gui.listeners.TableCellsListener;
 import gui.util.CitiesTable;
 import gui.util.MainFrame;
 import listening.Request;
@@ -24,14 +25,14 @@ public class AccountView {
 	private final CitiesTable citiesTable = new CitiesTable();
 	private final JTable table = new JTable(citiesTable);
 
-	private final String login;
+	private static String login = "";
 	private final String password;
 	private final ClientReceiver CR = new ClientReceiver();
 	private final ClientInvoker clientInvoker = new ClientInvoker(CR);
 
 
-	public AccountView(String login, String passord, Client client) {
-		this.login=login;
+	public AccountView(String usrLogin, String passord, Client client) {
+		login=usrLogin;
 		this.password=passord;
 
 		frame.setTitle("Account");
@@ -60,6 +61,7 @@ public class AccountView {
 		comLabel.setFont(font);
 		commandPanel.add(comLabel);
 
+		table.getModel().addTableModelListener(new TableCellsListener());
 
 		Map<String, ClientButton> buttons = clientInvoker.getCommandMap();
 
@@ -77,8 +79,7 @@ public class AccountView {
 						try {
 							Optional<Response> resp = client.recieve();
 							if (resp.isPresent()) {
-								Response response = resp.get();
-								parseAnswer(response, request);
+								parseAnswer(resp.get());
 							} else {
 								showError("ERROR");
 							}
@@ -112,14 +113,11 @@ public class AccountView {
 		JOptionPane.showMessageDialog(frame, error, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void parseAnswer(Response response, Request request) {
+	private void parseAnswer(Response response) {
 		String message = response.getMessage();
 		String[] answer = response.getAnswer();
 		boolean isDone = response.isDone();
 		if (isDone) {
-			if (response.getUsedCity() != null) {
-				changeTable(request, response.getUsedCity());
-			}
 			if (message != null) {
 				showInfo(message);
 			} else {
@@ -130,14 +128,13 @@ public class AccountView {
 		}
 	}
 
-	private void changeTable(Request request, City city) {
-		clientInvoker.execute(request, citiesTable, city);
-		table.repaint();
-	}
-
 	public void updateTable(TreeSet<City> collection) {
 		citiesTable.updateData(collection);
 		table.repaint();
+	}
+
+	public static String getLogin() {
+		return login;
 	}
 
 }

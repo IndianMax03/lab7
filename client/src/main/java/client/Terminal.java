@@ -69,7 +69,7 @@ public class Terminal {
             new Thread(() -> {
                 while (true) {
                     try {
-                        Thread.sleep(7000);
+                        Thread.sleep(4000);
                         Request request = new Request("update_table");
                         client.send(request);
                         Optional<Response> optionalResponse = client.recieve();

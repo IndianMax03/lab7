@@ -6,7 +6,6 @@ import command.CommandsEnum;
 import gui.input.Typer;
 import gui.listeners.CityListener;
 import gui.listeners.IdListener;
-import gui.util.CitiesTable;
 import gui.view.RemoveIdView;
 import listening.Request;
 
@@ -40,10 +39,5 @@ public class Update extends ClientButton{
 				});
 			}
 		});
-	}
-
-	@Override
-	public void executeCommand(String argument, City city, CitiesTable table) {
-		clientReceiver.doneUpdate(argument, city, table);
 	}
 }
