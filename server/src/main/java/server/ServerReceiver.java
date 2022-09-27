@@ -245,4 +245,10 @@ public class ServerReceiver {
         collection = cityService.readAll();
     }
 
+    public Response getCollection() {
+        Response response = new Response("", true);
+        response.setCollection((TreeSet<City>) cityService.readAll());
+        return response;
+    }
+
 }

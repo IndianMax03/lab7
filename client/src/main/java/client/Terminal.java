@@ -1,6 +1,5 @@
 package client;
 
-import clientLogger.ClientLogger;
 import gui.view.AccountView;
 import gui.view.AuthView;
 import gui.listeners.LoginPasswordListener;
@@ -67,6 +66,23 @@ public class Terminal {
         SwingUtilities.invokeLater(() -> {
             accountView = new AccountView(login, password, client);
             accountView.show();
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(7000);
+                        Request request = new Request("update_table");
+                        client.send(request);
+                        Optional<Response> optionalResponse = client.recieve();
+                        if (optionalResponse.isPresent()) {
+                            Response tmpRes = optionalResponse.get();
+                            if (tmpRes.getCollection() != null) {
+                                accountView.updateTable(tmpRes.getCollection());
+                            }
+                        }
+                    } catch (InterruptedException ignore) {
+                    }
+                }
+            }).start();
         });
     }
 

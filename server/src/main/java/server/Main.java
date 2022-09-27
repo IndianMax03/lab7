@@ -35,10 +35,14 @@ public class Main {
                 if (optRequest.isPresent()) {
                     Request request = optRequest.get();
                     new Thread(() -> {
-                        Optional<Response> optResponse = serverInvoker.execute(request);
-                        if (optResponse.isPresent()) {
-                            Response response = optResponse.get();
-                            server.send(response, request.getClientAddres());
+                        if (request.getCommandName().equals("update_table")) {
+                            server.send(serverReceiver.getCollection(), request.getClientAddres());
+                        } else {
+                            Optional<Response> optResponse = serverInvoker.execute(request);
+                            if (optResponse.isPresent()) {
+                                Response response = optResponse.get();
+                                server.send(response, request.getClientAddres());
+                            }
                         }
                     }).start();
                 }

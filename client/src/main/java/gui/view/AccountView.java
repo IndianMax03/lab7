@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public class AccountView {
 	private Font font = MainFrame.getFont();
@@ -131,6 +132,11 @@ public class AccountView {
 
 	private void changeTable(Request request, City city) {
 		clientInvoker.execute(request, citiesTable, city);
+		table.repaint();
+	}
+
+	public void updateTable(TreeSet<City> collection) {
+		citiesTable.updateData(collection);
 		table.repaint();
 	}
 

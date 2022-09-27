@@ -3,6 +3,7 @@ package listening;
 import base.City;
 
 import java.io.Serializable;
+import java.util.TreeSet;
 
 public class Response implements Serializable {
 
@@ -12,6 +13,7 @@ public class Response implements Serializable {
     private final String[] answer;
     private boolean done;
     private City usedCity = null;
+    private TreeSet<City> collection = null;
 
     public Response(String message, String[] answer, boolean done) {
         this.message = message;
@@ -49,5 +51,13 @@ public class Response implements Serializable {
 
     public void setUsedCity(City usedCity) {
         this.usedCity = usedCity;
+    }
+
+    public TreeSet<City> getCollection() {
+        return collection;
+    }
+
+    public void setCollection(TreeSet<City> collection) {
+        this.collection = collection;
     }
 }

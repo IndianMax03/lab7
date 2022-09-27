@@ -16,14 +16,14 @@ public class CitiesTable extends AbstractTableModel {
 	//  todo внедрение коллекции в массив data
 	//  todo реализовать isDone для команд
 
-	private static final TreeSet<City> collection = new TreeSet<>();
+	private TreeSet<City> collection = new TreeSet<>();
 
 	private Integer rowToAdd = 0;
 
 	private static final String[] columnNames = {"id", "name", "x", "y", "creation date", "area", "population",
 			"meters_above_sea_level", "climate", "government", "standard_of_living", "governor", "governor_height",
 			"governor_birthday", "login"};
-	private static Object[][] data = new Object[1000000][15];
+	private static Object[][] data = new Object[1000000][columnNames.length];
 
 	@Override
 	public void addTableModelListener(TableModelListener l) {
@@ -75,6 +75,24 @@ public class CitiesTable extends AbstractTableModel {
 
 		} catch (NumberFormatException ignore){
 		}
+	}
+
+	public void updateData(TreeSet<City> collectionFromServer) {
+		data = new Object[1000000][columnNames.length];
+		this.collection = collectionFromServer;
+		int row = 0;
+		for (City city : collection) {
+			int col = 0;
+			Object[] fields = city.getArray();
+			for (Object field : fields) {
+				data[row][col] = field;
+				setValueAt(field, row, col);
+				fireTableCellUpdated(row, col);
+				col++;
+			}
+			row++;
+		}
+		rowToAdd = row;
 	}
 
 	private int getRowById(int id) {
