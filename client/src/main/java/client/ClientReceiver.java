@@ -87,6 +87,10 @@ public class ClientReceiver {
         table.addCityToCollection(city);
     }
 
+    public void doneUpdate(String argument, City city, CitiesTable table) {
+        table.updateCity(argument, city);
+    }
+
 
 
 

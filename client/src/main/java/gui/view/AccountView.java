@@ -116,7 +116,9 @@ public class AccountView {
 		String[] answer = response.getAnswer();
 		boolean isDone = response.isDone();
 		if (isDone) {
-			changeTable(request, response.getUsedCity());
+			if (response.getUsedCity() != null) {
+				changeTable(request, response.getUsedCity());
+			}
 			if (message != null) {
 				showInfo(message);
 			} else {

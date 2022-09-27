@@ -200,7 +200,9 @@ public class ServerReceiver {
             city.setId(id);
             city.setLogin(login);
             collection.add(city);
-            return new Response(RB.getString("updNice"), true);
+            Response response = new Response(RB.getString("updNice"), true);
+            response.setUsedCity(city);
+            return response;
         } else {
             return new Response(RB.getString("updBad") + ":\n" + RB.getString("noOne") + " " + RB.getString("or") + " "
                     + RB.getString("notYour"), false);

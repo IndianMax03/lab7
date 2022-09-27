@@ -6,9 +6,6 @@ import javax.swing.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.TreeSet;
 
 public class CitiesTable extends AbstractTableModel {
@@ -16,6 +13,8 @@ public class CitiesTable extends AbstractTableModel {
 	//  todo ограничения на ячейки
 	//  todo дата в ячейках
 	//  todo фильтры в колонках
+	//  todo внедрение коллекции в массив data
+	//  todo реализовать isDone для команд
 
 	private static final TreeSet<City> collection = new TreeSet<>();
 
@@ -41,15 +40,51 @@ public class CitiesTable extends AbstractTableModel {
 	}
 
 	public void addCityToCollection(City city) {
-		Object[] fields = city.getArray();
-		int row = rowToAdd++;
-		int col = 0;
-		for (Object field : fields) {
-			data[row][col] = field;
-			setValueAt(field, row, col);
-			fireTableCellUpdated(row, col);
-			col++;
+		if (collection.add(city)) {
+			Object[] fields = city.getArray();
+			int row = rowToAdd++;
+			int col = 0;
+			for (Object field : fields) {
+				data[row][col] = field;
+				setValueAt(field, row, col);
+				fireTableCellUpdated(row, col);
+				col++;
+			}
 		}
+	}
+
+	public void updateCity(String ids, City city) {
+		try { // <- updating in table
+			int id = Integer.parseInt(ids);
+			int row = getRowById(id);
+			if (row >= 0) {
+				int col = 0;
+				Object[] fields = city.getArray();
+				for (Object field : fields) {
+					data[row][col] = field;
+					setValueAt(field, row, col);
+					fireTableCellUpdated(row, col);
+					col++;
+				}
+			}
+
+			collection.stream() // <- updating in collection
+					.filter(tmpCity -> tmpCity.getId().equals(id))
+					.findFirst()
+					.ifPresent(value -> value.update(city));
+
+		} catch (NumberFormatException ignore){
+		}
+	}
+
+	private int getRowById(int id) {
+		int length = getRowCount();
+		for (int row = 0; row < length; row++) {
+			if (((Integer)getValueAt(row, 0)) == id) {
+				return row;
+			}
+		}
+		return -1;
 	}
 
 	@Override

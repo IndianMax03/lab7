@@ -22,11 +22,11 @@ public class City implements Comparable<City>, Serializable {
     }
 
     private Integer id; // Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть
-                        // уникальным, Значение этого поля должно генерироваться автоматически
+    // уникальным, Значение этого поля должно генерироваться автоматически
     private String name; // Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; // Поле не может быть null
     private ZonedDateTime creationDate; // Поле не может быть null, Значение этого поля должно генерироваться
-                                        // автоматически
+    // автоматически
     private float area; // Значение поля должно быть больше 0
     private int population; // Значение поля должно быть больше 0
     private float metersAboveSeaLevel;
@@ -37,7 +37,7 @@ public class City implements Comparable<City>, Serializable {
     private String login;
 
     public City(String name, Coordinates coordinates, float area, int population, float metersAboveSeaLevel,
-            Climate climate, Government government, StandardOfLiving standardOfLiving, Human governor) {
+                Climate climate, Government government, StandardOfLiving standardOfLiving, Human governor) {
         this.name = name;
         this.coordinates = coordinates;
         this.creationDate = ZonedDateTime.now();
@@ -51,8 +51,8 @@ public class City implements Comparable<City>, Serializable {
     }
 
     public City(Integer id, String name, double x, double y, Date crDate, float area, int population, float meters,
-            String climate, String government, String standard, String governor, int governor_height,
-            Date governor_birthday, String login) {
+                String climate, String government, String standard, String governor, int governor_height,
+                Date governor_birthday, String login) {
         this.id = id;
         this.name = name;
         this.coordinates = new Coordinates(x, y);
@@ -90,6 +90,18 @@ public class City implements Comparable<City>, Serializable {
         fields[13] = getGovernor().getBirthday();
         fields[14] = getLogin();
         return fields;
+    }
+
+    public void update(City city) {
+        this.coordinates = city.getCoordinates();
+        this.creationDate = city.creationDate;
+        this.area = city.getArea();
+        this.population = city.getPopulation();
+        this.metersAboveSeaLevel = city.getMetersAboveSeaLevel();
+        this.climate = city.getClimate();
+        this.government = city.getGovernment();
+        this.standardOfLiving = city.getStandardOfLiving();
+        this.governor = city.getGovernor();
     }
 
     @Override
