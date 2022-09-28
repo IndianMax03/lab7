@@ -1,5 +1,7 @@
 package client;
 
+import base.City;
+import gui.listeners.TableCellsListener;
 import gui.view.AccountView;
 import gui.view.AuthView;
 import gui.listeners.LoginPasswordListener;
@@ -66,6 +68,17 @@ public class Terminal {
         SwingUtilities.invokeLater(() -> {
             accountView = new AccountView(login, password, client);
             accountView.show();
+            accountView.addTableCellsListener(new TableCellsListener() {
+                @Override
+                public void created(City city) {
+                    Request request = new Request("update", city.getId().toString(), city);
+                    request.setLogin(login);
+                    request.setPassword(password);
+                    client.send(request);
+                    Optional<Response> optionalResponse= client.recieve();
+                    optionalResponse.ifPresent(response -> accountView.parseAnswer(response));
+                }
+            });
             new Thread(() -> {
                 while (true) {
                     try {

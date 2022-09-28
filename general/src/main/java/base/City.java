@@ -5,8 +5,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class City implements Comparable<City>, Serializable {
 
@@ -90,6 +89,36 @@ public class City implements Comparable<City>, Serializable {
         fields[13] = getGovernor().getBirthday();
         fields[14] = getLogin();
         return fields;
+    }
+
+    public static Optional<City> getCityByArray(Object[] cityArray) {
+        if (cityArray.length != 15) {
+            return Optional.empty();
+        } else {
+            try {
+                for(Object o : cityArray) {
+                    System.out.println(o.getClass());
+                }
+                int id = (int) cityArray[0];
+                String name = (String) cityArray[1];
+                double x = (Double) cityArray[2];
+                double y = (Double) cityArray[3];
+                java.sql.Date crDate = java.sql.Date.valueOf(((Timestamp) cityArray[4]).toLocalDateTime().toLocalDate());
+                float area = (Float) cityArray[5];
+                int population = (Integer) cityArray[6];
+                float masl = (Float) cityArray[7];
+                String climate = cityArray[8].toString();
+                String government = cityArray[9].toString();
+                String standardOfLiving = cityArray[10].toString();
+                String governor = ((Human) cityArray[11]).getName();
+                int govHeight = (int) cityArray[12];
+                java.sql.Date govBirthday = java.sql.Date.valueOf(((Timestamp) cityArray[13]).toLocalDateTime().toLocalDate());
+                String login = (String) cityArray[14];
+                return Optional.of(new City(id, name, x, y, crDate, area, population, masl, climate, government, standardOfLiving, governor, govHeight, govBirthday, login));
+            } catch (NullPointerException | NumberFormatException | NoSuchElementException ex) {
+                return Optional.empty();
+            }
+        }
     }
 
     public void update(City city) {

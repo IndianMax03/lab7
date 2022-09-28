@@ -6,6 +6,9 @@ import gui.view.AccountView;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.TreeSet;
 
 public class CitiesTable extends AbstractTableModel {
@@ -80,6 +83,23 @@ public class CitiesTable extends AbstractTableModel {
 //		return -1;
 //	}
 
+	public Optional<City> getChangedCity(int row, int column) {
+		Iterator<City> it = collection.iterator();
+		int count = 0;
+		while (it.hasNext()) {
+			City city = it.next();
+			if (row == count) {
+				Object[] fields = city.getArray();
+				for (int col = 0; col < columnNames.length; col++) {
+					fields[col] = data[row][col];
+				}
+				return City.getCityByArray(fields);
+			}
+			count++;
+		}
+		return Optional.empty();
+	}
+
 	public void updateData(TreeSet<City> collectionFromServer) {
 		data = new Object[1000000][columnNames.length];
 		this.collection = collectionFromServer;
@@ -109,24 +129,30 @@ public class CitiesTable extends AbstractTableModel {
 	}
 
 	public boolean isCellEditable(int row, int col) {
-		return AccountView.getLogin().equals(getValueAt(row, columnNames.length - 1)) && col != 0 && col != columnNames.length-1;
+		return AccountView.getLogin().equals(getValueAt(row, columnNames.length - 1))
+				&& col != 8
+				&& col != 9
+				&& col != 10
+				&& col != 11
+				&& col != columnNames.length-1;
 	}
 
 	public Class<?> getColumnClass(int column) {
 		switch (column) {
 			case 0:
 			case 6:
+			case 12:
 				return Integer.class;
 			case 1:
 			case 8:
 			case 9:
 			case 10:
 			case 11:
-			case 12:
 			case 14:
 				return String.class;
 			case 2:
 			case 3:
+				return Double.class;
 			case 5:
 			case 7:
 				return Float.class;

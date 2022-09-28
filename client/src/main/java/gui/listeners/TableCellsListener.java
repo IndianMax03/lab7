@@ -1,14 +1,9 @@
 package gui.listeners;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import base.City;
 
-public class TableCellsListener  implements TableModelListener {
+public interface TableCellsListener {
 
+	void created(City city);
 
-	@Override
-	public void tableChanged(TableModelEvent e) {
-		System.out.println("ОПОПВЕЩАЮ");
-		// todo обработка изменения таблицы
-	}
 }

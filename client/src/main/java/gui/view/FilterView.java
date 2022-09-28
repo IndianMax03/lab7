@@ -1,7 +1,5 @@
 package gui.view;
 
-import base.City;
-import gui.listeners.CityListener;
 import gui.listeners.FilterListener;
 import gui.util.DialogFrame;
 import gui.util.SmallFrame;

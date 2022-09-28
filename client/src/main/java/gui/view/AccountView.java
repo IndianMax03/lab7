@@ -13,10 +13,11 @@ import listening.Request;
 import listening.Response;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.List;
 
 public class AccountView {
 	private Font font = MainFrame.getFont();
@@ -26,7 +27,7 @@ public class AccountView {
 	private final JTable table = new JTable(citiesTable);
 
 	private static String login = "";
-	private final String password;
+	private String password = "";
 	private final ClientReceiver CR = new ClientReceiver();
 	private final ClientInvoker clientInvoker = new ClientInvoker(CR);
 
@@ -61,7 +62,13 @@ public class AccountView {
 		comLabel.setFont(font);
 		commandPanel.add(comLabel);
 
-		table.getModel().addTableModelListener(new TableCellsListener());
+		table.getModel().addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				Optional<City> changedCity = citiesTable.getChangedCity(e.getFirstRow(), e.getColumn());
+				changedCity.ifPresent(city -> notifyTableCellsListeners(city));
+			}
+		});
 
 		Map<String, ClientButton> buttons = clientInvoker.getCommandMap();
 
@@ -113,7 +120,7 @@ public class AccountView {
 		JOptionPane.showMessageDialog(frame, error, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void parseAnswer(Response response) {
+	public void parseAnswer(Response response) {
 		String message = response.getMessage();
 		String[] answer = response.getAnswer();
 		boolean isDone = response.isDone();
@@ -135,6 +142,19 @@ public class AccountView {
 
 	public static String getLogin() {
 		return login;
+	}
+
+
+	private final List<TableCellsListener> tableCellsListeners = new ArrayList<>();
+
+	public void addTableCellsListener(TableCellsListener tableCellsListener) {
+		tableCellsListeners.add(tableCellsListener);
+	}
+
+	private void notifyTableCellsListeners(City city) {
+		for (TableCellsListener tableCellsListener : tableCellsListeners) {
+			tableCellsListener.created(city);
+		}
 	}
 
 }
