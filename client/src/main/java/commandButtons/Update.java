@@ -26,7 +26,7 @@ public class Update extends ClientButton{
 					public void created(Integer id) {
 						removeIdView.hide();
 						Typer typer = new Typer();
-						typer.setTitle("Город для обновления");
+						typer.setTitle("cityToUpdate");
 						typer.addCityListener(new CityListener() {
 							@Override
 							public void created(City city) {

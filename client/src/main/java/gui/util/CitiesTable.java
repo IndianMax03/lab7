@@ -11,6 +11,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.*;
 
 public class CitiesTable extends DefaultTableModel {
@@ -152,7 +154,9 @@ public class CitiesTable extends DefaultTableModel {
 	}
 
 	public void visualisation() {
-		CanvassFrame canvassFrame = new CanvassFrame(collection, this);
+		SwingUtilities.invokeLater(() -> {
+			CanvassFrame canvassFrame = new CanvassFrame(collection, this);
+		});
 	}
 
 	private final List<TableCollectionListener> tableCollectionListeners = new ArrayList<>();

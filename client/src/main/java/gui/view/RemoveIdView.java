@@ -1,5 +1,6 @@
 package gui.view;
 
+import client.Main;
 import gui.listeners.IdListener;
 import gui.util.DialogFrame;
 import gui.util.SmallFrame;
@@ -10,15 +11,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class RemoveIdView {
 	private final JFrame frame = SmallFrame.getFrame();
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiView", Main.locale);
 
 	public RemoveIdView() {
 		JPanel mainPanel = new JPanel();
 		Font font = DialogFrame.getFont();
 		frame.add(mainPanel);
-		frame.setTitle("Выбор id");
+		frame.setTitle(RB.getString("idChoosing"));
 
 		mainPanel.setLayout(new GridBagLayout());
 
@@ -27,7 +31,7 @@ public class RemoveIdView {
 
 		idConstr.gridx = 0;
 		idConstr.gridy = 0;
-		JLabel govLabel = new JLabel("Введите id:");
+		JLabel govLabel = new JLabel(RB.getString("inputId") + ":");
 		govLabel.setFont(font);
 		mainPanel.add(govLabel, idConstr);
 		idConstr.gridx = 1;
@@ -39,7 +43,7 @@ public class RemoveIdView {
 		idConstr.gridx = 0;
 		idConstr.gridy = 1;
 		idConstr.gridwidth = 2;
-		JButton acceptButton = new JButton("Подтвердить");
+		JButton acceptButton = new JButton(RB.getString("accept"));
 		acceptButton.setFont(font);
 		mainPanel.add(acceptButton, idConstr);
 
@@ -52,7 +56,7 @@ public class RemoveIdView {
 				try {
 					notifyIdListeners(Integer.parseInt(idField.getText()));
 				} catch (NumberFormatException ex) {
-					showError("Некорректный ввод");
+					showError(RB.getString("badInp"));
 				}
 			}
 		});
@@ -77,6 +81,10 @@ public class RemoveIdView {
 
 	public void hide() {
 		frame.setVisible(false);
+	}
+
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiView", Main.locale);
 	}
 
 }

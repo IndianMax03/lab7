@@ -66,18 +66,20 @@ public class Terminal {
 
     private void personalAccount() {
         SwingUtilities.invokeLater(() -> {
-            accountView = new AccountView(login, password, client);
-            accountView.show();
-            accountView.getCitiesTable().addTableCellsListener(new TableCellsListener() {
-                @Override
-                public void created(City city) {
-                    Request request = new Request("update", city.getId().toString(), city);
-                    request.setLogin(login);
-                    request.setPassword(password);
-                    client.send(request);
-                    Optional<Response> optionalResponse= client.recieve();
-                    optionalResponse.ifPresent(response -> accountView.parseAnswer(response));
-                }
+            SwingUtilities.invokeLater(()->{
+                accountView = new AccountView(login, password, client);
+                accountView.show();
+                accountView.getCitiesTable().addTableCellsListener(new TableCellsListener() {
+                    @Override
+                    public void created(City city) {
+                        Request request = new Request("update", city.getId().toString(), city);
+                        request.setLogin(login);
+                        request.setPassword(password);
+                        client.send(request);
+                        Optional<Response> optionalResponse= client.recieve();
+                        optionalResponse.ifPresent(response -> accountView.parseAnswer(response));
+                    }
+                });
             });
             new Thread(() -> {
                 while (true) {

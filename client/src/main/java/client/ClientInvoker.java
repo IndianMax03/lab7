@@ -34,8 +34,6 @@ public class ClientInvoker {
                 return Optional.of(new AddIfMin(clientReceiver));
             case CLEAR:
                 return Optional.of(new Clear(clientReceiver));
-            case EXECUTE_SCRIPT:
-                return Optional.of(new ExecuteScript(clientReceiver));
             case EXIT:
                 return Optional.of(new Exit(clientReceiver));
             case FILTER_STARTS_WITH_NAME:
@@ -55,6 +53,7 @@ public class ClientInvoker {
             case UPDATE:
                 return Optional.of(new Update(clientReceiver));
             case PRINT_DESCENDING:
+            case EXECUTE_SCRIPT:
             case SHOW:
             case AUTHORIZATION:
             default:

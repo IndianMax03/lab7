@@ -5,6 +5,7 @@ import listening.Response;
 import serverLogger.ServerLogger;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 
 public class Main {
 
+    public static Locale locale = Locale.getDefault();
     private static final Logger LOGGER = ServerLogger.getLogger();
     private static final ResourceBundle RB = ResourceBundle.getBundle("server");
     private static final ServerReceiver serverReceiver = new ServerReceiver();

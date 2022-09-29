@@ -1,5 +1,6 @@
 package gui.view;
 
+import client.Main;
 import gui.util.MainFrame;
 import gui.listeners.LoginPasswordListener;
 
@@ -11,9 +12,12 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class AuthView {
 
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiView", Main.locale);
 	JFrame frame = MainFrame.getFrame();
 	Font font = MainFrame.getFont();
 	private static String login;
@@ -32,7 +36,7 @@ public class AuthView {
 
 
 	public AuthView() {
-		frame.setTitle("Authorization Window");
+		frame.setTitle(RB.getString("authWindow"));
 		JPanel mainPanel = new JPanel();
 		frame.add(mainPanel);
 		mainPanel.setLayout(new BorderLayout());
@@ -40,7 +44,7 @@ public class AuthView {
 		// window description
 		JPanel messagePanel = new JPanel();
 		messagePanel.setLayout(new FlowLayout());
-		JLabel hiLable = new JLabel("Авторизуйтесь для продолжения работы");
+		JLabel hiLable = new JLabel(RB.getString("authToContinue"));
 		hiLable.setFont(font);
 		messagePanel.add(hiLable);
 		mainPanel.add(messagePanel, BorderLayout.NORTH);
@@ -48,7 +52,7 @@ public class AuthView {
 		// submit button
 		JPanel confPanel = new JPanel();
 		confPanel.setLayout(new FlowLayout());
-		JButton confButton = new JButton("Подтвердить");
+		JButton confButton = new JButton(RB.getString("accept"));
 		confPanel.add(confButton);
 		frame.add(confPanel, BorderLayout.SOUTH);
 
@@ -62,7 +66,7 @@ public class AuthView {
 		const1.gridy = 0;
 		const1.gridheight = 1;
 		const1.gridwidth = 4;
-		JLabel loginInp = new JLabel("Введите логин:");
+		JLabel loginInp = new JLabel(RB.getString("inputLogin") + ":");
 		loginInp.setFont(font);
 		inputPanel.add(loginInp, const1);
 
@@ -84,7 +88,7 @@ public class AuthView {
 		const3.gridy = 1;
 		const3.gridheight = 1;
 		const3.gridwidth = 4;
-		JLabel passwordInp = new JLabel("Введите пароль:");
+		JLabel passwordInp = new JLabel(RB.getString("inputPassword") + ":");
 		passwordInp.setFont(font);
 		inputPanel.add(passwordInp, const3);
 
@@ -101,8 +105,8 @@ public class AuthView {
 
 		mainPanel.add(inputPanel, BorderLayout.CENTER);
 
-		loginField.setToolTipText("обязательное поле ввода");
-		passField.setToolTipText("пароль можно не создавать");
+		loginField.setToolTipText(RB.getString("mainField"));
+		passField.setToolTipText(RB.getString("notMainField"));
 
 		loginField.requestFocus();
 
@@ -134,7 +138,7 @@ public class AuthView {
 	}
 
 	public void showErrorMessage(String msg) {
-		JOptionPane.showMessageDialog(frame, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void show() {
@@ -144,4 +148,9 @@ public class AuthView {
 	public void hide() {
 		frame.setVisible(false);
 	}
+
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiView", Main.locale);
+	}
+
 }

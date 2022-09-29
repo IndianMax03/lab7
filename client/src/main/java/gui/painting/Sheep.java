@@ -2,17 +2,20 @@ package gui.painting;
 
 import base.City;
 import base.Coordinates;
+import client.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class Sheep {
 	private final City city;
-	private float area;
+	private final float area;
 	private double x;
 	private double y;
 	private static final HashMap<String, double[]> VELOCITIES = new HashMap<>();
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiPainting", Main.locale);
 
 	int[][] stick = new int[2][2];
 	private final Rectangle flag;
@@ -69,8 +72,12 @@ public class Sheep {
 
 	public void checkTarget(CanvassFrame frame, int x, int y) {
 		if (x >= this.x && x <= this.x+area && y >= this.y-stick[1][1] && y <= y+area/4) {
-			JOptionPane.showMessageDialog(frame, city.toString(), "Sheep-City", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(frame, city.toString(), RB.getString("sheepCity"), JOptionPane.INFORMATION_MESSAGE);
 		}
+	}
+
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiPainting", Main.locale);
 	}
 
 }

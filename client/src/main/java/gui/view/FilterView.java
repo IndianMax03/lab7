@@ -1,5 +1,6 @@
 package gui.view;
 
+import client.Main;
 import gui.listeners.FilterListener;
 import gui.util.DialogFrame;
 import gui.util.SmallFrame;
@@ -10,16 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class FilterView {
 
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiView", Main.locale);
 	private final JFrame frame = SmallFrame.getFrame();
 
 	public FilterView() {
 		JPanel mainPanel = new JPanel();
 		Font font = DialogFrame.getFont();
 		frame.add(mainPanel);
-		frame.setTitle("Поиск подстроки");
+		frame.setTitle(RB.getString("subFinding"));
 
 		mainPanel.setLayout(new GridBagLayout());
 
@@ -28,7 +32,7 @@ public class FilterView {
 
 		filter.gridx = 0;
 		filter.gridy = 0;
-		JLabel filterLabel = new JLabel("Введите подстроку:");
+		JLabel filterLabel = new JLabel(RB.getString("inputSubstring") + ":");
 		filterLabel.setFont(font);
 		mainPanel.add(filterLabel, filter);
 		filter.gridx = 1;
@@ -40,7 +44,7 @@ public class FilterView {
 		filter.gridx = 0;
 		filter.gridy = 1;
 		filter.gridwidth = 2;
-		JButton acceptButton = new JButton("Подтвердить");
+		JButton acceptButton = new JButton(RB.getString("accept"));
 		acceptButton.setFont(font);
 		mainPanel.add(acceptButton, filter);
 
@@ -71,4 +75,9 @@ public class FilterView {
 	public void hide() {
 		frame.setVisible(false);
 	}
+
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiView", Main.locale);
+	}
+
 }

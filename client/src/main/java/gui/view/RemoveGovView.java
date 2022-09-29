@@ -1,6 +1,7 @@
 package gui.view;
 
 import base.Government;
+import client.Main;
 import gui.listeners.GovListener;
 import gui.util.DialogFrame;
 import gui.util.SmallFrame;
@@ -11,16 +12,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class RemoveGovView {
 
 	private final JFrame frame = SmallFrame.getFrame();
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiView", Main.locale);
 
 	public RemoveGovView() {
 		JPanel mainPanel = new JPanel();
 		Font font = DialogFrame.getFont();
 		frame.add(mainPanel);
-		frame.setTitle("Удаление по типу правлению");
+		frame.setTitle(RB.getString("govRemoving"));
 
 		mainPanel.setLayout(new GridBagLayout());
 
@@ -29,7 +33,7 @@ public class RemoveGovView {
 
 		government.gridx = 0;
 		government.gridy = 0;
-		JLabel govLabel = new JLabel("Выберите тип правления:");
+		JLabel govLabel = new JLabel(RB.getString("chooseGov") + ":");
 		govLabel.setFont(font);
 		mainPanel.add(govLabel, government);
 		government.gridx = 1;
@@ -41,7 +45,7 @@ public class RemoveGovView {
 		government.gridx = 0;
 		government.gridy = 1;
 		government.gridwidth = 2;
-		JButton acceptButton = new JButton("Подтвердить");
+		JButton acceptButton = new JButton(RB.getString("accept"));
 		acceptButton.setFont(font);
 		mainPanel.add(acceptButton, government);
 
@@ -71,6 +75,10 @@ public class RemoveGovView {
 
 	public void hide() {
 		frame.setVisible(false);
+	}
+
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiView", Main.locale);
 	}
 
 }

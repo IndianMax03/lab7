@@ -19,7 +19,7 @@ public class RemoveGreater extends ClientButton{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Typer typer = new Typer();
-				typer.setTitle("Удаление, больших заданного");
+				typer.setTitle(RB.getString("removeGreater"));
 				typer.addCityListener(new CityListener() {
 					@Override
 					public void created(City city) {

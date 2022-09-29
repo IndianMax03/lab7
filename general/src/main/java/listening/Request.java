@@ -4,6 +4,7 @@ import base.City;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
+import java.util.Locale;
 
 public class Request implements Serializable {
 
@@ -15,6 +16,7 @@ public class Request implements Serializable {
     private SocketAddress clientAddres = null;
     private String login;
     private String password;
+    private Locale locale;
 
     public Request(String commandName, String argument, City city) {
         this.commandName = commandName;
@@ -68,5 +70,13 @@ public class Request implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }

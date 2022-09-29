@@ -1,14 +1,11 @@
 package gui.painting;
 
 import base.City;
-import base.Coordinates;
 import gui.listeners.TableCellsListener;
 import gui.listeners.TableCollectionListener;
 import gui.util.CitiesTable;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.TreeSet;
@@ -33,12 +30,6 @@ public class CanvassPanel extends JPanel implements ActionListener {
 		ocean = new ImageIcon(image);
 		this.setPreferredSize(new Dimension(700, 500));
 		initSheep();
-		citiesTable.addTableCollectionListener(new TableCollectionListener() {
-			@Override
-			public void created(TreeSet<City> newCollectionFromServer) {
-				collection = new TreeSet<>(newCollectionFromServer);
-			}
-		});
 		citiesTable.addTableCollectionListener(new TableCollectionListener() {
 			@Override
 			public void created(TreeSet<City> newCollectionFromServer) {

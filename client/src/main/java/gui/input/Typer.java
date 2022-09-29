@@ -1,6 +1,7 @@
 package gui.input;
 
 import base.*;
+import client.Main;
 import gui.listeners.CityListener;
 import gui.util.DialogFrame;
 
@@ -10,9 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class Typer {
     private final JFrame frame = DialogFrame.getFrame();
+    private static ResourceBundle RB = ResourceBundle.getBundle("guiInput", Main.locale);
 
     public Typer() {
         JPanel mainPanel = new JPanel();
@@ -26,7 +29,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 0;
-        JLabel nameLabel = new JLabel("Имя города:");
+        JLabel nameLabel = new JLabel(RB.getString("name") + ":");
         nameLabel.setFont(font);
         mainPanel.add(nameLabel, name);
         name.gridx = 1;
@@ -37,7 +40,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 1;
-        JLabel coordsLabel = new JLabel("Координаты в формате [x;y]:");
+        JLabel coordsLabel = new JLabel(RB.getString("coordsFormat") + " [x;y]:");
         coordsLabel.setFont(font);
         mainPanel.add(coordsLabel, name);
         name.gridx = 1;
@@ -48,7 +51,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 2;
-        JLabel areaLabel = new JLabel("Площадь:");
+        JLabel areaLabel = new JLabel(RB.getString("square") + ":");
         areaLabel.setFont(font);
         mainPanel.add(areaLabel, name);
         name.gridx = 1;
@@ -59,7 +62,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 3;
-        JLabel populationLabel = new JLabel("Население:");
+        JLabel populationLabel = new JLabel(RB.getString("population") + ":");
         populationLabel.setFont(font);
         mainPanel.add(populationLabel, name);
         name.gridx = 1;
@@ -70,7 +73,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 4;
-        JLabel maslLabel = new JLabel("Высота над уровнем моря:");
+        JLabel maslLabel = new JLabel(RB.getString("masl") + ":");
         maslLabel.setFont(font);
         mainPanel.add(maslLabel, name);
         name.gridx = 1;
@@ -81,7 +84,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 5;
-        JLabel climateLabel = new JLabel("Климат:");
+        JLabel climateLabel = new JLabel(RB.getString("climate") + ":");
         climateLabel.setFont(font);
         mainPanel.add(climateLabel, name);
         name.gridx = 1;
@@ -92,7 +95,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 6;
-        JLabel governmentLabel = new JLabel("Тип правления:");
+        JLabel governmentLabel = new JLabel(RB.getString("government") + ":");
         governmentLabel.setFont(font);
         mainPanel.add(governmentLabel, name);
         name.gridx = 1;
@@ -103,7 +106,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 7;
-        JLabel standardLabel = new JLabel("Уровень жизни:");
+        JLabel standardLabel = new JLabel(RB.getString("standard") + ":");
         standardLabel.setFont(font);
         mainPanel.add(standardLabel, name);
         name.gridx = 1;
@@ -114,7 +117,7 @@ public class Typer {
 
         name.gridx = 0;
         name.gridy = 8;
-        JLabel leaderLabel = new JLabel("Правитель:");
+        JLabel leaderLabel = new JLabel(RB.getString("leader") + ":");
         leaderLabel.setFont(font);
         mainPanel.add(leaderLabel, name);
         name.gridx = 1;
@@ -126,7 +129,7 @@ public class Typer {
         name.gridx = 0;
         name.gridy = 9;
         name.gridwidth = 2;
-        JButton acceptButton = new JButton("Подтвердить");
+        JButton acceptButton = new JButton(RB.getString("accept"));
         acceptButton.setFont(font);
         mainPanel.add(acceptButton, name);
 
@@ -147,7 +150,7 @@ public class Typer {
                 try {
                     notifyCityListeners(new City(name, coordinates, area, population, masl, climate, government, standard, human));
                 } catch (NullPointerException ex) {
-                    showError("Плохо создали");
+                    showError(RB.getString("badCreate"));
                 }
             }
         });
@@ -178,6 +181,10 @@ public class Typer {
 
     public void setTitle(String title) {
         frame.setTitle(title);
+    }
+
+    public static void refreshRB() {
+        RB = ResourceBundle.getBundle("guiInput", Main.locale);
     }
 
 }

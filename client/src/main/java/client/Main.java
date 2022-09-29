@@ -1,13 +1,10 @@
 package client;
 
-import clientLogger.ClientLogger;
-
-import java.util.ResourceBundle;
-import java.util.logging.Logger;
+import java.util.Locale;
 
 public class Main {
-    private static final Logger LOGGER = ClientLogger.getLogger();
-    private static final ResourceBundle RB = ResourceBundle.getBundle("client");
+
+    public static Locale locale = Locale.getDefault();
 
     public static void main(String[] args) {
 

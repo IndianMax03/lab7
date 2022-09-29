@@ -4,9 +4,12 @@ import base.City;
 import client.Client;
 import client.ClientInvoker;
 import client.ClientReceiver;
+import client.Main;
 import commandButtons.*;
+import gui.input.Typer;
 import gui.listeners.CommandListener;
 import gui.painting.CanvassFrame;
+import gui.painting.Sheep;
 import gui.util.CitiesTable;
 import gui.util.MainFrame;
 import listening.Request;
@@ -19,11 +22,14 @@ import java.awt.event.ActionListener;
 import java.util.*;
 
 public class AccountView {
+	private static ResourceBundle RB = ResourceBundle.getBundle("guiView", Main.locale);
 	private Font font = MainFrame.getFont();
 	private JFrame frame = MainFrame.getFrame();
 	private JPanel mainPanel = new JPanel();
 	private final CitiesTable citiesTable = new CitiesTable();
 	private final JTable table = new JTable(citiesTable);
+	private static JLabel comLabel;
+	private static JLabel infoLabel;
 
 	private static String login = "";
 	private String password = "";
@@ -40,7 +46,7 @@ public class AccountView {
 		mainPanel.setLayout(new BorderLayout());
 		frame.getContentPane().add(mainPanel);
 
-		JLabel infoLabel = new JLabel("Вы авторизованы под именем: " + login);
+		infoLabel = new JLabel(RB.getString("authName") + ": " + login);
 		infoLabel.setFont(font);
 		JPanel southPanel = new JPanel();
 		infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -57,7 +63,7 @@ public class AccountView {
 		layout.setColumns(1);
 		layout.setRows(20);
 		commandPanel.setLayout(layout);
-		JLabel comLabel = new JLabel("Команды");
+		comLabel = new JLabel(RB.getString("commands"));
 		comLabel.setFont(font);
 		commandPanel.add(comLabel);
 
@@ -79,10 +85,10 @@ public class AccountView {
 							if (resp.isPresent()) {
 								parseAnswer(resp.get());
 							} else {
-								showError("ERROR");
+								showError(RB.getString("error"));
 							}
 						} catch (NumberFormatException ex) {
-							showError("Server is DEAD");
+							showError(RB.getString("serverDead"));
 							System.exit(0);
 						}
 					}
@@ -96,6 +102,40 @@ public class AccountView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				citiesTable.visualisation();
+			}
+		});
+
+		mainPanel.add(commandPanel, BorderLayout.WEST);
+
+		JComboBox<String> localizationBox = new JComboBox<>(new String[]{"Russian", "Spain", "Serbian", "Albanian"});
+		commandPanel.add(localizationBox);
+		localizationBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (localizationBox.getSelectedItem() != null) {
+					Object selectedItem = localizationBox.getSelectedItem();
+					if ("Spain".equals(selectedItem)) {
+						Main.locale = new Locale.Builder().setLanguage("es").setRegion("CR").build();
+					} else if ("Serbian".equals(selectedItem)) {
+						Main.locale = new Locale.Builder().setLanguage("sr").setRegion("RS").build();
+					} else if ("Albanian".equals(selectedItem)) {
+						Main.locale = new Locale.Builder().setLanguage("sq").build();
+					} else if ("Russian".equals(selectedItem)){
+						Main.locale = new Locale.Builder().setLanguage("ru").setRegion("RU").build();
+					} else {
+						Main.locale = Locale.getDefault();
+					}
+				}
+				CanvassFrame.refreshRB();
+				Sheep.refreshRB();
+				refreshRB();
+				AuthView.refreshRB();
+				FilterView.refreshRB();
+				RemoveGovView.refreshRB();
+				RemoveIdView.refreshRB();
+				Typer.refreshRB();
+				ClientButton.refreshRB();
+				frame.repaint();
 			}
 		});
 
@@ -148,5 +188,10 @@ public class AccountView {
 		return this.citiesTable;
 	}
 
+	public static void refreshRB() {
+		RB = ResourceBundle.getBundle("guiView", Main.locale);
+		comLabel.setText(RB.getString("commands"));
+		infoLabel.setText(RB.getString("authName") + ": " + login);
+	}
 
 }

@@ -18,7 +18,7 @@ public class ServerReceiver {
     private static final ReentrantLock collectionLock = new ReentrantLock();
     private static final ReentrantLock usersLock = new ReentrantLock();
     private SortedSet<City> collection = new TreeSet<>();
-    private final ResourceBundle RB = ResourceBundle.getBundle("server");
+    public static ResourceBundle RB;
     private final ZonedDateTime creationDate;
     private final CityService cityService = new CityService();
     private final UserService userService = new UserService();
@@ -130,7 +130,7 @@ public class ServerReceiver {
             try {
                 id = Integer.parseInt(idStr);
             } catch (NumberFormatException ex) {
-                return new Response("Клиент передал невалидный id.", false);
+                return new Response(RB.getString("invalidId"), false);
             }
             if (cityService.removeById(id, login)) {
                 collection.removeIf(city -> city.getId().equals(id));
@@ -173,6 +173,7 @@ public class ServerReceiver {
     }
 
     public Response help(Map<String, ServerCommand> commandMap) {
+        ServerCommand.RB = ResourceBundle.getBundle("commands", Main.locale);
         return new Response(commandMap.values().stream().map(ServerCommand::getHelp).toArray(String[]::new), true);
     }
 
@@ -194,7 +195,7 @@ public class ServerReceiver {
         try {
             id = Integer.parseInt(idStr);
         } catch (NumberFormatException ex) {
-            return new Response("Клиент передал невалидный id.", false);
+            return new Response(RB.getString("invalidId"), false);
         }
         if (cityService.updateById(id, city, login)) {
             collection.removeIf(cityFromColl -> cityFromColl.getId().equals(id));

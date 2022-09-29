@@ -19,7 +19,7 @@ public class Client {
     private InetAddress host;
     private final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final Logger LOGGER = ClientLogger.getLogger();
-    private final ResourceBundle RB = ResourceBundle.getBundle("client");
+    private final ResourceBundle RB = ResourceBundle.getBundle("client", Main.locale);
 
     public Client() {
         try {
@@ -55,6 +55,7 @@ public class Client {
     }
 
     public void send(Request request) {
+        request.setLocale(Main.locale);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);

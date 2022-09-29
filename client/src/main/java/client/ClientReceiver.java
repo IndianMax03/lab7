@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 
 public class ClientReceiver {
 
-    private final ResourceBundle RB = ResourceBundle.getBundle("client");
+    private final ResourceBundle RB = ResourceBundle.getBundle("client", Main.locale);
     JFrame frame = DialogFrame.getFrame();
     Font font = DialogFrame.getFont();
 
@@ -28,7 +28,7 @@ public class ClientReceiver {
 
     public Optional<Request> exit() {
         frame.setFont(font);
-        JOptionPane.showMessageDialog(frame, "Bye", "INFO", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, RB.getString("bye"), "INFO", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
         return Optional.empty();
     }
