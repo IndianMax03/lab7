@@ -80,4 +80,8 @@ public class Sheep {
 		RB = ResourceBundle.getBundle("guiPainting", Main.locale);
 	}
 
+	public static void clearVelocities() {
+		VELOCITIES.clear();
+	}
+
 }

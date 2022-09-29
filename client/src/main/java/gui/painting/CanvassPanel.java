@@ -1,30 +1,27 @@
 package gui.painting;
 
 import base.City;
-import gui.listeners.TableCellsListener;
 import gui.listeners.TableCollectionListener;
 import gui.util.CitiesTable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class CanvassPanel extends JPanel implements ActionListener {
 
 	private final Image image;
-	Dimension dimension;
 	private final Timer timer = new Timer(5, this);
-	private final CopyOnWriteArrayList<Sheep> sheepList = new CopyOnWriteArrayList<>();
+	private final ArrayList<Sheep> sheepList = new ArrayList<>();
 	private TreeSet<City> collection;
 
 	public CanvassPanel(TreeSet<City> collectionFromTable, CanvassFrame frame, CitiesTable citiesTable) {
 		this.collection = new TreeSet<>(collectionFromTable);
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension dimension = toolkit.getScreenSize();
-		this.dimension = dimension;
 		ImageIcon ocean = new ImageIcon("Ocean.jpg");
 		image = ocean.getImage().getScaledInstance(dimension.width, dimension.height, Image.SCALE_SMOOTH);
 		ocean = new ImageIcon(image);
@@ -72,6 +69,12 @@ public class CanvassPanel extends JPanel implements ActionListener {
 			sheep.move(this);
 		}
 		repaint();
+	}
+
+	public void clearState() {
+		sheepList.clear();
+		collection.clear();
+		timer.stop();
 	}
 
 }

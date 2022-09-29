@@ -4,6 +4,7 @@ import base.City;
 import gui.listeners.TableCellsListener;
 import gui.listeners.TableCollectionListener;
 import gui.painting.CanvassFrame;
+import gui.painting.Sheep;
 import gui.view.AccountView;
 
 import javax.swing.*;

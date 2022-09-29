@@ -20,6 +20,12 @@ public class CanvassFrame extends JFrame {
 		panel = new CanvassPanel(collection, this, citiesTable);
 		this.setTitle(RB.getString("sheep"));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				panel.clearState();
+			}
+		});
 		this.add(panel);
 		this.pack();
 		this.setLocationRelativeTo(null);
