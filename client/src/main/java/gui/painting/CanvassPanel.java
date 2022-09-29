@@ -2,26 +2,29 @@ package gui.painting;
 
 import base.City;
 import base.Coordinates;
+import gui.listeners.TableCellsListener;
+import gui.listeners.TableCollectionListener;
+import gui.util.CitiesTable;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.*;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class CanvassPanel extends JPanel implements ActionListener {
 
 	private final Image image;
-	private final Timer timer = new Timer(5, this);
-	private final ArrayList<Sheep> sheepList = new ArrayList<>();
 	Dimension dimension;
-	private ArrayList<Coordinates> coordinates = new ArrayList<>();
-	private final TreeSet<City> collection;
+	private final Timer timer = new Timer(5, this);
+	private final CopyOnWriteArrayList<Sheep> sheepList = new CopyOnWriteArrayList<>();
+	private TreeSet<City> collection;
 
-	public CanvassPanel(TreeSet<City> collection) {
-		this.collection = new TreeSet<>(collection);
+	public CanvassPanel(TreeSet<City> collectionFromTable, CanvassFrame frame, CitiesTable citiesTable) {
+		this.collection = new TreeSet<>(collectionFromTable);
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension dimension = toolkit.getScreenSize();
 		this.dimension = dimension;
@@ -30,6 +33,28 @@ public class CanvassPanel extends JPanel implements ActionListener {
 		ocean = new ImageIcon(image);
 		this.setPreferredSize(new Dimension(700, 500));
 		initSheep();
+		citiesTable.addTableCollectionListener(new TableCollectionListener() {
+			@Override
+			public void created(TreeSet<City> newCollectionFromServer) {
+				collection = new TreeSet<>(newCollectionFromServer);
+			}
+		});
+		citiesTable.addTableCollectionListener(new TableCollectionListener() {
+			@Override
+			public void created(TreeSet<City> newCollectionFromServer) {
+				collection = new TreeSet<>(newCollectionFromServer);
+			}
+		});
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+				for (Sheep sheep : sheepList) {
+					sheep.checkTarget(frame, x, y);
+				}
+			}
+		});
 	}
 
 	public void paint(Graphics grap) {
@@ -57,4 +82,5 @@ public class CanvassPanel extends JPanel implements ActionListener {
 		}
 		repaint();
 	}
+
 }

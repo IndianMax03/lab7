@@ -2,6 +2,7 @@ package gui.util;
 
 import base.City;
 import gui.listeners.TableCellsListener;
+import gui.listeners.TableCollectionListener;
 import gui.painting.CanvassFrame;
 import gui.view.AccountView;
 
@@ -16,7 +17,7 @@ public class CitiesTable extends DefaultTableModel {
 
 	private static TreeSet<City> collection = new TreeSet<>();
 
-	CitiesTableSorter sorter = new CitiesTableSorter(this);
+//	CitiesTableSorter sorter = new CitiesTableSorter(this);
 	private JTable table;
 
 	private static final String[] columnNames = {"id", "name", "x", "y", "creation date", "area", "population",
@@ -135,19 +136,35 @@ public class CitiesTable extends DefaultTableModel {
 		col = table.convertColumnIndexToModel(col);
 		data.get(row)[col] = value;
 		fireTableCellUpdated(row, col);
+		notifyTableCollectionListeners(collection);
 	}
 
 	public void updateData(TreeSet<City> collectionFromServer) {
-		collection = collectionFromServer;
-		data.clear();
-		int row = 0;
-		for (City city : collection) {
-			data.add(row++, city.getArray());
+		if (!collection.equals(collectionFromServer)) {
+			collection = collectionFromServer;
+			data.clear();
+			int row = 0;
+			for (City city : collection) {
+				data.add(row++, city.getArray());
+			}
+			notifyTableCollectionListeners(collection);
 		}
 	}
 
 	public void visualisation() {
-		new CanvassFrame(collection);
+		CanvassFrame canvassFrame = new CanvassFrame(collection, this);
+	}
+
+	private final List<TableCollectionListener> tableCollectionListeners = new ArrayList<>();
+
+	public void addTableCollectionListener(TableCollectionListener tableCollectionListener) {
+		tableCollectionListeners.add(tableCollectionListener);
+	}
+
+	private void notifyTableCollectionListeners(TreeSet<City> collection) {
+		for (TableCollectionListener tableCollectionListener : tableCollectionListeners) {
+			tableCollectionListener.created(collection);
+		}
 	}
 
 

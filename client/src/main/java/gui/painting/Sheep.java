@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class Sheep {
 	private final City city;
-	private final float area;
+	private float area;
 	private double x;
 	private double y;
 	private static final HashMap<String, double[]> VELOCITIES = new HashMap<>();
@@ -49,7 +49,7 @@ public class Sheep {
 		g2.drawString(title, (float) (x + (bodyMidline-title.length())/4), (float) y + area/4);
 	}
 
-	public void move(JPanel panel) {
+	public void move(CanvassPanel panel) {
 		if (x < 0 || x > panel.getBounds().getWidth()-area) {
 			VELOCITIES.get(city.getName())[0] *= -1;
 		}
@@ -64,6 +64,12 @@ public class Sheep {
 	private void initVelocity() {
 		if (!VELOCITIES.containsKey(city.getName())) {
 			VELOCITIES.put(city.getName(), new double[]{Math.random()*2, Math.random()*2});
+		}
+	}
+
+	public void checkTarget(CanvassFrame frame, int x, int y) {
+		if (x >= this.x && x <= this.x+area && y >= this.y-stick[1][1] && y <= y+area/4) {
+			JOptionPane.showMessageDialog(frame, city.toString(), "Sheep-City", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
