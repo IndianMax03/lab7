@@ -96,9 +96,6 @@ public class City implements Comparable<City>, Serializable {
             return Optional.empty();
         } else {
             try {
-                for(Object o : cityArray) {
-                    System.out.println(o.getClass());
-                }
                 int id = (int) cityArray[0];
                 String name = (String) cityArray[1];
                 double x = (Double) cityArray[2];

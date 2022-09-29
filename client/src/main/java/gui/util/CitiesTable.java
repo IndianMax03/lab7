@@ -1,42 +1,158 @@
 package gui.util;
 
 import base.City;
+import gui.listeners.TableCellsListener;
+import gui.painting.CanvassFrame;
 import gui.view.AccountView;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
 
-public class CitiesTable extends AbstractTableModel {
-	//  todo tollbar'ы на ячейках
-	//  todo ограничения на ячейки
-	//  todo дата в ячейках
-	//  todo фильтры в колонках
-	//  todo внедрение коллекции в массив data
+public class CitiesTable extends DefaultTableModel {
 
-	private TreeSet<City> collection = new TreeSet<>();
+	private static TreeSet<City> collection = new TreeSet<>();
 
-	private Integer rowToAdd = 0;
+	CitiesTableSorter sorter = new CitiesTableSorter(this);
+	private JTable table;
 
 	private static final String[] columnNames = {"id", "name", "x", "y", "creation date", "area", "population",
 			"meters_above_sea_level", "climate", "government", "standard_of_living", "governor", "governor_height",
 			"governor_birthday", "login"};
-	private static Object[][] data = new Object[1000000][columnNames.length];
+	private static ArrayList<Object[]> data = new ArrayList<>(columnNames.length);
 
-	public static void init(JTable table) {
+	public void init(JTable table) {
+		this.table = table;
+		table.setModel(this);
+//		table.setRowSorter(sorter);
+//		table.setAutoCreateRowSorter(true);
+
+		table.getModel().addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				Optional<City> changedCity = getChangedCity(e.getLastRow());
+				changedCity.ifPresent(city -> notifyTableCellsListeners(city));
+			}
+		});
+
 		TableColumn column;
 		for (int i = 0; i < 15; i++) {
 			column = table.getColumnModel().getColumn(i);
 			column.setPreferredWidth(50);
 			column.setHeaderValue(columnNames[i]);
 		}
+
 	}
 
-//	public void addCityToCollection(City city) {
+
+
+
+	private final List<TableCellsListener> tableCellsListeners = new ArrayList<>();
+
+	public void addTableCellsListener(TableCellsListener tableCellsListener) {
+		tableCellsListeners.add(tableCellsListener);
+	}
+
+	private void notifyTableCellsListeners(City city) {
+		for (TableCellsListener tableCellsListener : tableCellsListeners) {
+			tableCellsListener.created(city);
+		}
+	}
+
+
+	public Optional<City> getChangedCity(int row) {
+		Iterator<City> it = collection.iterator();
+		int count = 0;
+		while (it.hasNext()) {
+			City city = it.next();
+			if (count == row) {
+				Object[] fields = city.getArray();
+				for (int col = 0; col < getColumnCount(); col++) {
+					fields[col] = data.get(row)[col];
+				}
+				return City.getCityByArray(fields);
+			}
+			count++;
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public int getRowCount() {
+		return data.size();
+	}
+
+	@Override
+	public int getColumnCount() {
+		return columnNames.length;
+	}
+
+	public boolean isCellEditable(int row, int col) {
+		return AccountView.getLogin().equals(getValueAt(row, columnNames.length - 1))
+				&& col != 8
+				&& col != 9
+				&& col != 10
+				&& col != 11
+				&& col != columnNames.length-1;
+	}
+
+	public Class<?> getColumnClass(int column) {
+		switch (column) {
+			case 0:
+			case 6:
+			case 12:
+				return Integer.class;
+			case 1:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 14:
+				return String.class;
+			case 2:
+			case 3:
+				return Double.class;
+			case 5:
+			case 7:
+				return Float.class;
+			case 4:
+			case 13:
+				return java.sql.Date.class;
+			default: return String.class;
+		}
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		return data.get(rowIndex)[columnIndex];
+	}
+
+	public void setValueAt(Object value, int row, int col) {
+		row = table.convertRowIndexToModel(row);
+		col = table.convertColumnIndexToModel(col);
+		data.get(row)[col] = value;
+		fireTableCellUpdated(row, col);
+	}
+
+	public void updateData(TreeSet<City> collectionFromServer) {
+		collection = collectionFromServer;
+		data.clear();
+		int row = 0;
+		for (City city : collection) {
+			data.add(row++, city.getArray());
+		}
+	}
+
+	public void visualisation() {
+		new CanvassFrame(collection);
+	}
+
+
+
+	//	public void addCityToCollection(City city) {
 //		if (collection.add(city)) {
 //			Object[] fields = city.getArray();
 //			int row = rowToAdd++;
@@ -82,94 +198,4 @@ public class CitiesTable extends AbstractTableModel {
 //		}
 //		return -1;
 //	}
-
-	public Optional<City> getChangedCity(int row, int column) {
-		Iterator<City> it = collection.iterator();
-		int count = 0;
-		while (it.hasNext()) {
-			City city = it.next();
-			if (row == count) {
-				Object[] fields = city.getArray();
-				for (int col = 0; col < columnNames.length; col++) {
-					fields[col] = data[row][col];
-				}
-				return City.getCityByArray(fields);
-			}
-			count++;
-		}
-		return Optional.empty();
-	}
-
-	public void updateData(TreeSet<City> collectionFromServer) {
-		data = new Object[1000000][columnNames.length];
-		this.collection = collectionFromServer;
-		int row = 0;
-		for (City city : collection) {
-			int col = 0;
-			Object[] fields = city.getArray();
-			for (Object field : fields) {
-				data[row][col] = field;
-//				setValueAt(field, row, col);
-//				fireTableCellUpdated(row, col);
-				col++;
-			}
-			row++;
-		}
-		rowToAdd = row;
-	}
-
-	@Override
-	public int getRowCount() {
-		return data.length;
-	}
-
-	@Override
-	public int getColumnCount() {
-		return columnNames.length;
-	}
-
-	public boolean isCellEditable(int row, int col) {
-		return AccountView.getLogin().equals(getValueAt(row, columnNames.length - 1))
-				&& col != 8
-				&& col != 9
-				&& col != 10
-				&& col != 11
-				&& col != columnNames.length-1;
-	}
-
-	public Class<?> getColumnClass(int column) {
-		switch (column) {
-			case 0:
-			case 6:
-			case 12:
-				return Integer.class;
-			case 1:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 14:
-				return String.class;
-			case 2:
-			case 3:
-				return Double.class;
-			case 5:
-			case 7:
-				return Float.class;
-			case 4:
-			case 13:
-				return java.sql.Date.class;
-			default: return String.class;
-		}
-	}
-
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		return data[rowIndex][columnIndex];
-	}
-
-	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
-		fireTableCellUpdated(row, col);
-	}
 }

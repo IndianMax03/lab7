@@ -6,18 +6,17 @@ import client.ClientInvoker;
 import client.ClientReceiver;
 import commandButtons.*;
 import gui.listeners.CommandListener;
-import gui.listeners.TableCellsListener;
+import gui.painting.CanvassFrame;
 import gui.util.CitiesTable;
 import gui.util.MainFrame;
 import listening.Request;
 import listening.Response;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
-import java.util.List;
 
 public class AccountView {
 	private Font font = MainFrame.getFont();
@@ -48,7 +47,7 @@ public class AccountView {
 		southPanel.add(infoLabel);
 		mainPanel.add(southPanel, BorderLayout.NORTH);
 
-		CitiesTable.init(table);
+		citiesTable.init(table);
 		table.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 		mainPanel.add(scrollPane, BorderLayout.CENTER);
@@ -61,14 +60,6 @@ public class AccountView {
 		JLabel comLabel = new JLabel("Команды");
 		comLabel.setFont(font);
 		commandPanel.add(comLabel);
-
-		table.getModel().addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				Optional<City> changedCity = citiesTable.getChangedCity(e.getFirstRow(), e.getColumn());
-				changedCity.ifPresent(city -> notifyTableCellsListeners(city));
-			}
-		});
 
 		Map<String, ClientButton> buttons = clientInvoker.getCommandMap();
 
@@ -98,6 +89,15 @@ public class AccountView {
 				}
 			});
 		}
+
+		JButton sheepButton = new JButton("visualisation");
+		commandPanel.add(sheepButton);
+		sheepButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				citiesTable.visualisation();
+			}
+		});
 
 		mainPanel.add(commandPanel, BorderLayout.WEST);
 
@@ -144,17 +144,9 @@ public class AccountView {
 		return login;
 	}
 
-
-	private final List<TableCellsListener> tableCellsListeners = new ArrayList<>();
-
-	public void addTableCellsListener(TableCellsListener tableCellsListener) {
-		tableCellsListeners.add(tableCellsListener);
+	public CitiesTable getCitiesTable() {
+		return this.citiesTable;
 	}
 
-	private void notifyTableCellsListeners(City city) {
-		for (TableCellsListener tableCellsListener : tableCellsListeners) {
-			tableCellsListener.created(city);
-		}
-	}
 
 }
