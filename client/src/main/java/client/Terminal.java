@@ -1,179 +1,104 @@
 package client;
 
-import clientLogger.ClientLogger;
-import commands.ExecuteScript;
+import base.City;
+import gui.listeners.TableCellsListener;
+import gui.view.AccountView;
+import gui.view.AuthView;
+import gui.listeners.LoginPasswordListener;
 import listening.Request;
 import listening.Response;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Locale;
+import javax.swing.*;
 import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.logging.*;
 
 public class Terminal {
 
-    private final Logger LOGGER = ClientLogger.getLogger();
-    private final ResourceBundle RB = ResourceBundle.getBundle("client");
-
-    Scanner scanner;
-    private final ClientInvoker clientInvoker;
     private final Client client;
-    private String login = "";
-    private String password = "";
+    volatile private String login = "";
+    volatile private String password = "";
 
-    public Terminal(ClientInvoker clientInvoker, Client client) {
-        this.clientInvoker = clientInvoker;
+    private final AuthView authView = new AuthView();
+    private AccountView accountView;
+
+    public Terminal(Client client) {
         this.client = client;
     }
 
-    public void startFile(String filename) {
-        System.out.println(RB.getString("startFile") + filename);
-        setScanner(filename);
-        if (scanner == null) {
-            System.out.println(RB.getString("fileNotFound"));
-            return;
-        }
-
-        while (scanner.hasNext()) {
-            String line = scanner.nextLine();
-            Optional<Request> optRequest = lineHandler(line);
-            if (!optRequest.isPresent()) {
-                System.out.println(
-                        RB.getString("executing") + filename + " " + RB.getString("recoursiveLine") + " " + line);
-                return;
-            } else {
-                Request request = optRequest.get();
-                if (request.getCommandName().equals("execute_script")) {
-                    startFile(request.getArgument());
-                    continue;
-                }
-                request.setLogin(login);
-                request.setPassword(password);
-                client.send(request);
-                Optional<Response> optResponse = client.recieve();
-                if (!optResponse.isPresent()) {
-                    LOGGER.log(Level.SEVERE, RB.getString("brokenExecute"), new RuntimeException());
-                } else {
-                    Response response = optResponse.get();
-                    responseProcessing(response);
-                }
-            }
-        }
-        System.out.println(RB.getString("executing") + filename + RB.getString("ended"));
-    }
-
-    public void startKeyboard() {
-
-        scanner = new Scanner(System.in);
+    public void startApp() {
 
         greeting();
 
-        while (true) {
-            System.out.print(RB.getString("inputCommand") + "\n>");
-            String line = scanner.nextLine();
-
-            Optional<Request> optRequest = lineHandler(line);
-            if (optRequest.isPresent()) {
-
-                Request request = optRequest.get();
-                if (request.getCommandName().equals("execute_script")) {
-                    startFile(request.getArgument());
-                    ExecuteScript.clearPaths();
-                    scanner = new Scanner(System.in);
-                    continue;
-                }
-
-                request.setLogin(login);
-                request.setPassword(password);
-                client.send(request);
-
-                Optional<Response> optResponse = client.recieve();
-                if (optResponse.isPresent()) {
-                    Response response = optResponse.get();
-                    responseProcessing(response);
-                }
-
-            }
-        }
     }
 
-    private Optional<Request> lineHandler(String line) throws NullPointerException {
-
-        while (line.contains("  ")) {
-            line = line.replace("  ", " ");
-        }
-        String[] commandLine = line.split(" ");
-        String command = commandLine[0].trim();
-        if (command.equals("authorization")) {
-            authorization();
-            System.out.println(RB.getString("auth") + login);
-            return Optional.empty();
-        }
-        if (commandLine.length == 1) {
-            return clientInvoker.check(command, null);
-        }
-        if (commandLine.length == 2) {
-            return clientInvoker.check(command, commandLine[1]);
-        }
-        return Optional.empty();
-    }
-
-    private void authorization() {
-        System.out.print(RB.getString("inpLogin") + "\n>");
-        login = scanner.nextLine();
-        System.out.print(RB.getString("inpPassword") + "\n>");
-        password = scanner.nextLine();
+    private void authorization(String log, String pas) {
         Request authRequest = new Request("authorization");
-        authRequest.setLogin(login);
-        authRequest.setPassword(password);
+        authRequest.setLogin(log);
+        authRequest.setPassword(pas);
         client.send(authRequest);
         Optional<Response> optResponse = client.recieve();
         if (optResponse.isPresent()) {
             Response response = optResponse.get();
             if (!response.getMessage().isEmpty()) {
-                System.out.println(response.getMessage());
-                authorization();
+                authView.showErrorMessage(response.getMessage());
+            }
+            else {
+                login = log;
+                password = pas;
+                authView.hide();
+                personalAccount();
             }
         }
     }
 
     private void greeting() {
-        System.out.println(RB.getString("greeting"));
-        while (true) {
-            System.out.print(">");
-            String ans = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-            if (ans.equals(RB.getString("yes"))) {
-                authorization();
-                System.out.println(RB.getString("auth") + login);
-                return;
-            } else if (ans.equals(RB.getString("no"))) {
-                System.out.println(RB.getString("auth") + RB.getString("guest"));
-                return;
-            }
-            System.out.println(RB.getString("yes") + "/" + RB.getString("no"));
-        }
+        SwingUtilities.invokeLater(() -> {
+            authView.show();
+            authView.addLPListener(new LoginPasswordListener() {
+                @Override
+                public void created(String log, String pas) {
+                    login = log;
+                    password = pas;
+                    authorization(log, pas);
+                }
+            });
+        });
     }
 
-    private void setScanner(String filename) {
-        File file = new File(filename).getAbsoluteFile();
-        try {
-            scanner = new Scanner(file);
-        } catch (FileNotFoundException ignored) {
-            scanner = null;
-        }
-    }
-
-    private void responseProcessing(Response response) {
-        if (response.getAnswer() == null) {
-            System.out.println(response.getMessage());
-        } else {
-            for (String ans : response.getAnswer()) {
-                System.out.println(ans);
-            }
-        }
+    private void personalAccount() {
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.invokeLater(()->{
+                accountView = new AccountView(login, password, client);
+                accountView.show();
+                accountView.getCitiesTable().addTableCellsListener(new TableCellsListener() {
+                    @Override
+                    public void created(City city) {
+                        Request request = new Request("update", city.getId().toString(), city);
+                        request.setLogin(login);
+                        request.setPassword(password);
+                        client.send(request);
+                        Optional<Response> optionalResponse= client.recieve();
+                        optionalResponse.ifPresent(response -> accountView.parseAnswer(response));
+                    }
+                });
+            });
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(4000);
+                        Request request = new Request("update_table");
+                        client.send(request);
+                        Optional<Response> optionalResponse = client.recieve();
+                        if (optionalResponse.isPresent()) {
+                            Response tmpRes = optionalResponse.get();
+                            if (tmpRes.getCollection() != null) {
+                                accountView.updateTable(tmpRes.getCollection());
+                            }
+                        }
+                    } catch (InterruptedException ignore) {
+                    }
+                }
+            }).start();
+        });
     }
 
 }

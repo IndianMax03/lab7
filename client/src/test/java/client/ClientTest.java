@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class ClientTest {
 
     private final Client client = new Client();
-    private final Response response = new Response("answer");
+    private final Response response = new Response("answer", false);
     final int PORT = Integer.parseInt(System.getenv("PORT"));
     private static final int BUF_SIZE = 32768;
     private DatagramChannel channel;

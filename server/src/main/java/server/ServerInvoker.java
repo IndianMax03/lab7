@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
 public class ServerInvoker {
 
     private final HashMap<String, ServerCommand> commandMap = new HashMap<>();
-    private final ResourceBundle RB = ResourceBundle.getBundle("server");
 
     private void register(String commandName, ServerCommand command) {
         commandMap.put(commandName, command);
@@ -27,13 +26,17 @@ public class ServerInvoker {
     }
 
     public Optional<Response> execute(Request request) {
-        String commandName = request.getCommandName();
-        if (request.getLogin() == null || request.getPassword() == null
-                || request.getLogin().equals("") && !commandName.equals("authorization")) {
-            return Optional.of(new Response(RB.getString("badReq")));
+        synchronized (this) {
+            Main.locale = request.getLocale();
+            ServerReceiver.RB = ResourceBundle.getBundle("server", Main.locale);
+            ResourceBundle RB = ResourceBundle.getBundle("server", Main.locale);
+            String commandName = request.getCommandName();
+            if (request.getLogin() == null || request.getPassword() == null
+                    || request.getLogin().equals("") && !commandName.equals("authorization")) {
+                return Optional.of(new Response(RB.getString("badReq"), false));
+            }
+            return this.commandMap.get(commandName).execute(request);
         }
-
-        return this.commandMap.get(commandName).execute(request);
     }
 
     public HashMap<String, ServerCommand> getCommandMap() {
