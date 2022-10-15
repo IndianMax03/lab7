@@ -17,7 +17,7 @@ public class CanvassFrame extends JFrame {
 
 	public CanvassFrame(TreeSet<City> collection, CitiesTable citiesTable) {
 		panel = new CanvassPanel(collection, this, citiesTable);
-		this.setTitle(RB.getString("sheep"));
+		this.setTitle(RB.getString("ufo"));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override

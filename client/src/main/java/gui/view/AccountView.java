@@ -9,7 +9,6 @@ import commandButtons.*;
 import gui.input.Typer;
 import gui.listeners.CommandListener;
 import gui.painting.CanvassFrame;
-import gui.painting.Sheep;
 import gui.util.CitiesTable;
 import gui.util.MainFrame;
 import listening.Request;
@@ -127,7 +126,6 @@ public class AccountView {
 					}
 				}
 				CanvassFrame.refreshRB();
-				Sheep.refreshRB();
 				refreshRB();
 				AuthView.refreshRB();
 				FilterView.refreshRB();

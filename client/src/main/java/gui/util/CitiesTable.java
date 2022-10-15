@@ -155,7 +155,7 @@ public class CitiesTable extends DefaultTableModel {
 
 	public void visualisation() {
 		SwingUtilities.invokeLater(() -> {
-			CanvassFrame canvassFrame = new CanvassFrame(collection, this);
+			new CanvassFrame(collection, this);
 		});
 	}
 

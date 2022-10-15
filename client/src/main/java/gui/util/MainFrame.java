@@ -1,17 +1,18 @@
 package gui.util;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 
 public class MainFrame {
 
-	private static final Font FONT = new Font("TimesRoman", Font.BOLD, 15);
+	private static final Font FONT = new Font("Monospaced", Font.BOLD, 15);
 
 	public static JFrame getFrame(){
 		JFrame frame = new JFrame();
 		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
+			UIManager.setLookAndFeel(new MetalLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
