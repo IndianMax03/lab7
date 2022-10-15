@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Sheep {
 	private final City city;
@@ -23,6 +24,7 @@ public class Sheep {
 	private final String title;
 	private final String login;
 	private final double bodyMidline;
+	private final SheepBody body;
 
 	public Sheep(City city) {
 		this.city = city;
@@ -36,6 +38,7 @@ public class Sheep {
 		stick[1] = new int[]{(int) (x+area/4), (int) (stick[0][1] - area/2)};
 		this.flag = new Flag(area, stick, VELOCITIES.get(city.getName())[0] > 0).getFlag();
 		SheepBody sheepBody = new SheepBody(x, y, area, 0, 0);
+		this.body = sheepBody;
 		this.sheepBody = sheepBody.getBody();
 		this.bodyMidline = sheepBody.getMidline();
 	}
@@ -52,11 +55,11 @@ public class Sheep {
 		g2.drawString(title, (float) (x + (bodyMidline-title.length())/4), (float) y + area/4);
 	}
 
-	public void move(CanvassPanel panel) {
-		if (x < 0 || x > panel.getBounds().getWidth()-area) {
+	public void move(CanvassPanel panel, CopyOnWriteArrayList<Sheep> sheepList) {
+		if (x < 0 || x > panel.getBounds().getWidth()-area || this.body.getLefttConflict(sheepList) || this.body.getRightConflict(sheepList) || this.body.getHitFromLeftConflict(sheepList) || this.body.getHitFromRightConflict(sheepList)) {
 			VELOCITIES.get(city.getName())[0] *= -1;
 		}
-		if (y < area/2 && VELOCITIES.get(city.getName())[1] < 0 || y > panel.getBounds().getHeight()-area/2) {
+		if (y < area/2 && VELOCITIES.get(city.getName())[1] < 0 || y > panel.getBounds().getHeight()-area/2 || this.body.getUpConflict(sheepList) || this.body.getBotConflict(sheepList) || this.body.getFromUpConflict(sheepList) || this.body.getFromBotConflict(sheepList)) {
 			VELOCITIES.get(city.getName())[1] *= -1;
 		}
 		x += VELOCITIES.get(city.getName())[0];
@@ -84,4 +87,7 @@ public class Sheep {
 		VELOCITIES.clear();
 	}
 
+	public SheepBody getSheepBody() {
+		return body;
+	}
 }

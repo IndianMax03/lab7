@@ -135,6 +135,7 @@ public class AccountView {
 				RemoveIdView.refreshRB();
 				Typer.refreshRB();
 				ClientButton.refreshRB();
+				ClientReceiver.refreshRB();
 				frame.repaint();
 			}
 		});

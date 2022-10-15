@@ -7,7 +7,6 @@ import gui.util.CitiesTable;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
 

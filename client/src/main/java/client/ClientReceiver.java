@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 
 public class ClientReceiver {
 
-    private final ResourceBundle RB = ResourceBundle.getBundle("client", Main.locale);
+    private static ResourceBundle RB = ResourceBundle.getBundle("client", Main.locale);
     JFrame frame = DialogFrame.getFrame();
     Font font = DialogFrame.getFont();
 
@@ -80,5 +80,9 @@ public class ClientReceiver {
 
     public Optional<Request> update(Integer arg, City city) {
         return Optional.of(new Request("update", arg.toString(), city));
+    }
+
+    public static void refreshRB() {
+        RB = ResourceBundle.getBundle("client", Main.locale);
     }
 }

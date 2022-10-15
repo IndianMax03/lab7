@@ -7,15 +7,15 @@ import gui.util.CitiesTable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class CanvassPanel extends JPanel implements ActionListener {
 
 	private final Image image;
 	private final Timer timer = new Timer(5, this);
-	private final ArrayList<Sheep> sheepList = new ArrayList<>();
+	private final CopyOnWriteArrayList<Sheep> sheepList = new CopyOnWriteArrayList<>();
 	private TreeSet<City> collection;
 
 	public CanvassPanel(TreeSet<City> collectionFromTable, CanvassFrame frame, CitiesTable citiesTable) {
@@ -66,7 +66,7 @@ public class CanvassPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		for (Sheep sheep : sheepList) {
-			sheep.move(this);
+			sheep.move(this, sheepList);
 		}
 		repaint();
 	}

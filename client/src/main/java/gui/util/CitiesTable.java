@@ -4,7 +4,6 @@ import base.City;
 import gui.listeners.TableCellsListener;
 import gui.listeners.TableCollectionListener;
 import gui.painting.CanvassFrame;
-import gui.painting.Sheep;
 import gui.view.AccountView;
 
 import javax.swing.*;
@@ -12,8 +11,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.*;
 
 public class CitiesTable extends DefaultTableModel {
@@ -38,7 +35,9 @@ public class CitiesTable extends DefaultTableModel {
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				Optional<City> changedCity = getChangedCity(e.getLastRow());
-				changedCity.ifPresent(city -> notifyTableCellsListeners(city));
+				changedCity.ifPresent(city -> {
+					notifyTableCellsListeners(city);
+				});
 			}
 		});
 
@@ -134,12 +133,12 @@ public class CitiesTable extends DefaultTableModel {
 		return data.get(rowIndex)[columnIndex];
 	}
 
+	@Override
 	public void setValueAt(Object value, int row, int col) {
 		row = table.convertRowIndexToModel(row);
 		col = table.convertColumnIndexToModel(col);
 		data.get(row)[col] = value;
 		fireTableCellUpdated(row, col);
-		notifyTableCollectionListeners(collection);
 	}
 
 	public void updateData(TreeSet<City> collectionFromServer) {
@@ -150,8 +149,8 @@ public class CitiesTable extends DefaultTableModel {
 			for (City city : collection) {
 				data.add(row++, city.getArray());
 			}
-			notifyTableCollectionListeners(collection);
 		}
+		notifyTableCollectionListeners(collection);
 	}
 
 	public void visualisation() {

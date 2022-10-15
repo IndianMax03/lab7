@@ -136,20 +136,19 @@ public class Typer {
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = Validator.validateName(nameField.getText());
-                Coordinates coordinates = Validator.validateCoordinates(coordField.getText());
-                Float area = Validator.validateArea(areaField.getText());
-                Integer population = Validator.validatePopulation(populationField.getText());
-                Float masl = Validator.validateMetersAboveSeaLevel(maslField.getText());
-                Climate climate = (Climate) climateField.getSelectedItem();
-                Government government = (Government) governmentField.getSelectedItem();
-                StandardOfLiving standard = (StandardOfLiving) standardField.getSelectedItem();
-                Leaders cityLeader = (Leaders) leaderField.getSelectedItem();
-                Human human = Human.newHumanByLeader(cityLeader);
-
                 try {
+                    String name = Validator.validateName(nameField.getText());
+                    Coordinates coordinates = Validator.validateCoordinates(coordField.getText());
+                    Float area = Validator.validateArea(areaField.getText());
+                    Integer population = Validator.validatePopulation(populationField.getText());
+                    Float masl = Validator.validateMetersAboveSeaLevel(maslField.getText());
+                    Climate climate = (Climate) climateField.getSelectedItem();
+                    Government government = (Government) governmentField.getSelectedItem();
+                    StandardOfLiving standard = (StandardOfLiving) standardField.getSelectedItem();
+                    Leaders cityLeader = (Leaders) leaderField.getSelectedItem();
+                    Human human = Human.newHumanByLeader(cityLeader);
                     notifyCityListeners(new City(name, coordinates, area, population, masl, climate, government, standard, human));
-                } catch (NullPointerException ex) {
+                } catch (NullPointerException | NumberFormatException ex) {
                     showError(RB.getString("badCreate"));
                 }
             }

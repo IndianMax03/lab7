@@ -26,14 +26,11 @@ public class Validator {
         String yLine = coordinates[1];
         double x, y;
 
-        try {
-            x = Double.parseDouble(xLine);
-            y = Double.parseDouble(yLine);
-            if (y <= (Double) City.getLimitation().get("coordinateY")) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            return null;
+
+        x = Double.parseDouble(xLine);
+        y = Double.parseDouble(yLine);
+        if (y <= (Double) City.getLimitation().get("coordinateY")) {
+            throw new NumberFormatException();
         }
         return new Coordinates(x, y);
     }
